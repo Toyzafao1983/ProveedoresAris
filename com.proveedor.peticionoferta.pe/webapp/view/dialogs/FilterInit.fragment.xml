@@ -1,0 +1,79 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:fb="sap.ui.comp.filterbar" xmlns:l="sap.ui.layout"
+	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+	<Dialog id="IdFilterInit" contentHeight="auto" contentWidth="80%" afterOpen="_afterOpenAddPedido">
+        <customHeader>
+            <Bar>
+                <contentRight>
+                    <Button press="_onbtnRefresh" type="Transparent" icon="sap-icon://refresh" tooltip="{i18n>tooltipbtnRefresh}"/>
+                </contentRight>
+                <contentMiddle>
+                    <Title text="{i18n>titleDialogFilterInit}" />
+                </contentMiddle>
+            </Bar>
+        </customHeader>
+        <content>
+            <VBox width="auto" class="sapUiSmallMargin">
+
+                <HBox width="100%" class="sapUiTinyMargin" alignItems="Center" visible="{= !${oModelUser>/bAdmin}}">
+                    <HBox width="30%">
+                        <Label text="{i18n>txtNameProbInit}" />
+                    </HBox>
+                    <HBox width="68%" alignItems="Center">
+                        <Input id="iIntercom" value="{oModelProyect>/Main/filter/fNameSupplier}" width="250px" enabled="true"/>
+                    </HBox>
+                </HBox>
+                <HBox width="100%" class="sapUiTinyMargin" alignItems="Center"  visible="{= !${oModelUser>/bAdmin}}" >
+                    <HBox width="30%">
+                        <Label text="{i18n>txtProbInit}" required="true" />
+                    </HBox>
+                     <HBox width="68%" alignItems="Center">
+                        <Input id="iProvInit" value="{oModelProyect>/Main/filter/fSupplier}" width="250px" enabled="true"/>
+                    </HBox>
+                </HBox>
+                <HBox width="100%" class="sapUiTinyMargin" alignItems="Center" >
+                    <HBox width="30%">
+                        <Label text="{i18n>txtFechPedido}" />
+                    </HBox>
+                    <HBox width="68%" alignItems="Center">
+                        <DateRangeSelection id="dprFilterInitFechPedido" width="250px" displayFormat="dd/MM/yyyy" visible="true" 
+                             value="{oModelProyect>/Main/filter/fCreationDate}"  valueFormat="dd/MM/yyyy" change="_onChangeDateRange"/>
+                    </HBox>
+                </HBox>
+                <HBox width="100%" class="sapUiTinyMargin" alignItems="Center" >
+                    <HBox width="30%">
+                        <Text text="{i18n>txtEstado}"/>
+                    </HBox>
+                    <HBox width="68%" alignItems="Center">
+                        <ComboBox
+                            id="cbState"
+                            width="250px"
+                            change="ChangeSelectedDialogTo"
+                            tooltip="{i18n>tooltipinp}"
+                            items="{
+                                path: 'oModelData>/oState',
+                                sorter: { path: 'sText' }
+                            }"
+                            custom:custom="cbState/sText">
+                            <core:Item key="{oModelData>sKey}" text="{oModelData>sText}" />
+                        </ComboBox>
+                    </HBox>
+                </HBox>
+                <HBox width="100%" class="sapUiTinyMargin" alignItems="Center">
+                    <HBox width="30%">
+                        <Label text="{i18n>txtNumberPet}" required="true" />
+                    </HBox>
+                     <HBox width="68%" alignItems="Center">
+                        <!-- <Input id="iOrderOpenFrom" value="{oModelProyect>/Main/filter/fRequestForQuotationFrom}" width="250px" enabled="true"/>
+                        <Text text="{i18n>AText}"  class="sapUiTinyMarginBegin sapUiTinyMarginEnd"/>
+                        <Input id="iOrderOpenTo" value="{oModelProyect>/Main/filter/fRequestForQuotationTo}" width="250px" enabled="true"/> -->
+                    </HBox>
+                </HBox>
+                
+            </VBox>
+        </content>
+		<buttons>
+			<Button text="{i18n>executeText}" press="_onPressExecute" custom:custom="default" type="Accept"/>
+			<Button text="{i18n>returnText}" press="_onPressClose" custom:custom="FilterInit" type="Reject"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

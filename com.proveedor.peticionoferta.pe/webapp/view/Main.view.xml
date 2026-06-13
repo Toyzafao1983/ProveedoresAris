@@ -1,0 +1,142 @@
+<mvc:View controllerName="com.proveedor.peticionoferta.pe.controller.Main"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:fb="sap.ui.comp.filterbar"
+    xmlns:svm="sap.ui.comp.smartvariants">
+
+    <Shell >
+        <f:DynamicPage headerExpanded="true" showFooter="true">
+            <f:title>
+                <f:DynamicPageTitle>
+                    <f:heading>
+                        <Title 
+                            level="H1" 
+                            text="{i18n>title}"
+                            wrapping="true" />
+                    </f:heading>
+                    <f:actions>
+                        <Button text="{i18n>textHome}" press="_onbtnHome" type="Back" icon="sap-icon://home" tooltip="{i18n>tooltipbtnHome}"/>
+                        <MenuButton text="{i18n>titleButtonLanguaje}" icon="sap-icon://action-settings">
+                            <menu>
+                                <Menu itemSelected="onMenuAction">
+                                    <MenuItem text="{i18n>titleButtonLanguajeEN}" press="onLanguageEng"/>
+                                    <MenuItem text="{i18n>titleButtonLanguajeES}" press="onLanguageEsp"/>
+                                </Menu>
+                            </menu>
+                        </MenuButton>
+                    </f:actions>
+                </f:DynamicPageTitle>
+            </f:title>
+
+            <f:header>
+                <f:DynamicPageHeader>
+                    <f:content>
+                       <fb:FilterBar 
+    filterContainerWidth="15rem" 
+    reset="onReset" 
+    search="_onPressExecute" 
+    showFilterConfiguration="true"
+    showRestoreButton="false" 
+    showClearOnFB="true" 
+    clear="onClearFilters" 
+    useToolbar="false">
+
+    <fb:filterItems>
+
+        <!-- 🔹 Nombre del proveedor -->
+        <fb:FilterItem name="B" label="{i18n>txtNameProbInit}" visible="{= !${oModelUser>/bExterno}}">
+            <fb:control>
+                <MultiComboBox 
+                    width="100%"
+                    selectedKeys="{oModelProyect>/Main/filter/fNameSupplier}"
+                    items="{
+                        path: 'oModelProyect>/NameSupplierDisponibles'
+                    }"
+                    placeholder="Seleccionar...">
+                    <core:Item key="{oModelProyect>}" text="{oModelProyect>}" />
+                </MultiComboBox>
+            </fb:control>
+        </fb:FilterItem>
+
+        <!-- 🔹 Código de proveedor -->
+        <fb:FilterItem name="A" label="{i18n>txtProbInit}" visible="{= !${oModelUser>/bExterno}}">
+            <fb:control>
+                <MultiComboBox 
+                    width="100%"
+                    selectedKeys="{oModelProyect>/Main/filter/fSupplier}"
+                    items="{
+                        path: 'oModelProyect>/SupplierDisponibles'
+                    }"
+                    placeholder="Seleccionar...">
+                    <core:Item key="{oModelProyect>}" text="{oModelProyect>}" />
+                </MultiComboBox>
+            </fb:control>
+        </fb:FilterItem>
+
+        <!-- 🔹 Fecha de pedido (rango) -->
+        <fb:FilterItem name="C" label="{i18n>txtFechPedido}">
+            <fb:control>
+                <DateRangeSelection
+                    id="drsCreationDate"
+                    dateValue="{oModelProyect>/Main/filter/fCreationDateFrom}"
+                    secondDateValue="{oModelProyect>/Main/filter/fCreationDateTo}"
+                    displayFormat="dd-MM-yyyy"
+                    delimiter=" - "
+                    enabled="true"
+                    width="100%"/>
+            </fb:control>
+        </fb:FilterItem>
+
+        <!-- 🔹 Estado -->
+        <fb:FilterItem name="D" label="{i18n>txtEstado}">
+            <fb:control>
+                <MultiComboBox 
+                    width="100%"
+                    selectedKeys="{oModelProyect>/Main/filter/sNotification}"
+                    items="{
+                        path: 'oModelProyect>/EstadosDisponibles'
+                    }"
+                    placeholder="Seleccionar...">
+                    <core:Item key="{oModelProyect>}" text="{oModelProyect>}" />
+                </MultiComboBox>
+            </fb:control>
+        </fb:FilterItem>
+
+        <!-- 🔹 Número de Petición (RFQ) -->
+        <fb:FilterItem name="E" label="{i18n>txtNumberPet}">
+            <fb:control>
+                <MultiComboBox
+                    id="mcbRequestRange"
+                    width="250px"
+                    selectedKeys="{oModelProyect>/Main/filter/aRequestForQuotationSelected}"
+                    items="{
+                        path: 'oModelProyect>/RFQDisponibles',
+                        templateShareable: false
+                    }"
+                    placeholder="Seleccionar...">
+                    <core:Item 
+                        key="{oModelProyect>}" 
+                        text="{oModelProyect>}" />
+                </MultiComboBox>
+            </fb:control>
+        </fb:FilterItem>
+
+    </fb:filterItems>
+</fb:FilterBar>
+
+                    </f:content>
+                </f:DynamicPageHeader>
+            </f:header>
+
+            <f:content>
+                <VBox>
+                    <VBox>
+                        <VBox id="vbTableMain"/>
+                    </VBox>
+                </VBox>
+            </f:content>
+        </f:DynamicPage>
+    </Shell>
+</mvc:View>

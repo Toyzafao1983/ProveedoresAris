@@ -1,0 +1,144 @@
+<mvc:View controllerName="com.aris.proveedores.pe.pedidocompra.controller.Detail"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:fb="sap.ui.comp.filterbar"
+    xmlns:svm="sap.ui.comp.smartvariants"
+    xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+
+    <f:DynamicPage headerExpanded="true">
+        <f:title>
+            <f:DynamicPageTitle>
+                <f:heading>
+                    <Title text="{i18n>TextDetailPedComp} - {oModelProyect>/oCabecera/Ebeln}"
+                        wrapping="true" class="sapUiSmallMarginTop" level="H2"/>
+                </f:heading>
+                <f:navigationActions>
+                    <Button text="{i18n>textbtnBackTo}" icon="sap-icon://nav-back" press="_onPressNavButtonDetail"/>
+                    <Button text="{i18n>textbtnExpRespaldo}" type="Accept" icon="sap-icon://excel-attachment" press="_onPressExportRespaldo"/>
+                </f:navigationActions>
+            </f:DynamicPageTitle>
+        </f:title>
+
+        <f:header>
+            <f:DynamicPageHeader visible="{= !${oModelUser>/bRol}}">
+                <f:content>
+                    <fb:FilterBar id="idFilterBarDetail"
+                                  filterContainerWidth="11rem"
+                                  reset="onReset"
+                                  search="_onGoDetail"
+                                  showFilterConfiguration="true"
+                                  showClearOnFB="true"
+                                  showGoOnFB="true"
+                                  clear="onReset"
+                                  useToolbar="true"
+                                  persistencyKey="">
+
+                        <fb:filterItems>
+                            <!-- FILTRO A: Num Sol. Pedido (BANFN) -->
+                            <fb:FilterItem name="A" label="{i18n>TextDetailFilterNumSolPed}">
+                                <fb:control>
+                                    <MultiInput
+                                        id="miBanfn"
+                                        width="300px"
+                                        showClearIcon="true"
+                                        showSuggestion="true"
+                                        showValueHelp="false"
+                                        suggest="onSuggestBanfn"
+                                        tokenUpdate="onTokenUpdateBanfn"
+                                        suggestionItems="{
+                                            path: 'oModelProyect>/oFiltroBanfn'
+                                        }">
+                                        <core:Item key="{oModelProyect>key}" text="{oModelProyect>text}" />
+                                    </MultiInput>
+                                </fb:control>
+                            </fb:FilterItem>
+
+                            <!-- FILTRO B: Material -->
+                            <fb:FilterItem name="B" label="{i18n>TextDetailFilterMaterial}">
+                                <fb:control>
+                                    <MultiInput
+                                        id="miMaterial"
+                                        width="300px"
+                                        showClearIcon="true"
+                                        showSuggestion="true"
+                                        showValueHelp="false"
+                                        suggest="onSuggestMaterial"
+                                        tokenUpdate="onTokenUpdateMaterial"
+                                        suggestionItems="{
+                                            path: 'oModelProyect>/oFiltroMaterial'
+                                        }">
+                                        <core:Item key="{oModelProyect>key}" text="{oModelProyect>text}" />
+                                    </MultiInput>
+                                </fb:control>
+                            </fb:FilterItem>
+                        </fb:filterItems>
+                    </fb:FilterBar>
+                </f:content>
+            </f:DynamicPageHeader>
+        </f:header>
+
+        <f:content>
+            <Table items="{oModelProyect>/oDetalleFiltrado}" mode="None" growingThreshold="20">
+                <columns>
+                    <Column>
+                        <header><Text text="{i18n>TextDetailPosPed}" /></header>
+                    </Column>
+                    <Column>
+                        <header><Text text="{i18n>TextDetailNumSolPed}" /></header>
+                    </Column>
+                    <Column>
+                        <header><Text text="{i18n>TextDetailMaterial}" /></header>
+                    </Column>
+                    <Column>
+                        <header><Text text="{i18n>TextDetailDesComp}" /></header>
+                    </Column>
+                    <Column>
+                        <header><Text text="{i18n>TextDetailOrderQua}" /></header>
+                    </Column>
+                    <Column>
+                        <header><Text text="{i18n>TextDetailQuaDeli}" /></header>
+                    </Column>
+                    <Column>
+                        <header><Text text="{i18n>TextDetailOutAmon}" /></header>
+                    </Column>
+                    <Column>
+                        <header><Text text="{i18n>TextDetailUM}" /></header>
+                    </Column>
+                    <Column>
+                        <header><Text text="{i18n>TextDetailUnitPrice}" /></header>
+                    </Column>
+                    <Column>
+                        <header><Text text="{i18n>TextDetailCurrency}" /></header>
+                    </Column>
+                    <Column>
+                        <header><Text text="{i18n>TextDetailSubTot}" /></header>
+                    </Column>
+                    <Column>
+                        <header><Text text="{i18n>TextDetailLastDateAdmin}" /></header>
+                    </Column>
+                </columns>
+
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Text text="{oModelProyect>Ebelp}" />             
+                            <Text text="{oModelProyect>Banfn}" />              
+                            <Text text="{oModelProyect>Material}" />
+                            <Text text="{oModelProyect>Description}" />
+                            <Text text="{oModelProyect>Orderquantity}" />
+                            <Text text="{oModelProyect>QuantityDelivered}" />
+                            <Text text="{oModelProyect>Pendingamount}" />
+                            <Text text="{oModelProyect>Um}" />
+                            <Text text="{oModelProyect>Unitprice}" />
+                            <Text text="{oModelProyect>Currency}" />
+                            <Text text="{oModelProyect>Subtotal}" />
+                            <Text text="{oModelProyect>Lastdateadmission}" />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </f:content>
+    </f:DynamicPage>
+</mvc:View>

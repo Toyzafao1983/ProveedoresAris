@@ -1,0 +1,24 @@
+<mvc:View controllerName="arisprovmiscomprobantes.controller.Detail"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:fb="sap.ui.comp.filterbar"
+    xmlns:svm="sap.ui.comp.smartvariants">
+    <Shell>
+        <f:DynamicPage headerExpanded="true">
+                <f:title>
+                    <f:DynamicPageTitle>
+                        <f:heading>
+                            <Title text="{oModelPedidoVenta>/DataGeneral/oSelectedCliente/rucCliente} {oModelPedidoVenta>/DataGeneral/oSelectedCliente/nameCliente}" 
+                                wrapping="true" class="sapUiSmallMarginTop" level="H2"/>
+                        </f:heading>
+                        <f:navigationActions>
+                            <Button text="{i18n>textbtnBackTo}" icon="sap-icon://nav-back" press="_onPressNavButtonDetail"/>
+                        </f:navigationActions>
+                    </f:DynamicPageTitle>
+                </f:title>
+                <f:content>
+                </f:content>
+            </f:DynamicPage>
+    </Shell>
+</mvc:View>

@@ -1,0 +1,189 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:fb="sap.ui.comp.filterbar" xmlns:l="sap.ui.layout"
+	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+	<Dialog id="IdDatosViaje" contentHeight="auto" contentWidth="auto" afterOpen="_afterOpenAddPedido">
+        <customHeader>
+            <Bar>
+                <!-- <contentRight>
+                    <Button press="_onbtnRefresh" type="Transparent" icon="sap-icon://refresh" tooltip="{i18n>tooltipbtnRefresh}"/>
+                </contentRight> -->
+                <contentMiddle>
+                    <Title text="{i18n>titleDialogDatosViaje}" />
+                </contentMiddle>
+            </Bar>
+        </customHeader>
+        <content>
+            <VBox width="auto" class="sapUiSmallMargin">
+                <HBox width="100%" class="sapUiTinyMargin" alignItems="Center"  >
+                    <HBox width="35%">
+                        <Label text="{i18n>txtDialogViajeModalidad}" required="true" />
+                    </HBox>
+                     <HBox width="65%" alignItems="Center">
+                        <ComboBox
+                            id="cbModalidad"
+                            width="250px"
+                            tooltip="{i18n>tooltipinp}"
+                            selectedKey="{oModelProyect>/jDatosViaje/cbModalidad}"
+                            items="{
+                                path: 'oModelData>/oModalidad',
+                                sorter: { path: 'sText' }
+                            }"
+                            enabled="{oModelProyect>/oCabecera/bFormEditable}"
+                            change="ChangeSelectedTo"
+                            custom:custom="cbModalidad/sKey" >
+                            <core:Item key="{oModelData>sKey}"  text="{oModelData>sText}" />
+                        </ComboBox>
+                    </HBox>
+                </HBox>
+
+                <HBox width="100%" class="sapUiTinyMargin" alignItems="Center">
+                    <HBox width="35%">
+                        <Label text="{i18n>txtDialogViajeNave}" required="true" />
+                    </HBox>
+                     <HBox width="65%" alignItems="Center">
+                        <Input value="{oModelProyect>/jDatosViaje/sViajeNave}" width="250px" enabled="{oModelProyect>/oCabecera/bFormEditable}"/>
+                    </HBox>
+                </HBox>
+
+                <HBox width="100%" class="sapUiTinyMargin" alignItems="Center" >
+                    <HBox width="35%">
+                        <Label text="{i18n>txtDialogViajeNumBL}" required="true"/>
+                    </HBox>
+                    <HBox width="65%" alignItems="Center">
+                        <Input value="{oModelProyect>/jDatosViaje/sViajeNumBL}" width="250px" enabled="{oModelProyect>/oCabecera/bFormEditable}"/>
+                    </HBox>
+                </HBox>
+
+                <HBox width="100%" class="sapUiTinyMargin" alignItems="Center" >
+                    <HBox width="35%">
+                        <Label text="{i18n>txtDialogViajeTipEmision}" required="true"/>
+                    </HBox>
+                    <HBox width="65%" alignItems="Center">
+                        <ComboBox
+                            id="cbTipoEmision"
+                            width="250px"
+                            tooltip="{i18n>tooltipinp}"
+                            selectedKey="{oModelProyect>/jDatosViaje/cbTipoEmision}"
+                            items="{
+                                path: 'oModelData>/oTipoEmision',
+                                sorter: { path: 'sText' }
+                            }"
+                            enabled="{oModelProyect>/oCabecera/bFormEditable}"
+                            change="ChangeSelectedTo"
+                            custom:custom="cbTipoEmision/sKey" >
+                            <core:Item key="{oModelData>sKey}" text="{oModelData>sText}" />
+                        </ComboBox>
+                    </HBox>
+                </HBox>
+
+                <HBox width="100%" class="sapUiTinyMargin" alignItems="Center">
+                    <HBox width="35%">
+                        <Label text="{i18n>txtDialogViajePaisEmbarque}" required="true" />
+                    </HBox>
+                     <HBox width="65%" alignItems="Center">
+                    <ComboBox
+                    id="sPaisEmbarque"
+                    width="250px"
+                    selectedKey="{oModelProyect>/jDatosViaje/sPaisEmbarque}"
+                    items="{ path: 'oModelData>/oPaisesEmbDes', sorter: { path: 'sText' } }"
+                    enabled="{oModelProyect>/oCabecera/bFormEditable}"
+                    change="onChangePaisEmbarque"
+                    custom:custom="sPaisEmbarque/sKey">
+                    <core:Item key="{oModelData>sKey}" text="{= ${oModelData>sKey} + ' - ' + ${oModelData>sText} }" />
+                    </ComboBox>
+                    </HBox>
+                </HBox>
+
+                <HBox width="100%" class="sapUiTinyMargin" alignItems="Center">
+                    <HBox width="35%">
+                        <Label text="{i18n>txtDialogViajePuertaEmbarque}" required="true"  />
+                    </HBox>
+                     <HBox width="65%" alignItems="Center">
+                        <ComboBox
+                            id="cbPuertoEmb"
+                            width="250px"
+                            tooltip="{i18n>tooltipinp}"
+                            selectedKey="{oModelProyect>/jDatosViaje/sPuertaEmbarque}"
+                            items="{
+                                path: 'oModelData>/oPuertosEmbEmb',
+                                sorter: { path: 'sText' }
+                            }"
+                            enabled="{oModelProyect>/oCabecera/bFormEditable}"
+                            change="ChangeSelectedTo"
+                            custom:custom="sPuertaEmbarque/sKey" >
+                            <core:Item key="{oModelData>sKey}"  text="{= ${oModelData>sKey} + ' - ' + ${oModelData>sText} }" />
+                        </ComboBox>
+                    </HBox>
+                </HBox>
+
+                <HBox width="100%" class="sapUiTinyMargin" alignItems="Center">
+                    <HBox width="35%">
+                        <Label text="{i18n>txtDialogViajeFechaETD}" required="true" />
+                    </HBox>
+                     <HBox width="65%" alignItems="Center">
+                        <DatePicker displayFormat="dd/MM/yyyy" valueFormat="dd/MM/yyyy" width="250px"
+                                    value="{oModelProyect>/jDatosViaje/sFechaETD}" enabled="{oModelProyect>/oCabecera/bFormEditable}"/>
+                    </HBox>
+                </HBox>
+                
+                <HBox width="100%" class="sapUiTinyMargin" alignItems="Center">
+                    <HBox width="35%">
+                        <Label text="{i18n>txtDialogViajePaisDesembarque}" required="true" />
+                    </HBox>
+                     <HBox width="65%" alignItems="Center">
+                        <ComboBox
+                        id="sPaisDesembarque"
+                        width="250px"
+                        selectedKey="{oModelProyect>/jDatosViaje/sPaisDesembarque}"
+                        items="{ path: 'oModelData>/oPaisesEmbDes', sorter: { path: 'sText' } }"
+                        enabled="{oModelProyect>/oCabecera/bFormEditable}"
+                        change="onChangePaisDesembarque"
+                        custom:custom="sPaisDesembarque/sKey">
+                        <core:Item key="{oModelData>sKey}" text="{= ${oModelData>sKey} + ' - ' + ${oModelData>sText} }" />
+                        </ComboBox>
+    
+                    </HBox>
+                </HBox>
+
+                <HBox width="100%" class="sapUiTinyMargin" alignItems="Center">
+                    <HBox width="35%">
+                        <Label text="{i18n>txtDialogViajePuertaDesembarque}" required="true" />
+                    </HBox>
+                     <HBox width="65%" alignItems="Center">
+                        <ComboBox
+                            id="sPuertaDesembarque"
+                            width="250px"
+                            tooltip="{i18n>tooltipinp}"
+                            selectedKey="{oModelProyect>/jDatosViaje/sPuertaDesembarque}"
+                            items="{
+                                path: 'oModelData>/oPuertosEmbDesFil',
+                                sorter: { path: 'sText' }
+                            }"
+                           enabled="{oModelProyect>/oCabecera/bFormEditable}"
+                            change="ChangeSelectedTo"
+                            custom:custom="sPuertaDesembarque/sText" >
+                            <core:Item key="{oModelData>sKey}"  text="{= ${oModelData>sKey} + ' - ' + ${oModelData>sText} }" />
+                        </ComboBox>
+                    </HBox>
+                </HBox>
+
+                <HBox width="100%" class="sapUiTinyMargin" alignItems="Center">
+                    <HBox width="35%">
+                        <Label text="{i18n>txtDialogViajeFechaETA}" required="true" />
+                    </HBox>
+                     <HBox width="65%" alignItems="Center">
+                        <DatePicker displayFormat="dd/MM/yyyy" valueFormat="dd/MM/yyyy" width="250px"
+                                    value="{oModelProyect>/jDatosViaje/sFechaETA}" enabled="{oModelProyect>/oCabecera/bFormEditable}"/>
+                    </HBox>
+                </HBox>
+            </VBox>
+        </content>
+		<buttons>
+			<Button
+                text="{i18n>goOutText}"
+                press="_onPressGuardaViaje"
+                custom:custom="DatosViaje"
+                type="Reject"
+                enabled="{oModelProyect>/oCabecera/bFormEditable}"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

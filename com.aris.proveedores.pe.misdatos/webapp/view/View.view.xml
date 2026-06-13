@@ -1,0 +1,117 @@
+<mvc:View controllerName="com.aris.proveedores.pe.misdatos.controller.View"
+     xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:fb="sap.ui.comp.filterbar"
+    xmlns:svm="sap.ui.comp.smartvariants"
+    xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+   
+    <Shell>
+        <f:DynamicPage headerExpanded="true">
+                <f:title>
+                    <f:DynamicPageTitle>
+                        <f:heading>
+                            <Title level="H1" text="{i18n>title}" wrapping="true" />
+                        </f:heading>
+                        <f:actions>
+                            <Button text="{i18n>textHome}" press="_onbtnHome" type="Back" icon="sap-icon://home" tooltip="{i18n>tooltipbtnHome}"/>
+                            <Button  text="{i18n>textbtnExpRespaldo}" type="Accept" icon="sap-icon://excel-attachment" press="_onPressExportRespaldo2"  visible="{= !${oModelUser>/sRol}}"/>
+                            <MenuButton text="{i18n>titleButtonLanguaje}">
+                                    <menu>
+                                        <Menu itemSelected="onMenuAction">
+                                            <MenuItem text="{i18n>titleButtonLanguajeES}" press="onLanguageEsp"/>
+                                            <MenuItem text="{i18n>titleButtonLanguajeEN}" press="onLanguageEng"/>
+                                        </Menu>
+                                    </menu>
+                                </MenuButton>
+
+                        </f:actions>
+                    </f:DynamicPageTitle>
+                </f:title>
+                <f:header>
+                    <f:DynamicPageHeader>
+                        <f:content>
+                            <fb:FilterBar id="idFilterBar" filterContainerWidth="11rem" reset="onReset" search="_onPressExecute" showFilterConfiguration="true"
+                                showRestoreButton="true" showClearOnFB="true" showGoOnFB="true" clear="_clearMultiInputs" useToolbar="true" visible="{= ${oModelUser>/sRol}}" >
+                                <fb:filterItems>
+                                
+                                    <fb:FilterItem name="A" label="{i18n>txtCodProveedor}" visible="{= ${oModelUser>/sRol}}">
+                                        <fb:control >
+                                        <MultiInput
+                                            id="miCodSupplier"
+                                            showSuggestion="true"
+                                            suggest="onChangeCodSupplier"
+                                            showValueHelp="false"
+                                            tokenUpdate="..."
+                                            suggestionItems="{
+                                                path: 'oModelData>/suggestedCodSuppliers'
+                                            }">
+                                            <core:Item
+                                                key="{oModelData>RawTaxID}"  
+                                                text="{oModelData>Display}" />
+                                        </MultiInput>
+
+                                        </fb:control>
+                                    </fb:FilterItem>
+                                    
+                                    <fb:FilterItem name="B" label="{i18n>txtProveedor}" visible="{= ${oModelUser>/sRol}}">
+                                        <fb:control>
+                                             <MultiInput
+                                                id="miSupplier"
+                                                width="300px"
+                                                showClearIcon="true"
+                                                showSuggestion="true"
+                                                showValueHelp="false"
+                                                suggest="onChangeSupplier"
+                                                suggestionItems="{
+                                                    path: 'oModelData>/suggestedSuppliers'
+                                                }"
+                                               
+                                                custom:custom="cbSupplier/SupplierName">
+                                                <suggestionItems>
+                                                    <core:Item key="{oModelData>SupplierName}" text="{oModelData>Display}" />
+                                                </suggestionItems>
+                                            </MultiInput>
+                                        </fb:control>
+                                    </fb:FilterItem>
+                                    <fb:FilterItem name="C" label="{i18n>txtCodSap}" visible="{= ${oModelUser>/sRol}}">
+                                        <fb:control>
+                                             <MultiInput
+                                                id="miSupplierCode"
+                                                width="300px"
+                                                showClearIcon="true"
+                                                showSuggestion="true"
+                                                showValueHelp="false"
+                                                suggest="onChangeSupplierCode"
+                                                custom:custom="cbSupplierCode/SupplierCode"
+                                                suggestionItems="{
+                                                    path: 'oModelData>/suggestedSupplierCodes'
+                                                }">
+                                                <core:Item key="{oModelData>SupplierCode}" text="{oModelData>Display}" />
+                                            </MultiInput>
+                                        </fb:control>
+                                    </fb:FilterItem>        
+                                </fb:filterItems>
+                            </fb:FilterBar>
+                        </f:content>
+                    </f:DynamicPageHeader>
+                </f:header>
+                
+                <f:content>
+               
+                    <VBox >
+                        <VBox >
+                            <VBox id="vbTableMain"  visible="{= ${oModelUser>/sRol}}">
+                            </VBox>
+                            <VBox id="vbDetail2"  visible="{= !${oModelUser>/sRol}}">
+                            </VBox>
+                        </VBox>
+                    </VBox>
+                </f:content>
+                <f:content>
+                
+                </f:content>
+            </f:DynamicPage>
+    </Shell>
+</mvc:View>

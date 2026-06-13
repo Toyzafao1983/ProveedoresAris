@@ -1,0 +1,171 @@
+{
+  "_version": "1.65.0",
+  "sap.app": {
+    "id": "com.aris.proveedores.facturaexterior.pe",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.7.5",
+      "toolsId": "0ced8709-7e86-4956-9d34-7f036b77aa10"
+    },
+    "dataSources": {
+       "S4HANA": {
+        "uri": "/S4HANA/sap/opu/odata/sap/ZSD_PORTAL_PROVEEDORES_SRV/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/metadata.xml",
+          "odataVersion": "2.0"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "display": {
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          },
+          "semanticObject": "MisConformidadesdelExterior",
+          "action": "display",
+          "title": "Registo Facturas Proveedor del Exterior",
+          "subTitle": "",
+          "icon": "sap-icon://globe"
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": false,
+    "dependencies": {
+      "minUI5Version": "1.136.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.f": {},
+        "sap.suite.ui.generic.template": {},
+        "sap.ui.comp": {},
+        "sap.ui.generic.app": {},
+        "sap.ui.table": {},
+        "sap.ushell": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "com.aris.proveedores.facturaexterior.pe.i18n.i18n"
+        }
+      },
+      "oModelUser": {
+        "type": "sap.ui.model.json.JSONModel",
+        "preload": true,
+        "settings": {}
+      },
+      "oModelProyect": {
+        "type": "sap.ui.model.json.JSONModel",
+        "preload": true,
+        "settings": {}
+      },
+      "oModelData": {
+        "type": "sap.ui.model.json.JSONModel",
+        "preload": true,
+        "settings": {}
+      },
+      "oModelEntity": {
+        "dataSource": "S4HANA",
+        "type": "sap.ui.model.odata.v2.ODataModel",
+        "preload": true,
+        "settings": {
+          "useBatch": true,
+          "defaultBindingMode": "TwoWay"
+        }
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "async": true,
+        "viewPath": "com.aris.proveedores.facturaexterior.pe.view",
+        "controlAggregation": "pages",
+        "controlId": "app",
+        "clearControlAggregation": false
+      },
+      "routes": [
+        {
+          "name": "Main",
+          "pattern": ":?query:",
+          "target": [
+            "Main"
+          ]
+        },
+        {
+          "name": "Detail",
+          "pattern": "Detail/:app::?query:",
+          "target": ["Detail"]
+        }
+      ],
+      "targets": {
+        "Main": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "Main",
+          "viewName": "Main"
+        },
+        "Detail": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "Detail",
+          "viewName": "Detail"
+        }
+      }
+    },
+    "rootView": {
+      "viewName": "com.aris.proveedores.facturaexterior.pe.view.App",
+      "type": "XML",
+      "async": true,
+      "id": "App"
+    }
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "com.aris.proveedores.facturaexterior.pe"
+  }
+}

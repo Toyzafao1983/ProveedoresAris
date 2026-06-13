@@ -1,0 +1,107 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form"
+xmlns:u="sap.ui.unified">
+    <ScrollContainer
+        width="100%"
+        height="auto"
+        horizontal="true"
+        vertical="true">
+    <Table items="{oModelProyect>/oReporte}"  mode="SingleSelectMaster" growingThreshold="20" selectionChange=".onSelectItemNota"
+    id="miTablaPrincipal" growingScrollToLoad="false" growing="true"  >
+        <headerToolbar>
+                      <Toolbar>
+    <ToolbarSpacer/>
+   
+</Toolbar>
+        </headerToolbar>
+        <columns>
+
+           <Column width="6rem" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false" visible="{= !${oModelUser>/bAdmin}}">
+                <header>
+                    <Text text="{i18n>titleProbInit}" width="auto" />
+                </header>
+            </Column>
+            <Column width="15rem" hAlign="Left" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false" visible="{= !${oModelUser>/bAdmin}}">
+                <header>
+                    <Text text="{i18n>titleNameProbInit}" width="auto" />
+                </header>
+            </Column>
+            <Column width="8rem" hAlign="End" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleNumberPet}" width="auto" />
+                </header>
+            </Column>
+            <Column width="10rem" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleFechPedido}" width="auto" />
+                </header>
+            </Column>
+            <Column width="5.5rem" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleColState}" width="auto" />
+                </header>
+            </Column>
+            <Column width="8rem" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleNumberOffert}" width="auto" />
+                </header>
+            </Column>
+            <Column width="8rem" hAlign="End" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleFechOfert}" width="auto" />
+                </header>
+            </Column>
+            <Column width="12rem" hAlign="Left" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleColPayCond}" width="auto" />
+                </header>
+            </Column>
+            <Column width="5rem" hAlign="Left" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleColIntercom}" width="auto" />
+                </header>
+            </Column>
+            <Column width="7rem" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleDateAdjuntInit}" width="auto" />
+                </header>
+            </Column>
+           
+            <Column width="5rem" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>txtView}" width="auto" />
+                </header>
+            </Column>
+        </columns>
+       <items>
+            <ColumnListItem type="Inactive" >
+                <cells>
+                    <Text text="{path:'oModelProyect>Supplier'}" visible="{= !${oModelUser>/bAdmin}}"/>
+                    <Text text="{path:'oModelProyect>NameSupplier'}" visible="{= !${oModelUser>/bAdmin}}"/>
+                    <Text text="{path:'oModelProyect>RequestForQuotation'}"/>
+                    <Text text="{path: 'oModelProyect>CreationDate', formatter: '.formatter._formatDateDDMMYYYY'}"/>
+                    <Text text="{path:'oModelProyect>DscStatus'}"/>
+                    <Text text="{path:'oModelProyect>SupplierQuotation'}"/>
+                    <Text text="{path: 'oModelProyect>QuotationDate', formatter: '.formatter._formatDateDDMMYYYY'}"/>
+                    <Text text="{path:'oModelProyect>DescriptionCondition'}"/>
+                    <Text text="{path:'oModelProyect>IncotermsClassification'}"/>
+                        <u:FileUploader
+                        id="fileUploader"
+                        style="Emphasized"
+                        multiple="true"
+                        buttonText="Subir"
+                        name="myFileUpload"
+                        buttonOnly="true"
+                        uploadUrl="upload/"             
+                        icon="sap-icon://upload"
+                        iconOnly="false"
+                        tooltip="Subir Documento"
+                        change=".handleFUChange"         
+                        uploadComplete=".handleUploadComplete" />
+                        
+                    <Button text="{i18n>titleButtonMas}" press="_onPressNavigateDetail"/>
+                </cells>
+            </ColumnListItem>
+        </items>
+    </Table>
+    </ScrollContainer>
+</core:FragmentDefinition>

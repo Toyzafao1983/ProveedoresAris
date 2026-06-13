@@ -1,0 +1,44 @@
+<mvc:View controllerName="com.aris.proveedores.pe.calendario.controller.View"
+   xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:fb="sap.ui.comp.filterbar"
+    xmlns:svm="sap.ui.comp.smartvariants">
+
+    <Shell>
+        <f:DynamicPage headerExpanded="true">
+                <f:title>
+                    <f:DynamicPageTitle>
+                        <f:heading>
+                            <Title level="H1" text="{i18n>title}" 
+                             wrapping="true"/>
+                        </f:heading>
+                        <f:actions>
+                            <Button text="{i18n>textHome}" press="_onbtnHome" type="Back" icon="sap-icon://home" tooltip="{i18n>tooltipbtnHome}"/>
+                            <MenuButton text="{i18n>titleButtonLanguaje}">
+                                    <menu>
+                                        <Menu itemSelected="onMenuAction">
+                                            <MenuItem text="{i18n>titleButtonLanguajeES}" press="onLanguageEsp"/>
+                                            <MenuItem text="{i18n>titleButtonLanguajeEN}" press="onLanguageEng"/>
+                                        </Menu>
+                                    </menu>
+                                </MenuButton>
+
+                        </f:actions>
+                    </f:DynamicPageTitle>
+                </f:title>
+                <f:content>
+               
+                    <VBox >
+                        <VBox >
+                         <VBox id="vbTableMain">
+                        </VBox>
+                        </VBox>
+                    </VBox>
+                
+                </f:content>
+           
+            </f:DynamicPage>
+    </Shell>
+</mvc:View>

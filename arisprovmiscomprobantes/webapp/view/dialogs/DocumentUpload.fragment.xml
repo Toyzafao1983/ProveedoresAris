@@ -1,0 +1,126 @@
+<core:FragmentDefinition 
+xmlns="sap.m" 
+xmlns:l="sap.ui.layout"
+xmlns:f="sap.ui.layout.form"
+xmlns:core="sap.ui.core"
+xmlns:mdc="sap.ui.mdc"
+xmlns:mdct="sap.ui.mdc.table"
+xmlns:upload="sap.m.upload"
+>
+	<Dialog id="IdDocumentUpload" title="{i18n>txtDgAddDocument}" draggable="true" contentWidth="100rem" state="Information" icon="sap-icon://add-document">
+		<content>
+
+			<f:Form id="FormToolbar"
+			editable="true"
+			ariaLabelledBy="Title1">
+			<f:layout>
+				<f:ResponsiveGridLayout
+					labelSpanXL="4"
+					labelSpanL="3"
+					labelSpanM="4"
+					labelSpanS="12"
+					adjustLabelSpan="false"
+					emptySpanXL="0"
+					emptySpanL="4"
+					emptySpanM="0"
+					emptySpanS="0"
+					columnsXL="2"
+					columnsL="1"
+					columnsM="1"
+					singleContainerFullSize="false" />
+			</f:layout>
+			<f:formContainers>
+				<f:FormContainer ariaLabelledBy="Title2">
+					<f:formElements>
+			<f:FormElement label="{i18n>txtDgRuc}">
+				<f:fields>
+					<Input value="{oModelProyect>/inputForm/ruc}" />
+				</f:fields>
+			</f:FormElement>
+
+			<f:FormElement label="{i18n>txtDgReceiptReceiver}">
+				<f:fields>
+					<ComboBox selectedKey="{oModelProyect>/inputForm/receptor}" />
+				</f:fields>
+			</f:FormElement>
+
+			<f:FormElement label="{i18n>txtDgVoucher}">
+				<f:fields>
+					<ComboBox placeholder="{i18n>txtDgTypeDocument}" selectedKey="{oModelProyect>/inputForm/tipoDocumento}" />
+					<Input value="{oModelProyect>/inputForm/serie}" placeholder="Serie"/>
+					<Input value="{oModelProyect>/inputForm/correlativo}" placeholder="Correlativo"/>
+				</f:fields>
+			</f:FormElement>
+
+			<f:FormElement label="{i18n>txtDgDateEmission}">
+				<f:fields>
+					<DatePicker displayFormat="dd/MM/yyyy" valueFormat="dd/MM/yyyy" value="{oModelProyect>/inputForm/fechaEmision}" />
+				</f:fields>
+			</f:FormElement>
+
+			<f:FormElement label="{i18n>txtDgMoney}">
+				<f:fields>
+					<Input value="{oModelProyect>/inputForm/moneda}" type="Text"/>
+				</f:fields>
+			</f:FormElement>
+
+			<f:FormElement label="{i18n>txtDgSubTotal}">
+				<f:fields>
+					<Input value="{oModelProyect>/inputForm/subTotal}" type="Number"/>
+				</f:fields>
+			</f:FormElement>
+
+			<f:FormElement label="{i18n>txtDgTax}">
+				<f:fields>
+					<Input value="{oModelProyect>/inputForm/impuesto}" type="Number"/>
+				</f:fields>
+			</f:FormElement>
+
+			<f:FormElement label="{i18n>txtDgTotal}">
+				<f:fields>
+					<Input value="{oModelProyect>/inputForm/total}" type="Number"/>
+				</f:fields>
+			</f:FormElement>
+                        
+					</f:formElements>
+				</f:FormContainer>
+			</f:formContainers>
+		</f:Form>
+  <UploadCollection
+		id="UploadCollection"
+		items="{oModelProyect>/documentos}"
+		noDataText="{i18n>txtDgAttachProof}"
+		numberOfAttachmentsText="{= 'Archivo (' + ${oModelProyect>/documentos}.length + ')'}"
+		maximumFilenameLength="{settings>/maximumFilenameLength}"
+		maximumFileSize="{settings>/maximumFileSize}"
+		multiple="false"
+		showSeparators="{settings>/showSeparators}"
+		uploadEnabled="{settings>/uploadEnabled}"
+		uploadButtonInvisible="false"
+		mode="{settings>/mode}"
+		change=".onChange"
+		fileDeleted=".onFileDeleted"
+		uploadComplete=".onUploadComplete">
+
+		<items>
+			<UploadCollectionItem
+				documentId="{oModelProyect>fileName}"
+				fileName="{oModelProyect>fileName}"
+				mimeType="{oModelProyect>mimeType}"
+				fileSize="{oModelProyect>fileSize}"
+				url="{oModelProyect>url}"
+				visibleDelete="true"
+				visibleEdit="false"/>
+		</items>
+	</UploadCollection>
+
+			</content>
+			<beginButton>
+				<Button type="Emphasized" icon="sap-icon://save" text="Guardar" press=".onGuardar"/>
+			</beginButton>
+			<endButton>
+				<Button type="Transparent" icon="sap-icon://decline" text="Cerrar" press="_onPressClose"/>
+			</endButton>
+			
+		</Dialog>
+	</core:FragmentDefinition>

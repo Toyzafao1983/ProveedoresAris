@@ -1,0 +1,16 @@
+/* Enter your custom styles here */
+.objStatusInfoLabel {
+    display: inline-block;
+    padding: 0.1rem 0.4rem;
+    border-radius: 999px;           
+    background-color: #e5f2fd;      
+}
+.objStatusInfoLabel .sapMObjStatusText {
+    font-size: 0.75rem;            
+    font-weight: 600;              
+    color: #0b74de;                 
+}
+.objStatusInfoLabel .sapMObjStatusIcon {
+    font-size: 0.75rem;
+    margin-right: 0.25rem;
+}

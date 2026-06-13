@@ -1,0 +1,10 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:mdc="sap.ui.mdc">
+      <FlexBox wrap="Wrap" justifyContent="Start" alignItems="Start" items="{oModelData>/Meses}">
+        <VBox class="mesCard">
+            <Label text="{oModelData>Mes}" class="mesHeader" width="100%"/>
+            <l:Grid defaultSpan="L6 M6 S6" class="mesBody" content="{oModelData>Fechas}">
+                <Text text="{oModelData>}"/>
+            </l:Grid>
+        </VBox>
+    </FlexBox>
+</core:FragmentDefinition>

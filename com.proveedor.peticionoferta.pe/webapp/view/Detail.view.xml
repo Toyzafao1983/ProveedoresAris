@@ -1,0 +1,336 @@
+<mvc:View controllerName="com.proveedor.peticionoferta.pe.controller.Detail"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:fb="sap.ui.comp.filterbar"
+    xmlns:svm="sap.ui.comp.smartvariants"
+    xmlns:ux="sap.uxap"
+    xmlns:m="sap.m"
+    xmlns:form="sap.ui.layout.form">
+    <Shell>
+
+    	<ux:ObjectPageLayout id="ObjectPageLayout"
+					 showTitleInHeaderContent="true"
+					alwaysShowContentHeader="false"
+					preserveHeaderStateOnScroll="false"
+					headerContentPinnable="true"
+					isChildPage="true"
+					upperCaseAnchorBar="false">
+				<ux:headerTitle>
+					<ux:ObjectPageDynamicHeaderTitle>
+						<ux:expandedHeading>
+							<m:Title text="{oModelProyect>/oClientCabecera/Supplier}" wrapping="true" class="sapUiSmallMarginEnd"/>
+						</ux:expandedHeading>
+
+						<ux:snappedHeading>
+							<m:FlexBox wrap="Wrap" fitContainer="true" alignItems="Center">
+								<m:FlexBox wrap="NoWrap" fitContainer="true" alignItems="Center" class="sapUiTinyMarginEnd">
+									<m:Avatar src="sap-icon://sales-order" displaySize="S" displayShape="Square"/>
+									<m:Title text="{products>Name}" wrapping="true" class="sapUiTinyMarginEnd"/>
+								</m:FlexBox>
+							</m:FlexBox>
+						</ux:snappedHeading>
+
+						<ux:navigationActions>
+							<Button text="{i18n>textbtnBackTo}" icon="sap-icon://nav-back" press="_onPressNavButtonDetail"/>
+						</ux:navigationActions>
+					</ux:ObjectPageDynamicHeaderTitle>
+				</ux:headerTitle>
+
+				<ux:headerContent>
+					<m:FlexBox wrap="Wrap" fitContainer="true" alignItems="Stretch">
+					<m:VBox>
+					<m:HBox>
+						<m:Avatar src="sap-icon://sales-order"
+								  displaySize="L"
+								  displayShape="Square"
+								  class="sapUiTinyMarginEnd">
+						</m:Avatar>
+						<m:VBox justifyContent="Center" class="sapUiMediumMarginEnd">
+							<m:Label text="{i18n>txtNumberPet}"/>
+							<m:Text text="{oModelProyect>/oClientCabecera/RequestForQuotation}"/>
+						</m:VBox>
+						<m:VBox justifyContent="Center" class="sapUiMediumMarginEnd">
+							<m:Label text="{i18n>txtEstado}"/>
+							<m:Text text="{oModelProyect>/oClientCabecera/DscStatus}"/>
+						</m:VBox>
+						<m:VBox justifyContent="Center" class="sapUiMediumMarginEnd">
+							<m:Label text="{i18n>txtCondInit}"/>
+							<m:ObjectNumber number="{oModelProyect>/oClientCabecera/DescriptionCondition}" emphasized="false"/>
+						</m:VBox>
+						<m:VBox justifyContent="Center" class="sapUiMediumMarginEnd">
+							<m:Label text="{i18n>txtOffert}"/>
+							<m:ObjectNumber number="{oModelProyect>/oClientCabecera/SupplierQuotation}" emphasized="false"/>
+						</m:VBox>
+						</m:HBox>
+						<m:VBox width="100%"
+						justifyContent="End"
+						alignItems="End" >
+						<m:HBox  width="100%"
+						justifyContent="End"
+						alignItems="End">
+						<Button
+							text="{i18n>txtButtonExecutePet}"
+							icon="sap-icon://accept"
+							type="Emphasized"
+							press="onExecutePetition"
+							class="sapUiMediumMarginEnd"
+							visible="{= (${oModelProyect>/oClientCabecera/SupplierQuotation} || ${oModelProyect>/oCabecera/SupplierQuotation}) ? false : true }"/>
+						</m:HBox>
+						</m:VBox>
+						</m:VBox>
+					</m:FlexBox>
+
+				</ux:headerContent>
+		<ux:sections>
+			<ux:ObjectPageSection title="{i18n>txtInformationPet}" >
+				<ux:subSections>
+					<ux:ObjectPageSubSection>
+						<ux:blocks>
+							<form:SimpleForm
+								maxContainerCols="2"
+								editable="false"
+								layout="ResponsiveGridLayout"
+								labelSpanL="12"
+								labelSpanM="12"
+								emptySpanL="0"
+								emptySpanM="0"
+								columnsL="1"
+								columnsM="1">
+								<form:content>
+									<m:Label text="{i18n>txtProbInit}"/>
+									<m:Text text="{oModelProyect>/oClientCabecera/NameSupplier}"/>
+									<m:Label text="{i18n>textObservation}"/>
+									<m:VBox>
+										<m:TextArea
+											value="{oModelProyect>/oClientCabecera/NotaEdit}"
+											editable="{oModelProyect>/oClientCabecera/_notaEditable}"
+											rows="4"
+											width="100%"/>
+										<m:HBox class="sapUiTinyMarginTop">
+											<Button text="Editar nota" press=".onNotaCabeceraEditPress"/>
+											<Button text="Guardar nota" press=".onNotaCabeceraSavePress"/>
+										</m:HBox>
+									</m:VBox>
+									<m:Text text="{products>Description}"/>
+									<m:Label text="{i18n>txtCondPago}"/>
+									<m:Text text="{oModelProyect>/oClientCabecera/DescriptionCondition}"/>
+								</form:content>
+							</form:SimpleForm>
+						</ux:blocks>
+					</ux:ObjectPageSubSection>
+				</ux:subSections>
+			</ux:ObjectPageSection>
+
+			<ux:ObjectPageSection title="{i18n>textDescrip}">
+				<ux:subSections>
+					<ux:ObjectPageSubSection>
+						<ux:blocks>
+						<ScrollContainer
+							width="100%"
+							height="auto"
+							horizontal="true"
+							vertical="true">
+							<m:Table
+								items="{oModelProyect>/oDetalle}"  growingThreshold="20"
+								id="TableDetail"
+								width="150%">
+								<m:headerToolbar>
+								<OverflowToolbar>
+									<!-- 👈 Empuja todo lo que sigue hacia la derecha -->
+									<ToolbarSpacer/>
+									<!-- Separador visual entre notas y petición -->
+									<ToolbarSeparator/>
+
+									<!-- Botones de PETICIÓN -->
+									<Button text="Guardar" 
+											press=".onGuardar" 
+											icon="sap-icon://save" 
+											type="Emphasized"/>
+
+									<Button text="Editar" 
+											press=".onEditar" 
+											icon="sap-icon://edit"/>
+								</OverflowToolbar>
+								</m:headerToolbar>
+								<columns>
+								<Column width="5.5rem" hAlign="End" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+											<header>
+											<Text text="{i18n>txtProductId}" width="auto" />
+											</header>
+									</Column>
+
+									<Column width="5.5rem" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+											<header>
+											<Text text="{i18n>textMaterial}" width="auto" />
+											</header>
+									</Column>
+									<Column width="7.5rem" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+											<header>
+											<Text text="{i18n>textDescripComple}" width="auto" />
+											</header>
+									</Column>
+									<Column width="7rem" hAlign="End" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+											<header>
+											<Text text="{i18n>textCantiPed}" width="auto" />
+											</header>
+									</Column>
+									<Column width="7rem" hAlign="End" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+											<header>
+											<Text text="{i18n>textCantCotizada}" width="auto" />
+											</header>
+									</Column>
+									<Column width="3.5rem" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+											<header>
+											<Text text="{i18n>textUniMedi}" width="auto" />
+											</header>
+									</Column>
+									<Column width="5.5rem" hAlign="End" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+											<header>
+											<Text text="{i18n>textPreciUni}" width="auto" />
+											</header>
+									</Column>
+									<Column width="4.5rem" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+											<header>
+											<Text text="{i18n>textMoneda}" width="auto" />
+											</header>
+									</Column>
+									<Column width="4rem" hAlign="End" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+											<header>
+											<Text text="{i18n>txtDiscountPercentage}" width="auto" />
+											</header>
+									</Column>
+									<Column width="5.5rem" hAlign="End" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+											<header>
+											<Text text="{i18n>txtSubTotal}" width="auto" />
+											</header>
+									</Column>
+									<Column width="9rem" hAlign="End" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+											<header>
+											<Text text="Fech.Entrega" width="auto" />
+											</header>
+									</Column>
+									<Column width="12rem" hAlign="Left" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+											<header>
+											<Text text="{i18n>textObservation}" width="auto" />
+											</header>
+									</Column>
+								</columns>
+								<m:items>
+									<m:ColumnListItem type="Inactive">
+										<cells>
+										<Input value="{oModelProyect>RequestForQuotation}" editable="false" textAlign="End" />
+										<Input value="{oModelProyect>Material}" editable="false" textAlign="End"/>
+										<Text text="{oModelProyect>MaterialDescription}" wrapping="true"/>
+										<Input
+											value="{
+												path: 'oModelProyect>ScheduleLineOrderQuantity',
+												type: 'sap.ui.model.type.Float',
+												formatOptions: {
+													minFractionDigits: 2,
+													maxFractionDigits: 2,
+													groupingEnabled: true
+												}
+											}"
+											editable="false"
+											textAlign="End"/>
+										<Input
+											value="{
+												path: 'oModelProyect>cantCotizada',
+												type: 'sap.ui.model.type.Float',
+												formatOptions: {
+													minFractionDigits: 2,
+													maxFractionDigits: 2,
+													groupingEnabled: true
+												}
+											}"
+											editable="{= ${oModelProyect>/bEditMode} 
+													? ( ${oModelProyect>/oCabecera/QtnStatus} === '01' 
+														? true 
+														: !${oModelProyect>/oCabecera/QtnStatus} 
+															? true 
+															: false )
+													: false }"
+											liveChange=".onLiveCalculate"
+											textAlign="End"/>
+										<Input value="{oModelProyect>OrderQuantityUnit}" editable="false" textAlign="Center"/>
+										<Input
+											value="{
+												path: 'oModelProyect>priceUnit',
+												type: 'sap.ui.model.type.Float',
+												formatOptions: {
+													minFractionDigits: 2,
+													maxFractionDigits: 2,
+													groupingEnabled: true
+												}
+											}"
+											editable="{= ${oModelProyect>/bEditMode} 
+													? ( ${oModelProyect>/oCabecera/QtnStatus} === '01' 
+														? true 
+														: !${oModelProyect>/oCabecera/QtnStatus} 
+															? true 
+															: false )
+													: false }"
+											liveChange=".onLiveCalculate"
+											textAlign="End"/>
+										<Input value="{oModelProyect>DocumentCurrency}" editable="false" textAlign="Center"/>
+										<Input value="{
+													path: 'oModelProyect>Discount',
+													formatter: '.formatPositive'
+												}" 
+											editable="{= ${oModelProyect>/bEditMode} 
+													? ( ${oModelProyect>/oCabecera/QtnStatus} === '01' 
+														? true 
+														: !${oModelProyect>/oCabecera/QtnStatus} 
+															? true 
+															: false )
+													: false }"
+											liveChange=".onLiveCalculateInteger" textAlign="End"/>
+										<Input
+											value="{
+												path: 'oModelProyect>SubTotal',
+												type: 'sap.ui.model.type.Float',
+												formatOptions: {
+													minFractionDigits: 2,
+													maxFractionDigits: 2,
+													groupingEnabled: true
+												}
+											}"
+											editable="false"
+											liveChange=".onLiveCalculate"
+											textAlign="End"/>
+										 <DatePicker id="dtFechaEntrega"
+											value="{oModelProyect>FechaEntrega}"
+											valueFormat="dd/MM/yyyy"
+											displayFormat="dd/MM/yyyy"
+											editable="{= ${oModelProyect>/bEditMode} 
+												? ( ${oModelProyect>/oCabecera/QtnStatus} === '01' 
+													? true 
+													: !${oModelProyect>/oCabecera/QtnStatus} 
+														? true 
+														: false )
+												: false }" textAlign="End"/>
+											<TextArea
+												value="{oModelProyect>ItemNotaEdit}"
+												editable="{oModelProyect>_notaItemEditable}"
+												maxLength="1320" 
+												rows="3"
+												width="100%"
+												growing="true"
+												growingMaxLines="8"/>
+										</cells>
+									</m:ColumnListItem>
+								</m:items>
+							</m:Table>
+						</ScrollContainer>
+						</ux:blocks>
+					</ux:ObjectPageSubSection>
+				</ux:subSections>
+			</ux:ObjectPageSection>
+		</ux:sections>
+	</ux:ObjectPageLayout>
+	
+  
+    </Shell>
+	
+</mvc:View>

@@ -1,0 +1,14 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+    <Dialog title="Editar Petición" stretchOnPhone="true">
+        <VBox class="sapUiSmallMargin">
+            <Label text="Condiciones " />
+            <Input value="{oModelProyect>txt4}"  id="inputCondInit"/>
+        </VBox>
+        <beginButton>
+            <Button text="Aceptar" type="Emphasized" press="_onEditPeticionConfirm"/>
+        </beginButton>
+        <endButton>
+            <Button text="Cancelar" press="_onCloseEditDialog"/>
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>

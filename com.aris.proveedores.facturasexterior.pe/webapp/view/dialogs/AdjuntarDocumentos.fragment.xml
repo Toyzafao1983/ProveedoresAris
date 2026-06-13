@@ -1,0 +1,94 @@
+<core:FragmentDefinition 
+xmlns="sap.m" 
+xmlns:l="sap.ui.layout"
+xmlns:f="sap.ui.layout.form"
+xmlns:core="sap.ui.core"
+xmlns:mdc="sap.ui.mdc"
+xmlns:mdct="sap.ui.mdc.table"
+xmlns:upload="sap.m.upload"
+xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+	<Dialog id="IdDocumentUpload" title="{i18n>txtDgAddDocument}" draggable="true" contentWidth="50rem" state="Information" icon="sap-icon://add-document">
+		<content>
+
+			<f:Form id="FormToolbar"
+			editable="true"
+			ariaLabelledBy="Title1">
+			<f:layout>
+				<f:ResponsiveGridLayout
+					labelSpanXL="4"
+					labelSpanL="3"
+					labelSpanM="4"
+					labelSpanS="12"
+					adjustLabelSpan="false"
+					emptySpanXL="0"
+					emptySpanL="4"
+					emptySpanM="0"
+					emptySpanS="0"
+					columnsXL="2"
+					columnsL="1"
+					columnsM="1"
+					singleContainerFullSize="false" />
+			</f:layout>
+			<f:formContainers>
+				<f:FormContainer ariaLabelledBy="Title2">
+					<f:formElements>
+			<f:FormElement label="{i18n>txtDgReceiptReceiver}">
+				<f:fields>
+				<ComboBox
+					id="sAdjuntarDatos"
+					width="250px"
+					tooltip="{i18n>tooltipinp}"
+					items="{
+						path: 'oModelData>/oAdjuntDat',
+						sorter: { path: 'nKey', descending: false }
+					}"
+					change=".onChangeTipoAdjunto">
+					<core:Item
+						key="{oModelData>sKey}"
+						text="{= ${oModelData>sKey} + ' - ' + ${oModelData>sText} }" />
+				</ComboBox>
+				</f:fields>
+			</f:FormElement>
+                 
+					</f:formElements>
+				</f:FormContainer>
+			</f:formContainers>
+		</f:Form>
+		<UploadCollection
+			id="UploadCollection"
+			items="{oModelProyect>/documentos}"
+			noDataText="{i18n>txtDgAttachProof}"
+			numberOfAttachmentsText="{= 'Archivo (' + ${oModelProyect>/documentos}.length + ')'}"
+			maximumFilenameLength="{settings>/maximumFilenameLength}"
+			maximumFileSize="{settings>/maximumFileSize}"
+			multiple="false"
+			showSeparators="{settings>/showSeparators}"
+			uploadEnabled="{oModelProyect>/oCabecera/bFormEditable}"
+			uploadButtonInvisible="{= !${oModelProyect>/oCabecera/bFormEditable} }"
+			mode="SingleSelectMaster"
+			selectionChange=".onDocSelectionChange"
+			change=".onChange"
+			fileDeleted=".onFileDeleted"
+			uploadComplete=".onUploadComplete">
+
+			<items>
+				<UploadCollectionItem
+					documentId="{oModelProyect>fileName}"
+					fileName="{oModelProyect>fileName}"
+					mimeType="{oModelProyect>mimeType}"
+					fileSize="{oModelProyect>fileSize}"
+					url="{oModelProyect>url}"
+					visibleDelete="{oModelProyect>/oCabecera/bFormEditable}"
+					visibleEdit="false"/>
+			</items>
+		</UploadCollection>
+			</content>
+			<beginButton>
+				<Button type="Emphasized" icon="sap-icon://save" text="{i18n>saveText}" press=".onGuardar" enabled="{oModelProyect>/oCabecera/bFormEditable}"/>
+			</beginButton>
+			<endButton>
+				<Button type="Transparent" icon="sap-icon://decline" text="{i18n>closeText}" press="_onPressClose"/>
+			</endButton>
+			
+		</Dialog>
+	</core:FragmentDefinition>

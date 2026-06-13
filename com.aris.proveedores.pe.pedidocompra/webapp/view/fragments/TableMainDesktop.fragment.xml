@@ -1,0 +1,105 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:mdc="sap.ui.mdc">
+    <ScrollContainer width="100%" height="50%">
+    <Table items="{oModelProyect>/oReporte}"  mode="None" growingThreshold="20" autoPopinMode="false" growing="true" sticky="ColumnHeaders,HeaderToolbar" popinLayout="GridSmall"  >
+        <headerToolbar>
+            <Toolbar>
+            <ToolbarSpacer/>
+                <Button id="btnExpRespaldo" text="{i18n>textbtnExpRespaldo}" type="Accept" icon="sap-icon://excel-attachment" press="_onPressExportRespaldo"/>
+            </Toolbar>
+        </headerToolbar>
+        <columns>
+            <Column width="100px" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false" visible="{= ${oModelUser>/bAdmin}}">
+                <header>
+                    <Text text="{i18n>titleProveedor}" width="auto" />
+                </header>
+            </Column>
+            <Column width="100px" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titlePedidoCompra}" width="auto" />
+                </header>
+            </Column>
+            <Column width="100px" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleFechPedido}" width="auto" />
+                </header>
+            </Column>
+            <Column width="80px" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleEstado}" width="auto" />
+                </header>
+            </Column>
+            <Column width="100px" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleFactuacion}" width="auto" />
+                </header>
+            </Column>
+            <Column width="100px" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleImportPedCompra}" width="auto" />
+                </header>
+            </Column>
+            <Column width="100px" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleMoneda}" width="auto" />
+                </header>
+            </Column>
+            <Column width="100px" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleImportEntregado}" width="auto" />
+                </header>
+            </Column>
+            <Column width="100px" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleImportFacturado}" width="auto" />
+                </header>
+            </Column>
+            <Column width="80px" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleCondPago}" width="auto" />
+                </header>
+            </Column>
+            <Column width="80px" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleIncoterm}" width="auto" />
+                </header>
+            </Column>
+            <Column width="85px" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleModalidad}" width="auto" />
+                </header>
+            </Column>
+            <Column width="200px" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleFechEntrega}" width="auto" />
+                </header>
+            </Column>
+            <Column width="90px" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleButtonDetail}" width="auto" />
+                </header>
+            </Column>
+            
+        </columns>
+       <items>
+            <ColumnListItem type="Inactive">
+                <cells>
+                <Text text="{oModelProyect>Bpname}" visible="{= ${oModelUser>/bAdmin}}"/>
+                <Text text="{oModelProyect>Ebeln}"/>
+                <Text text="{oModelProyect>Fecpedido}"/>
+                <Text text="{oModelProyect>StatusDisplay}"/>
+                <Text text="{oModelProyect>FacturationDisplay}"/>
+                <Text text="{oModelProyect>Immecom}"/>
+                <Text text="{oModelProyect>Waers}"/>
+                <Text text="{oModelProyect>Iment}"/>
+                <Text text="{oModelProyect>Imfac}"/>
+                <Text text="{oModelProyect>ConpagDisplay}"/>
+                <Text text="{oModelProyect>Inco1}"/>
+                <Text text="{oModelProyect>ModalidadDisplay}"/>
+                <Text text="{oModelProyect>Fecentrega}"/>
+                <Button text="{i18n>titleButtonDetail}" press="_onPressNavigateDetail"/>
+                </cells>
+            </ColumnListItem>
+        </items>
+    </Table>
+    </ScrollContainer>
+</core:FragmentDefinition>

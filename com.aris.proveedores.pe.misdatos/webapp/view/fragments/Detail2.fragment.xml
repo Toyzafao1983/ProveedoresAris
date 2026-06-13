@@ -1,0 +1,115 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:mdc="sap.ui.mdc">
+    <Shell >
+       <HBox items="{oModelProyect>/oDetalle}" width="auto">
+                    <items>
+                        <IconTabBar expanded="{device>/isNoPhone}" class="sapUiResponsiveContentPadding">
+                            <items>
+                                <!-- Información General -->
+                                <IconTabFilter icon="sap-icon://information" text="{i18n>barInfoGeneral}" design="Horizontal">
+                                <Table inset="false" showSeparators="None" width="100%">
+                                    <columns>
+                                        <Column hAlign="Begin"><Text text="Campo"/></Column>
+                                        <Column hAlign="Begin"><Text text="Valor"/></Column>
+                                    </columns>
+                                    <items>
+                                        <ColumnListItem>
+                                            <cells>
+                                                <Text text="{i18n>ExName}"/>
+                                                <Text text="{oModelProyect>SupplierName}"/>
+                                            </cells>
+                                        </ColumnListItem>
+                                        <ColumnListItem>
+                                            <cells>
+                                                <Text text="{i18n>ExRUC}"/>
+                                                <Text text="{oModelProyect>TaxID}"/>
+                                            </cells>
+                                        </ColumnListItem>
+                                        <ColumnListItem>
+                                            <cells>
+                                                <Text text="{i18n>ExCodSap}"/>
+                                                <Text text="{oModelProyect>SupplierCode}"/>
+                                            </cells>
+                                        </ColumnListItem>
+                                        <ColumnListItem>
+                                            <cells>
+                                                <Text text="{i18n>ExAdress1}"/>
+                                                <Text text="{oModelProyect>to_Address/results/0/Street}, {oModelProyect>to_Address/results/0/City}"/>
+                                            </cells>
+                                        </ColumnListItem>
+                                    </items>
+                                </Table>
+                            </IconTabFilter>
+
+                                <!-- Información Bancaria -->
+                                <IconTabFilter icon="sap-icon://loan" text="{i18n>barInfoBank}" design="Horizontal">
+                                    <Table items="{oModelProyect>to_BankAccounts/results}" inset="false" showSeparators="All">
+                                        <columns>
+                                            <Column><Text text="{i18n>ExtxtBanks}"/></Column>
+                                            <Column><Text text="{i18n>ExtxtHowManyBanks}"/></Column>
+                                            <Column visible="{oModelProyect>/ui/hasBankKeyColumn}">
+                                                    <Text text="{i18n>ExtxtBanksPass}"/>
+                                                </Column>
+
+                                                <!-- Columna IBAN -->
+                                                <Column visible="{oModelProyect>/ui/hasIBANColumn}">
+                                                    <Text text="{i18n>ExtxtIBAN}"/>
+                                                </Column>
+                                        </columns>
+                                        <items>
+                                            <ColumnListItem >
+                                                <cells>
+                                                    <Text text="{oModelProyect>BankName}"/>
+                                                    <Text text="{oModelProyect>BankAccount}"/>
+                                                     <Text
+                                                            text="{oModelProyect>BankKey}"
+                                                            visible="{oModelProyect>/ui/hasBankKeyColumn}"/>
+
+                                                        <Text
+                                                            text="{oModelProyect>IBAN}"
+                                                            visible="{oModelProyect>/ui/hasIBANColumn}"/>
+                                                </cells>
+                                            </ColumnListItem>
+                                        </items>
+                                    </Table>
+                                </IconTabFilter>
+
+                                <!-- Información de Contacto -->
+                                <IconTabFilter icon="sap-icon://group" text="{i18n>barInfoContac}" design="Horizontal">
+                                    <VBox class="sapUiSmallMargin">
+                                        <Title text="Contactos" level="H3"/>
+                                        <Table items="{oModelProyect>to_Contacts/results}" inset="false" showSeparators="All">
+                                            <columns>
+                                                <Column><Text text="{i18n>ExNameContactPerson}"/></Column>
+                                                <Column><Text text="{i18n>ExEmailContactPerson}"/></Column>
+                                            </columns>
+                                            <items>
+                                                <ColumnListItem>
+                                                    <cells>
+                                                        <Text text="{oModelProyect>ContactPerson}"/>
+                                                        <Text text="{oModelProyect>PhoneNumber}" />
+                                                    </cells>
+                                                </ColumnListItem>
+                                            </items>
+                                        </Table>
+
+                                        <Title text="Correos Electrónicos" level="H3" class="sapUiSmallMarginTop"/>
+                                        <Table items="{oModelProyect>to_Emails/results}" inset="false" showSeparators="All">
+                                            <columns>
+                                                <Column><Text text="{i18n>ExPhoneContactPerson}"/></Column>
+                                            </columns>
+                                            <items>
+                                                <ColumnListItem>
+                                                    <cells>
+                                                        <Text text="{oModelProyect>Email}"/>
+                                                    </cells>
+                                                </ColumnListItem>
+                                            </items>
+                                        </Table>
+                                    </VBox>
+                                </IconTabFilter>
+                            </items>
+                        </IconTabBar>
+                    </items>
+                </HBox>
+    </Shell>
+</core:FragmentDefinition>

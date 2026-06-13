@@ -1,0 +1,63 @@
+<core:FragmentDefinition
+  xmlns:core="sap.ui.core"
+  xmlns="sap.m"
+  xmlns:vh="sap.ui.comp.valuehelpdialog"
+  xmlns:fb="sap.ui.comp.filterbar">
+
+  <!-- ValueHelpDialog: Proveedor -->
+  <vh:ValueHelpDialog
+      id="IdFilterInit2"
+      title="{i18n>FiltitleProveedor}"
+      supportMultiselect="true"
+      key="TaxID"                
+      descriptionKey="SupplierName"
+      ok="onVHDSupplierOk"
+      cancel="onVHDSupplierCancel">
+
+    <!-- FilterBar con búsqueda básica -->
+    <vh:filterBar>
+      <fb:FilterBar
+          id="vhdSupplierFB"
+          advancedMode="false"
+          filterBarExpanded="false"
+          search="onVHDSupplierSearch">
+          <SearchField id="vhdSupplierSearch"
+                       width="100%"
+                       placeholder="{i18n>Buscar}" />
+      </fb:FilterBar>
+    </vh:filterBar>
+
+
+ 
+      <Table id="vhdSupplierTbl"
+             mode="MultiSelect"
+             width="100%"
+             growing="true"
+             growingScrollToLoad="true"
+             items="{
+               path: '{oModelProyect>/oFiltros}',             
+               parameters: { $select: 'TaxID,SupplierName', $top: 100 }
+             }">
+
+        <columns>
+          <Column>
+            <header><Label text="RUC"/></header>
+          </Column>
+          <Column>
+            <header><Label text="Proveedor"/></header>
+          </Column>
+        </columns>
+
+        <items>
+          <ColumnListItem>
+            <cells>
+              <Text text="{path:'oModelProyect>TaxID'}"/>
+              <Text text="{path:'oModelProyect>SupplierName'}"/>
+            </cells>
+          </ColumnListItem>
+        </items>
+      </Table>
+   
+
+  </vh:ValueHelpDialog>
+</core:FragmentDefinition>

@@ -1,0 +1,90 @@
+<core:FragmentDefinition 
+xmlns="sap.m" 
+xmlns:core="sap.ui.core" 
+xmlns:mvc="sap.ui.core.mvc"
+xmlns:l="sap.ui.layout" 
+xmlns:f="sap.ui.layout.form"
+xmlns:tnt="sap.tnt">
+
+ <ScrollContainer
+    id="scMainDesktop"
+    height="100%"
+    width="100%"
+    horizontal="true"
+    vertical="true"
+    focusable="true">
+
+        <Table
+            id="TableMainDesktop"
+            items="{oModelProyect>/oReporte}"
+            mode="MultiSelect"
+            growing="true"
+            growingScrollToLoad="false"
+            growingThreshold="20"
+            growingTriggerText="Ver más"
+        >
+            <headerToolbar>
+                <Toolbar>
+                    <ToolbarSpacer/>
+                    <!-- <Button text="{i18n>textbtnPrueba}" press="_onPressPrueba" type="Critical" icon="sap-icon://pdf-attachment" tooltip="{i18n>textbtnDelivery}"/> -->
+                </Toolbar>
+            </headerToolbar>
+            <columns>
+                <Column minScreenWidth="Tablet" demandPopin="true" width="6rem" hAlign="Center">
+                    <Text text="{i18n>titleColSupplier}"/>
+                </Column>
+                <Column minScreenWidth="Tablet" demandPopin="true" width="5.5rem" hAlign="Center">
+                    <Text text="{i18n>titleColEjercicio}"/>
+                </Column>
+                <Column minScreenWidth="Tablet" demandPopin="true" width="7.5rem" hAlign="Center">
+                    <Text text="{i18n>titleColRazonSocial}"/>
+                </Column>
+                <Column minScreenWidth="Tablet" demandPopin="true" width="6rem" hAlign="Center" >
+                    <Text text="{i18n>titleColOrdenCompra}"/>
+                </Column>
+                <Column minScreenWidth="Tablet" demandPopin="true" width="10.5rem" hAlign="Center" >
+                    <Text text="{i18n>titleColCondicionPago}"/>
+                </Column>
+                <Column minScreenWidth="Tablet" demandPopin="true" width="8.5rem" hAlign="Center">
+                    <Text text="{i18n>titleColComprobanteAsociado}"/>
+                </Column>
+                <Column minScreenWidth="Tablet" demandPopin="true" width="6rem" hAlign="Center">
+                    <Text text="{i18n>titleColMontoTotal}"/>
+                </Column>
+                <Column minScreenWidth="Tablet" demandPopin="true" width="4.3rem" hAlign="Center">
+                    <Text text="{i18n>titleColMoney}"/>
+                </Column>
+                <Column minScreenWidth="Tablet" demandPopin="true" hAlign="Center" width="6rem">
+                    <Text text="{i18n>titleColEstado}"/>
+                </Column>
+                <!-- <Column minScreenWidth="Tablet" demandPopin="true" width="5.5rem"  hAlign="Center">
+                    <Text text="{i18n>titleColFechaCarga}"/>
+                </Column> -->
+                <Column minScreenWidth="Tablet" demandPopin="true" width="6.5rem"  hAlign="Center">
+                    <Text text="{i18n>titleColIdSap}"/>
+                </Column>
+            </columns>
+
+            <items>
+                <ColumnListItem vAlign="Middle" type="Inactive">
+                    <cells>
+                        <!-- InfoLabel con texto y color desde el modelo -->
+                        <Text text="{oModelProyect>PROVEEDOR}" />
+                        <Text text="{path:'oModelProyect>EJERCICIO', formatter:'.onGetAbapFormatDate'}"  />
+                        <Text text="{oModelProyect>RAZONSOCIAL}" />
+                        <Text text="{oModelProyect>ORDENCOMPRA}" />
+                        <Text text="{oModelProyect>DscCondpago}" />
+                        <Text text="{oModelProyect>FACTURAASOCIADA}" />
+                        <Text text="{path:'oModelProyect>MONTOTOTAL', formatter:'.formatTwoDecimalsMonto'}" />
+                        <!-- ObjectNumber dinámico -->
+                        <ObjectNumber number="{oModelProyect>MONEDA}"  state="Success" />
+                        <Text text="{oModelProyect>ESTADO_SISTEM}" />
+                        <!-- <Text text="{path:'oModelProyect>FECHACARGA', formatter:'.onGetAbapFormatDate'}" /> -->
+                        <Button text="{oModelProyect>IdSap}"  press="onPressIdSap" type="Transparent"/>
+
+                    </cells>
+                </ColumnListItem>
+            </items>
+        </Table>
+    </ScrollContainer>
+</core:FragmentDefinition>

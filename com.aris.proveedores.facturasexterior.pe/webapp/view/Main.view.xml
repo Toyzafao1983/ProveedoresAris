@@ -1,0 +1,180 @@
+<mvc:View controllerName="com.aris.proveedores.facturaexterior.pe.controller.Main"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:fb="sap.ui.comp.filterbar"
+    xmlns:svm="sap.ui.comp.smartvariants"
+    xmlns:tnt="sap.tnt"
+    xmlns:core="sap.ui.core"
+    xmlns:formatter="com.aris.proveedores.facturaexterior.pe.model.formatter"
+    xmlns:u="sap.ui.unified"
+    xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+    <Shell>
+        <f:DynamicPage headerExpanded="true" showFooter="true">
+            <f:title>
+                <f:DynamicPageTitle>
+                    <f:heading>
+                        <Title level="H1" text="{i18n>title}" wrapping="true"/>
+                    </f:heading>
+                        <f:actions>
+                        <MenuButton text="{i18n>titleButtonLanguaje}" icon="sap-icon://action-settings">
+                            <menu>
+                                <Menu itemSelected="onMenuAction" >
+                                    <MenuItem text="{i18n>titleButtonLanguajeEN}" press="onLanguageEng"/>
+                                    <MenuItem text="{i18n>titleButtonLanguajeES}" press="onLanguageEsp"/>
+                                </Menu>
+                            </menu>
+                        </MenuButton>
+                    </f:actions>
+                </f:DynamicPageTitle>
+            </f:title>
+            <f:header>
+                <f:DynamicPageHeader>
+                    <f:content>
+                        <fb:FilterBar id="idFilterBar" filterContainerWidth="15rem" reset="onReset" search="_onPressExecute" showFilterConfiguration="true"
+                            showRestoreButton="false" showClearOnFB="true" showGoOnFB="true" clear="_onClearHeaderMain" useToolbar="false">
+                            <fb:filterItems>
+                                <fb:FilterItem name="A" label="{i18n>TxtFilterInitIdSap}" visible="{= !${oModelUser>/bIsExtAyc} }">
+                                    <fb:control>
+                                        <MultiComboBox
+                                            id="cbSupplier"
+                                            width="250px"
+                                            enabled="{oModelProyect>/Main/bEnableCatalogs}"
+                                            items="{
+                                                path: 'oModelData>/oSupplier',
+                                                templateShareable: false
+                                            }"
+                                            selectedKeys="{oModelProyect>/Main/filter/cbSupplier}"
+                                            selectionFinish="onSelectionFinishSupplier">
+                                            <core:Item
+                                                key="{oModelData>SupplierCode}"
+                                                text="{= ${oModelData>SupplierCode} + ' - ' + ${oModelData>SupplierName} }" />
+                                            </MultiComboBox>
+                                    </fb:control>
+                                </fb:FilterItem>
+                                <fb:FilterItem name="B" label="{i18n>TxtFilterInitPuchaseOrder}">
+                                    <fb:control>
+                                        <MultiComboBox
+                                            id="cbOrdenFilter"
+                                            width="250px"
+                                            enabled="{oModelProyect>/Main/bEnableCatalogs}"
+                                            items="{
+                                                path: 'oModelData>/oOrdenCompra',
+                                                templateShareable: false
+                                            }"
+                                            selectedKeys="{oModelProyect>/Main/filter/cbOrdenFilter}"
+                                            selectionFinish="onSelectionFinishCompany">
+
+                                            <core:Item key="{oModelData>OrdenCompra}" text="{oModelData>OrdenCompra}" />
+                                        </MultiComboBox>
+                                    </fb:control>
+                                </fb:FilterItem>
+
+                                <fb:FilterItem name="C" label="{i18n>TxtFilterInitExercises}" mandatory="true">
+                                    <fb:control>
+                                            <DateRangeSelection id="sDocumentExercise" width="250px" displayFormat="dd/MM/yyyy" visible="true" 
+                                            value="{oModelProyect>/Main/filter/sDocumentExercise}" valueFormat="dd/MM/yyyy" change="_onChangeDateRange" enabled="true"/>
+                                    </fb:control>
+                                </fb:FilterItem>
+                                
+                                <fb:FilterItem name="D" label="{i18n>TxtFilterInitColRazonSocial}">
+                                    <fb:control>
+                                        <MultiComboBox
+                                            id="cbRazonSocial"
+                                            width="250px"
+                                            enabled="{oModelProyect>/Main/bEnableCatalogs}"
+                                            items="{
+                                                path: 'oModelData>/oRazonSocial',
+                                                templateShareable: false
+                                            }"
+                                            selectedKeys="{oModelProyect>/Main/filter/cbRazonSocial}"
+                                            selectionFinish="onSelectionFinishRazonSocial">
+
+                                            <core:Item
+                                                key="{oModelData>SupplierName}"
+                                                text="{oModelData>SupplierName}" />
+                                        </MultiComboBox>
+                                    </fb:control>
+                                </fb:FilterItem>
+
+                                <fb:FilterItem name="E" label="{i18n>TxtFilterInitCompAssociated}" visibleInFilterBar="{= !${oModelUser>/bIsExtAyc} }">
+                                    <fb:control>
+                                        <MultiComboBox
+                                            id="cbCompAssociated"
+                                            width="250px"
+                                            enabled="{oModelProyect>/Main/bEnableCatalogs}"
+                                            items="{
+                                                path: 'oModelData>/oComprobanteAsociado',
+                                                templateShareable: false
+                                            }"
+                                            selectedKeys="{oModelProyect>/Main/filter/cbCompAssociated}"
+                                            selectionFinish="onSelectionFinishSupplier">
+                                            <core:Item
+                                                key="{oModelData>FACTURAASOCIADA}"
+                                                text="{oModelData>FACTURAASOCIADA}"  />
+                                        </MultiComboBox>
+                                    </fb:control>
+                                </fb:FilterItem>
+                                <fb:FilterItem name="F" label="{i18n>TxtFilterInitSociety}" visibleInFilterBar="{= !${oModelUser>/bIsExtAyc}}">
+                                    <fb:control>
+                                        <MultiComboBox
+                                            id="cbCompany"
+                                            width="250px"
+                                            enabled="{oModelProyect>/Main/bEnableCatalogs}"
+                                            items="{
+                                                path: 'oModelData>/oCompany',
+                                                templateShareable: false
+                                            }"
+                                            selectedKeys="{oModelProyect>/Main/filter/cbCompany}"
+                                            selectionFinish="onSelectionFinishCompany">
+
+                                            <core:Item key="{oModelData>Company}" text="{oModelData>Company}" />
+                                        </MultiComboBox>
+                                    </fb:control>
+                                </fb:FilterItem>
+                                 <fb:FilterItem name="G" label="{i18n>titleColEstado}">
+                                    <fb:control>
+                                        <MultiComboBox
+                                            id="cbState"
+                                            width="250px"
+                                            enabled="{oModelProyect>/Main/bEnableCatalogs}"
+                                            items="{
+                                                path: 'oModelData>/oStateInit',
+                                                templateShareable: false
+                                            }"
+                                            selectedKeys="{oModelProyect>/Main/filter/cbState}"
+                                            selectionFinish="onSelectionFinishCompany">
+
+                                            <core:Item key="{oModelData>Status}" text="{oModelData>StatusDescription}" />
+                                        </MultiComboBox>
+                                    </fb:control>
+                                </fb:FilterItem>
+
+                            </fb:filterItems>
+                        </fb:FilterBar>
+                    </f:content>
+                </f:DynamicPageHeader>
+            </f:header>
+            <f:content>
+                <VBox >
+                    <VBox id="vbTableMain">
+                    </VBox>
+                </VBox>
+            </f:content>
+                <f:footer>
+                    <Bar>
+                        <contentRight>
+                            <HBox alignItems="Center" justifyContent="End">
+                                <Button
+                                    text="{i18n>btnFacturar}"
+                                    icon="sap-icon://money-bills"
+                                    press="_onPressNavigateDetail"
+                                    type="Emphasized"
+                                    width="250px" />
+                            </HBox>
+                        </contentRight>
+                    </Bar>
+                </f:footer>
+            </f:DynamicPage>
+    </Shell>
+</mvc:View>

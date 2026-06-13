@@ -1,0 +1,162 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:fb="sap.ui.comp.filterbar" xmlns:ui="sap.ui.table"
+	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" >
+	<Dialog id="IdDatosCarga" contentHeight="auto" contentWidth="45%" afterOpen="_afterOpenAddPedido">
+        <customHeader>
+            <Bar>
+                <contentMiddle>
+                    <Title text="{i18n>titleDialogDatosCarga}" />
+                </contentMiddle>
+            </Bar>
+        </customHeader>
+        <content>
+            <VBox width="auto" class="sapUiSmallMargin">
+                <ui:Table
+                    id="tableBultos"
+                    class="sapUiSmallMargin"
+                    enableSelectAll="false"
+                    rows="{path:'oModelProyect>/jDatosCarga/oBultos'}"
+                    selectionMode="MultiToggle"
+                    visibleRowCount="4"
+                    selectionBehavior="RowSelector"
+                    rowSelectionChange	="fnSelectionEmbalajes">
+                    <ui:extension>
+                        <OverflowToolbar style="Clear">
+                            <content>
+                            <Title text="Bultos"/>
+                            <ToolbarSpacer width=""/>
+                            <Button text="Agregar Bultos" press="fnPressAddBultos" type="Transparent" icon="sap-icon://add" iconFirst="true" width="auto" enabled="{oModelProyect>/oCabecera/bFormEditable}" visible="true" iconDensityAware="false" />
+                            <Button text="Eliminar bultos" press="fnPressDeleteBultos" type="Transparent" icon="sap-icon://delete" iconFirst="true" width="auto" enabled="{oModelProyect>/oCabecera/bFormEditable}" visible="true" iconDensityAware="false"/>
+                            </content>
+                        </OverflowToolbar>
+                    </ui:extension>
+                    <ui:columns>
+                        <ui:Column width="6rem" hAlign="Center">
+                            <Label text="Nº" />
+                            <ui:template>
+                                <Text text="{oModelProyect>nBulto}" wrapping="false" />
+                            </ui:template>
+                        </ui:Column>
+                        <ui:Column width="8rem" hAlign="Center">
+                            <Label text="Q. Bultos" />
+                            <ui:template>
+                                <Input type="Text" value="{oModelProyect>qBulto}" change="fnreemLetrasCant" maxLength="20" enabled="{oModelProyect>/oCabecera/bFormEditable}"/>
+                            </ui:template>
+                        </ui:Column>
+                        <ui:Column width="10rem" hAlign="Center">
+                            <Label text="T.Bultos" />
+                            <ui:template>
+                                <Select 
+                                    change		="fnSelectedTipoBulto" 
+                                    selectedKey	="{oModelProyect>tipoBulto}"
+                                    items		="{
+                                        path:'oModelData>/oTipoBulto' , templateShareable:false
+                                    }"
+                                    enabled="{oModelProyect>/oCabecera/bFormEditable}">
+                                    
+                                    <core:Item 	 key="{oModelData>Vegr2}" text="{oModelData>Bezei}" />
+                                </Select>
+                            </ui:template>
+                        </ui:Column>
+                        <ui:Column width="8rem" hAlign="Center">
+                            <Label text="KGS" />
+                            <ui:template>
+                                <Input type="Text" value="{oModelProyect>pesoBulto}" change="fnreemLetrasCant" maxLength="20" enabled="{oModelProyect>/oCabecera/bFormEditable}"/>
+                            </ui:template>
+                        </ui:Column>
+                        <ui:Column width="8rem" hAlign="Center">
+                            <Label text="Longitud(Cm)" />
+                            <ui:template>
+                               <Input
+                                type="Text"
+                                value="{oModelProyect>longitudBulto}"
+                                liveChange="onOnlyMeasure"
+                                change="onOnlyMeasure"
+                                maxLength="20"
+                                enabled="{oModelProyect>/oCabecera/bFormEditable}" />
+                            </ui:template>
+                        </ui:Column>
+                        <!-- <ui:Column width="10rem" hAlign="Center">
+                            <Label text="Ancho(Cm)" />
+                            <ui:template>
+                                <Input type="Text" value="{oModelProyect>anchoBulto}" change="fnreemLetrasCant" maxLength="20" enabled="{oModelProyect>/oCabecera/bFormEditable}"/>
+                            </ui:template>
+                        </ui:Column>
+                        <ui:Column width="12rem" hAlign="Center">
+                            <Label text="Altura(Cm)" />
+                            <ui:template>
+                                <Input type="Text" value="{oModelProyect>alturaBulto}" change="fnreemLetrasCant" maxLength="20" enabled="{oModelProyect>/oCabecera/bFormEditable}"/>
+                            </ui:template>
+                        </ui:Column> -->
+                        
+                        <ui:Column width="auto" hAlign="Center">
+                            <Label text="CW" />
+                            <ui:template>
+                                <Input type="Text" value="{oModelProyect>cwBulto}"  maxLength="40" enabled="{oModelProyect>/oCabecera/bFormEditable}"/>
+                            </ui:template>
+                        </ui:Column>
+                    </ui:columns>
+                </ui:Table>
+
+                <ui:Table 
+                    id="tableContenido"
+                    class="sapUiSmallMargin"
+                    enableSelectAll="false"
+                    rows="{path:'oModelProyect>/jDatosCarga/oContenido'}"
+                    selectionMode="MultiToggle"
+                    visibleRowCount="4"
+                    selectionBehavior="RowSelector"
+                    rowSelectionChange	="fnSelectionContenido">
+                    <ui:extension>
+                        <OverflowToolbar style="Clear">
+                            <content>
+                                <Title text="Contenedor"/>
+                                <ToolbarSpacer width=""/>
+                                <Button text="Agregar Contenedor" press="fnPressAddContenido" type="Transparent" icon="sap-icon://add" iconFirst="true" width="auto" enabled="{oModelProyect>/oCabecera/bFormEditable}" visible="true" iconDensityAware="false"/>
+                                <Button text="Eliminar Contenedor" press="fnPressDeleteContenido" type="Transparent" icon="sap-icon://delete" iconFirst="true" width="auto" enabled="{oModelProyect>/oCabecera/bFormEditable}"
+                                    visible="true"
+                                    iconDensityAware="false"
+                                />
+                            </content>
+                        </OverflowToolbar>
+                    </ui:extension>
+                    <ui:columns>
+                        <ui:Column width="6rem" hAlign="Center">
+                            <Label text="Nº" />
+                            <ui:template>
+                                <Text text="{oModelProyect>nContenido}" wrapping="false" />
+                            </ui:template>
+                        </ui:Column>
+                        <ui:Column width="auto" hAlign="Center">
+                            <Label text="Q. Contenedor" />
+                            <ui:template>
+                                <Input type="Text" value="{oModelProyect>qContenido}" change="fnreemLetrasCant" maxLength="20" enabled="{oModelProyect>/oCabecera/bFormEditable}"/>
+                            </ui:template>
+                        </ui:Column>
+                        <ui:Column width="auto" hAlign="Center">
+                            <Label text="T. Contenedor" />
+                            <ui:template>
+                                <Select 
+                                    change		="fnSelectedTipoContenido" 
+                                    selectedKey	="{oModelProyect>tipoContenido}"
+                                    items		="{
+                                        path:'oModelData>/oTipoContenido' , templateShareable:false
+                                    }"
+                                    enabled="{oModelProyect>/oCabecera/bFormEditable}">
+                                    <core:Item 	 key="{oModelData>Vegr2}" text="{oModelData>Bezei}" />
+                                </Select>
+                            </ui:template>
+                        </ui:Column>
+                    </ui:columns>
+                </ui:Table>
+            </VBox>
+        </content>
+		<buttons>
+			<Button
+                text="{i18n>goOutText}"
+                press="_onPressGuardaCarga"
+                custom:custom="DatosCarga"
+                type="Reject"
+                enabled="{oModelProyect>/oCabecera/bFormEditable}"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

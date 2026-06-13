@@ -1,0 +1,82 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form">
+<ScrollContainer width="100%" height="50%">
+    <Table items="{oModelProyect>/oReporte}" id="TableMain" mode="None" growingThreshold="20">
+        <headerToolbar>
+            <Toolbar>
+                <ToolbarSpacer/>
+                <Button text="{i18n>textbtnPrueba}" press="_onPressPrueba" type="Critical" icon="sap-icon://pdf-attachment" tooltip="{i18n>textbtnDelivery}" visible="false"/>
+                 <Button text="{i18n>ExportExcel}" press="_onPressExportRespaldo" type="Accept" icon="sap-icon://excel-attachment" tooltip="{i18n>textbtnDelivery}"/>
+            </Toolbar>
+        </headerToolbar>
+        					<columns>
+						<Column minScreenWidth="Tablet" demandPopin="true" width="10%" >
+							<Text text="{i18n>txtTbProv}"/>
+						</Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true" width="10%" >
+							<Text text="{i18n>txtTbRecepctor}"/>
+						</Column>
+						<Column minScreenWidth="Tablet" demandPopin="true" width="7.5%">
+							<Text text="{i18n>txtTbNroFactura}"/>
+						</Column>
+                        <Column
+                            minScreenWidth="Tablet"
+                            demandPopin="true"
+                            width="6.5%"
+                            visible="{= !${oModelUser>/bEsExterno} }">
+							<Text text="{i18n>txtTbNroSAP}"/>
+						</Column>
+						<Column minScreenWidth="Tablet" demandPopin="true" width="6.5%" visible="{= !${oModelUser>/bEsExterno} }">
+                            <Text text="{i18n>txtTbClasDoc}"/>
+                        </Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true" width="7%" hAlign="Center">
+							<Text text="{i18n>txtTbFechEmi}"/>
+						</Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true" width="6.5%" hAlign="Center">
+							<Text text="{i18n>txtTbFechRec}"/>
+						</Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true" width="8%">
+							<Text text="{i18n>txtTbFechConta}"/>
+						</Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true" width="8.5%">
+							<Text text="{i18n>txtTbFechVenc}"/>
+						</Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true" width="9%">
+							<Text text="{i18n>txtTbFechEsti}"/>
+						</Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true" width="7.5%">
+							<Text text="{i18n>txtTbFechPag}"/>
+						</Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true" width="7.5%">
+							<Text text="{i18n>txtTbMoney}"/>
+						</Column>
+						<Column minScreenWidth="Tablet" demandPopin="true" width="7.5%">
+							<Text text="{i18n>txtTbImportDoc}"/>
+						</Column>
+						<Column minScreenWidth="Tablet" demandPopin="true" width="8%">
+							<Text text="{i18n>txtTbNroFO}"/>
+						</Column>
+					</columns>
+        <items>
+        <ColumnListItem type="Inactive">
+            <cells>
+                <Text text="{oModelProyect>PROVEEDOR_NOMBRE}"/>
+                <Text text="{oModelProyect>RECEPTOR_PAGO_NOMBRE}"/>
+                <Text text="{oModelProyect>NRO_FACTURA}"/>
+                <Text text="{oModelProyect>NRO_DOC_SAP}"/>
+                <Text text="{oModelProyect>CLASE_DOC}"/>
+                <Text text="{oModelProyect>FECHA_EMISION}"/>
+                <Text text="{oModelProyect>FECHA_RECEP}"/>
+                <Text text="{oModelProyect>FECHA_CONTAB}"/>
+                <Text text="{oModelProyect>FECHA_VENC}"/>
+                <Text text="{oModelProyect>FECHA_EST_PAGO}"/>
+                <Text text="{oModelProyect>FECHA_PAGO}"/>
+                <Text text="{oModelProyect>MONEDA_DOC}"/>
+                <Text text="{oModelProyect>IMPORTE_DOC}"/>
+                <Text text="{oModelProyect>NRO_FREIGHT_ORDER}"/>
+              
+            </cells>
+        </ColumnListItem>
+    </items>
+    </Table>
+    </ScrollContainer>
+</core:FragmentDefinition>

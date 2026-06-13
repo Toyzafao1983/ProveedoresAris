@@ -1,0 +1,40 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:fb="sap.ui.comp.filterbar" xmlns:l="sap.ui.layout"
+	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+	<Dialog id="IdFilterDetail" contentHeight="auto" contentWidth="80%" afterOpen="_afterOpenAddPedido" >
+        <customHeader>
+            <Bar>
+                <contentRight>
+                    <Button press="_onbtnRefresh" type="Transparent" icon="sap-icon://refresh" tooltip="{i18n>tooltipbtnRefresh}"/>
+                </contentRight>
+                <contentMiddle>
+                    <Title text="{i18n>titleDialogFilterDetail}" />
+                </contentMiddle>
+            </Bar>
+        </customHeader>
+        <content>
+            <VBox width="auto" class="sapUiSmallMargin">
+                
+                <HBox width="100%" class="sapUiTinyMargin" alignItems="Center" visible="{= ${oModelUser>/bAdmin}}">
+                    <HBox width="30%">
+                        <Text text="{i18n>DetailFilterNumSolPed}"/>
+                    </HBox>
+                    <HBox width="68%" alignItems="Center">
+                        <Input id="iNumSolPed" value="{oModelProyect>/Main/filter/sIconTerm}" width="250px" enabled="true"/>
+                    </HBox>
+                </HBox>
+                <HBox width="100%" class="sapUiTinyMargin" alignItems="Center" visible="{= ${oModelUser>/bAdmin}}">
+                    <HBox width="30%">
+                        <Label text="{i18n>DetailFilterMaterial}" />
+                    </HBox>
+                    <HBox width="68%" alignItems="Center">
+                        <Input id="iMatFilDet" value="{oModelProyect>/Main/filter/sIconTerm}" width="250px" enabled="true"/>
+                    </HBox>
+                </HBox>
+            </VBox>
+        </content>
+		<buttons>
+			<Button text="{i18n>executeText}" press="_onPressExecuteDet" custom:custom="default" type="Accept"/>
+			<Button text="{i18n>returnText}" press="_onPressClose" custom:custom="FilterDetail" type="Reject"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

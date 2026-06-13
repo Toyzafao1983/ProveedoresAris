@@ -1,0 +1,53 @@
+/* Enter your custom styles here */
+.mesCard {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin: 8px;
+  width: 200px;
+  background-color: white;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.mesHeader {
+  background-color: #2196f3;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  padding: 8px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.mesBody {
+  padding: 8px;
+}
+<<<<<<< HEAD
+
+.fechaItem {
+    margin: 4px;         /* separación entre fechas */
+    padding: 6px 10px;   /* espacio interno */
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #f7f7f7;
+=======
+.fechaItem {
+    margin: 4px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+    color: #444;
+    box-sizing: border-box;
+}
+
+/* Hover opcional para resaltar el día */
+.fechaItem:hover {
+    background-color: #e6f0ff;
+    border-color: #3399ff;
+    cursor: pointer;
+>>>>>>> dev_mestefo
+}

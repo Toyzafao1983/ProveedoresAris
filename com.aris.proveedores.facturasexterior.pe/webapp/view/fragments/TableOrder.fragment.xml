@@ -1,0 +1,215 @@
+<core:FragmentDefinition xmlns:ui="sap.ui.table" xmlns:core="sap.ui.core" xmlns="sap.m" >
+    <Table id="idTableDetalle"  items="{oModelProyect>/oDetalle}"  mode="None" growingThreshold="20" selectionChange="_onCalculator">
+        <headerToolbar>
+			<OverflowToolbar>
+				<content>
+					<Button
+                        text="{i18n>btnCompleteLoadData}"
+                        press="_onPressCompletarDatosCarga"
+                        type="Emphasized"
+                        enabled="{oModelProyect>/oCabecera/bFormEditable}" />
+
+                    <Button
+                        text="{i18n>btnCompleteTravelData}"
+                        press="_onPressCompletarDatosViaje"
+                        type="Emphasized"
+                        visible="{oModelProyect>/req/bShowDatosViajeButton}"
+                        enabled="{oModelProyect>/oCabecera/bFormEditable}" />
+
+                    <Button
+                        text="{i18n>btnAttachDocuments}"
+                        press="_onPressAdjuntarDocumentos"
+                        type="Emphasized"
+                        enabled="{oModelProyect>/oCabecera/bFormEditable}" />
+				</content>
+			</OverflowToolbar>
+		</headerToolbar>
+        <columns>
+            <Column width="6rem" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="" width="auto" />
+                </header>
+            </Column>
+            <Column width="6rem" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleColPurchaseOrder}" width="auto" />
+                </header>
+            </Column>
+            <Column width="5rem" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleColPosition}" width="auto" />
+                </header>
+            </Column>
+            <Column width="6rem" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleColMaterialCode}" width="auto" wrapping="true"/>
+                </header>
+            </Column>
+            <Column width="auto" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleColMaterialDescription}" width="auto" wrapping="true"/>
+                </header>
+            </Column>
+            <Column width="auto" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleColAmount}" width="auto" wrapping="true"/>
+                </header>
+            </Column>
+            <Column width="5rem" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleColUM}" width="auto" wrapping="true"/>
+                </header>
+            </Column>
+            <Column width="auto" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleColUnitPrice}" width="auto" wrapping="true"/>
+                </header>
+            </Column>
+            <Column width="auto" hAlign="Center" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleColConcurrency}" width="auto" wrapping="true"/>
+                </header>
+                <footer>
+                    <VBox alignContent="Start" width="100%" alignItems="Start">
+                        <ObjectStatus text="{i18n>sSubTotal}" state="None"/>
+                        <!-- <Text text="{i18n>sGastosAdicionales}" class="sapUiSmallMarginTop"/> -->
+                        <Text text="{i18n>sGastosOrigin}" class="sapUiSmallMarginTop" visible="{= ${oModelProyect>/cond/bShowOrigen} === true }"/>
+                        <Text text="{i18n>sGastosFleteInter}" class="sapUiSmallMarginTop" visible="{= ${oModelProyect>/cond/bShowFlete}  === true }"/>
+                        <Text text="{i18n>sGastosSecurity}" class="sapUiSmallMarginTop" visible="{= ${oModelProyect>/cond/bShowSeguro} === true }"/>                      
+                        <ObjectStatus text="{i18n>sDetalleTotal}" state="None" class="sapUiSmallMarginTop"/>
+                        
+                    </VBox>
+                </footer>
+            </Column>
+            <Column width="auto" hAlign="End" vAlign="Middle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" mergeDuplicates="false">
+                <header>
+                    <Text text="{i18n>titleColImportTotal}" width="auto" wrapping="true" />
+                </header>
+                <footer>
+                    <VBox alignContent="End" width="100%" alignItems="End">
+                        <ObjectStatus text="{oModelProyect>/sDetalleSubtTotal}" state="None"/>
+                            <Input
+                                width="8rem"
+                                textAlign="End"
+                                type="Text"
+                                value="{
+                                    path: 'oModelProyect>/sDetalleGastoOrigen',
+                                    type: 'sap.ui.model.type.Float',
+                                    formatOptions: {
+                                        minFractionDigits: 2,
+                                        maxFractionDigits: 2,
+                                        groupingEnabled: true,
+                                        groupingSeparator: ',',
+                                        decimalSeparator: '.'
+                                    }
+                                }"
+                                valueLiveUpdate="true"
+                                editable="{oModelProyect>/oCabecera/bFormEditable}"
+                                liveChange="_onLiveChangeCondAmount"
+                                visible="{= ${oModelProyect>/cond/bShowOrigen} === true }">
+                                <customData>
+                                    <core:CustomData key="valuePath" value="/sDetalleGastoOrigen"/>
+                                    <core:CustomData key="maxPath" value="/cond/nMaxOrigen"/>
+                                    <core:CustomData key="label" value="Gastos Origen"/>
+                                </customData>
+                            </Input>
+
+                            <Input
+                                width="8rem"
+                                textAlign="End"
+                                type="Text"
+                                value="{
+                                    path: 'oModelProyect>/sDetalleFleteInternacional',
+                                    type: 'sap.ui.model.type.Float',
+                                    formatOptions: {
+                                        minFractionDigits: 2,
+                                        maxFractionDigits: 2,
+                                        groupingEnabled: true,
+                                        groupingSeparator: ',',
+                                        decimalSeparator: '.'
+                                    }
+                                }"
+                                valueLiveUpdate="true"
+                                editable="{oModelProyect>/oCabecera/bFormEditable}"
+                                liveChange="_onLiveChangeCondAmount"
+                                class="sapUiTinyMarginTop"
+                                visible="{= ${oModelProyect>/cond/bShowFlete}  === true }">
+                                <customData>
+                                    <core:CustomData key="valuePath" value="/sDetalleFleteInternacional"/>
+                                    <core:CustomData key="maxPath" value="/cond/nMaxFlete"/>
+                                    <core:CustomData key="label" value="Flete Internacional"/>
+                                </customData>
+                            </Input>
+                            <Input
+                                    width="8rem"
+                                    textAlign="End"
+                                    type="Text"
+                                    value="{
+                                        path: 'oModelProyect>/sDetalleSeguro',
+                                        type: 'sap.ui.model.type.Float',
+                                        formatOptions: {
+                                            minFractionDigits: 2,
+                                            maxFractionDigits: 2,
+                                            groupingEnabled: true,
+                                            groupingSeparator: ',',
+                                            decimalSeparator: '.'
+                                        }
+                                    }"
+                                    valueLiveUpdate="true"
+                                    editable="{oModelProyect>/oCabecera/bFormEditable}"
+                                    liveChange="_onLiveChangeCondAmount"
+                                    class="sapUiTinyMarginTop"
+                                    visible="{= ${oModelProyect>/cond/bShowSeguro} === true }">
+                                                                <customData>
+                                    <core:CustomData key="valuePath" value="/sDetalleSeguro"/>
+                                    <core:CustomData key="maxPath" value="/cond/nMaxSeguro"/>
+                                    <core:CustomData key="label" value="Seguro"/>
+                                </customData>
+                            </Input>
+
+                            <!-- Este puede ser editable o calculado, según tu lógica -->
+                        <ObjectStatus text="{oModelProyect>/sTotal}" state="None" class="sapUiTinyMarginTop"/>
+                    </VBox>
+                </footer>
+            </Column>
+        </columns>
+        <items>
+            <ColumnListItem type="Inactive">
+                <cells>
+                    <Button
+                    icon="sap-icon://delete"
+                    type="Transparent"
+                    tooltip="{i18n>tooltipDeleteRow}"
+                    press="_onPressDeleteDetalleRow"
+                    enabled="{oModelProyect>/oCabecera/bFormEditable}"/>
+                    <Text text="{oModelProyect>Ebeln}"/>
+                    <Text text="{oModelProyect>Ebelp}"/>
+                    <Text text="{oModelProyect>Material}"/>
+                    <Text text="{oModelProyect>Description}"/>
+                    <Input
+                        width="7rem"
+                        textAlign="End"
+                        type="Text"
+                        editable="{oModelProyect>/oCabecera/bFormEditable}"
+                        value="{
+                            path: 'oModelProyect>Orderquantity',
+                            type: 'sap.ui.model.type.Float',
+                            formatOptions: {
+                                minFractionDigits: 2,
+                                maxFractionDigits: 2,
+                                groupingEnabled: true,
+                                groupingSeparator: ',',
+                                decimalSeparator: '.'
+                            }
+                        }"
+                        valueLiveUpdate="true"
+                    liveChange="_onLiveChangeOrderQty"/>
+                    <Text text="{oModelProyect>Um}"/>
+                    <Text text="{path:'oModelProyect>Unitprice', formatter:'.formatTwoDecimalsMonto'}"/>
+                    <Text text="{oModelProyect>Waers}"/>
+                    <Text text="{path:'oModelProyect>Subtotal', formatter:'.formatTwoDecimalsMonto'}"/>
+                </cells>
+            </ColumnListItem>
+        </items>
+    </Table>
+</core:FragmentDefinition>

@@ -1,0 +1,70 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:fb="sap.ui.comp.filterbar" xmlns:l="sap.ui.layout"
+	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+	<Dialog id="IdFilterInit" contentHeight="auto" contentWidth="80%" afterOpen="_afterOpenAddPedido">
+        <customHeader>
+            <Bar>
+                <contentRight>
+                    <Button press="_onbtnRefresh" type="Transparent" icon="sap-icon://refresh" tooltip="{i18n>tooltipbtnRefresh}"/>
+                </contentRight>
+                <contentMiddle>
+                    <Title text="{i18n>titleDialogFilterInit}" />
+                </contentMiddle>
+            </Bar>
+        </customHeader>
+        <content>
+            <VBox width="auto" class="sapUiSmallMargin">
+                
+                <HBox width="100%" class="sapUiTinyMargin" alignItems="Center" visible="{= ${oModelUser>/bAdmin}}">
+                    <HBox width="30%">
+                    <Text text="{i18n>FiltitleCodProveedor}"/>
+                    </HBox>
+                    <HBox width="68%" alignItems="Center">
+                     <MultiInput
+                        id="miCodSupplier2"
+                        width="300px"
+                        showClearIcon="true"
+                        showSuggestion="true"
+                        suggest="onChangeCodSupplier"
+                        suggestionItems="{
+                            path: 'oModelData>/suggestedCodSuppliers'
+                        }"
+                        tokenUpdate="ChangeMultiImput"
+                        custom:custom="cbCodSupplier/TaxID">
+
+                        <suggestionItems>
+                            <core:Item key="{oModelData>TaxID}" text="{oModelData>Display}" />
+                        </suggestionItems>
+                    </MultiInput>
+                  
+                    </HBox>
+                    
+                </HBox>
+                <HBox width="100%" class="sapUiTinyMargin" alignItems="Center" visible="{= ${oModelUser>/bAdmin}}">
+                    <HBox width="30%">
+                    <Text text="{i18n>FiltitleProveedor}"/>
+                    </HBox>
+                    <HBox width="68%" alignItems="Center">
+                    <MultiInput
+                        id="miSupplier2"
+                        width="300px"
+                        showClearIcon="true"
+                        showSuggestion="true"
+                        suggest="onChangeSupplier"
+                        tokenUpdate="ChangeMultiImput"
+                        custom:custom="cbSupplier/SupplierName"
+                        suggestionItems="{
+                            path: 'oModelData>/suggestedSuppliers'
+                        }">
+                        <core:Item key="{oModelData>SupplierName}" text="{oModelData>SupplierName}" />
+                    </MultiInput>
+                    </HBox>
+                </HBox>
+
+            </VBox>
+        </content>
+		<buttons>
+			<Button text="{i18n>executeText}" press="_onPressExecute" custom:custom="default" type="Accept"/>
+			<Button  text="{i18n>returnText}" press="_onPressClose" custom:custom="FilterInit" type="Reject"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

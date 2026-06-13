@@ -1,0 +1,42 @@
+# Dependencias Node/UI5
+node_modules/
+
+# Builds / salidas generadas
+dist/
+build/
+.tmp/
+.cache/
+coverage/
+
+# SAP / BTP builds
+mta_archives/
+*.mtar
+
+# Variables locales / credenciales
+.env
+.env.*
+default-env.json
+default-services.json
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.swp
+
+# Comprimidos / backups
+Comprimidos/
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z
