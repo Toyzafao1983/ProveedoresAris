@@ -82,15 +82,6 @@ sap.ui.define([
                     bEsExterno ? sBpProv : null
                 );
 
-                console.log("=== DEBUG LOGIN IAS PETICIÓN OFERTA ===");
-                console.log("groups:", oUserProfile.aGroups);
-                console.log("customAttribute4:", oUserProfile.sAttribute4);
-                console.log("customAttribute5:", oUserProfile.sAttribute5);
-                console.log("bEsExterno:", bEsExterno);
-                console.log("bEsInterno:", bEsInterno);
-                console.log("sRolPrincipal:", oUserProfile.sRolPrincipal);
-                console.log("sBpProv:", sBpProv);
-                console.log("sInternalBP:", oUserProfile.sInternalBP);
 
                 if (oRespPetOffert.sEstado === "S") {
                     that.oModelProyect.setProperty("/EstadosDisponibles", oRespPetOffert.aEstados);
@@ -110,7 +101,6 @@ sap.ui.define([
                 }
                 sap.ui.core.BusyIndicator.hide(0);
             }).catch(function (oError) {
-                console.error("Error handleRouteMatched:", oError);
                 that.getMessageBox("error", that.getI18nText("errorUserData"));
                 sap.ui.core.BusyIndicator.hide(0);
             });
@@ -150,7 +140,6 @@ sap.ui.define([
                 sap.ui.core.BusyIndicator.hide(0);
 
             } catch (e) {
-                console.error("Error leyendo nota estándar:", e);
                 sap.ui.core.BusyIndicator.hide(0);
                 sap.m.MessageBox.error("Error al obtener la nota estándar.");
             }
@@ -186,7 +175,6 @@ sap.ui.define([
                     oRow._notaEditable = false; // por defecto no editable
 
                 } catch (e) {
-                    console.error("⚠️ Error cargando nota estándar para oferta", sSupplierQuotation, e);
                     // No cortamos el loop, seguimos con las demás
                 }
             }
@@ -194,14 +182,6 @@ sap.ui.define([
             // 4) Grabar nuevamente el array en el modelo
             oModelProyect.setProperty("/oReporte", aReporte);
             oModelProyect.refresh(true);
-        },
-        _onPressFilterInit: function () {
-            const tbReporte = this._byId("vbTableMain").getItems().length > 0 ? this._byId("vbTableMain").getItems()[0] : null;
-            if (!this.isEmpty(tbReporte)) { tbReporte.removeSelections(true); }
-            that.setFragment("_dialogFilterInit", this.frgIdFilterInit, "FilterInit", this);
-
-            that._onClearComponentFilter(that.getI18nText("sStateInit"), [], true);
-            that._onClearDataFilter();
         },
         _onClearComponentFilter: function (sState, oComponent, bOtherComponent) {
             if (sState === that.getI18nText("sStateInit")) {
@@ -343,13 +323,10 @@ sap.ui.define([
                         PartnerFunction: x.PartnerFunction
                     }));
 
-                console.log("==== DEBUG FINO RFQ 7000000102 ====");
-                console.table(aDebugFine);
 
                 that.oModelProyect.setProperty("/oReporte", aReporte);
                 sap.ui.core.BusyIndicator.hide(0);
             }).catch((oError) => {
-                console.error("Error _onPressExecute:", oError);
                 that.getMessageBox("error", that.getI18nText("errorData"));
                 sap.ui.core.BusyIndicator.hide(0);
             });
@@ -573,7 +550,6 @@ sap.ui.define([
             try {
                 const oFolderResp = await this._ensureSharePointFolderChain(aFolderChain);
                 if (!oFolderResp || oFolderResp.sEstado !== "S") {
-                    console.error("❌ Error garantizando carpetas en SharePoint:", oFolderResp);
                     sap.m.MessageBox.error("No se pudo preparar la carpeta destino en SharePoint.");
                     return;
                 }
@@ -588,17 +564,14 @@ sap.ui.define([
                         if (resp.sEstado === "S" && resp.oResults && resp.oResults.id) {
                             sap.m.MessageToast.show(`✅ ${file.name} subido correctamente`);
                         } else {
-                            console.error("❌ Error al subir:", resp.oResults);
                             sap.m.MessageToast.show(`❌ Error subiendo ${file.name}`);
                         }
                     } catch (e) {
-                        console.error("❌ Excepción al subir:", e);
                         sap.m.MessageToast.show(`❌ Error subiendo ${file.name}`);
                     }
                 }
 
             } catch (e) {
-                console.error("❌ Error general en handleFUChange:", e);
                 sap.m.MessageBox.error("Ocurrió un error al preparar o subir archivos a SharePoint.");
             }
             if (oFU.clear) {
@@ -691,7 +664,6 @@ sap.ui.define([
 
                         // 🔐 Blindaje: si faltan claves, no llamamos al backend
                         if (!note.Ofepos || note.Linea === undefined || note.Linea === null) {
-                            console.warn("⚠️ Nota Z sin claves válidas, se omite borrado:", note);
                             resolve();
                             return;
                         }
@@ -699,14 +671,12 @@ sap.ui.define([
                         const sKeyPath =
                             "/NotaOfertaSet(Ofepos='" + note.Ofepos + "',Linea=" + note.Linea + ")";
 
-                        console.log("🗑️ Borrando nota Z:", sKeyPath);
 
                         oModelOData.remove(sKeyPath, {
                             success: function () {
                                 resolve();
                             },
                             error: function (oError) {
-                                console.error("❌ Error eliminando nota Z:", oError);
                                 reject(oError);
                             }
                         });
@@ -800,7 +770,6 @@ sap.ui.define([
 
                 sap.m.MessageToast.show("Nota de cabecera cargada. Ya puede editar el texto.");
             } catch (e) {
-                console.error("❌ Error en onNotaEditPress (estándar):", e);
                 sap.m.MessageBox.error("Ocurrió un error al preparar el borrador o leer la nota estándar de cabecera.");
             } finally {
                 sap.ui.core.BusyIndicator.hide(0);
@@ -903,7 +872,6 @@ sap.ui.define([
 
                                 sap.m.MessageToast.show("Nota de cabecera borrada correctamente en estándar.");
                             } catch (e) {
-                                console.error("❌ Error borrando nota estándar de cabecera:", e);
                                 sap.m.MessageBox.error("Ocurrió un error al borrar la nota estándar de cabecera.");
                             } finally {
                                 sap.ui.core.BusyIndicator.hide(0);
@@ -937,7 +905,6 @@ sap.ui.define([
 
                 sap.m.MessageBox.success("Nota de cabecera guardada/modificada correctamente en estándar.");
             } catch (e) {
-                console.error("❌ Error al guardar nota estándar de cabecera:", e);
                 sap.m.MessageBox.error(
                     "Ocurrió un error al guardar la nota estándar de cabecera."
                 );
@@ -968,40 +935,11 @@ sap.ui.define([
                 }
                 return sapDate;
             } catch (e) {
-                console.warn("⚠️ Error parseando fecha:", sapDate, e);
                 return sapDate;
             }
         },
 
         // Crear un boton de eliminar todas las notas si se requiere utilizar este codigo
-        onNotaDeletePress: function () {
-            // Simplemente vaciamos NotaEdit y reutilizamos onNotaSavePress
-            const oTable = sap.ui.core.Fragment.byId(this.frgIdTableMain, "miTablaPrincipal");
-            if (!oTable) {
-                sap.m.MessageBox.error("No se encontró la tabla de peticiones.");
-                return;
-            }
-
-            const aSelected = oTable.getSelectedItems() || [];
-            if (!aSelected.length) {
-                sap.m.MessageBox.warning("Seleccione una fila para borrar la nota.");
-                return;
-            }
-            if (aSelected.length > 1) {
-                sap.m.MessageBox.warning("Solo puede borrar la nota de una línea a la vez.");
-                return;
-            }
-
-            const oCtx = aSelected[0].getBindingContext("oModelProyect");
-            if (!oCtx) {
-                sap.m.MessageBox.error("No se pudo obtener la información de la fila seleccionada.");
-                return;
-            }
-
-            const oRow = oCtx.getObject() || {};
-            oRow.NotaEdit = "";   // disparará el flujo de borrado en onNotaSavePress
-            this.onNotaSavePress();
-        },
 
         _guidToObjectId: function (sGuid) {
             if (!sGuid) { return ""; }
@@ -1146,7 +1084,6 @@ sap.ui.define([
 
                     return true;
                 } catch (eMerge) {
-                    console.warn("⚠️ MERGE de nota falló, se intentará recreate:", eMerge);
 
                     // fallback: borrar y volver a crear
                     await Services.postoDataERPWithHeadersAsync(

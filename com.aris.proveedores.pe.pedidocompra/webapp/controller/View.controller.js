@@ -65,15 +65,6 @@ sap.ui.define([
                 }
                 sNumProv = oUserProfile.sExtBP;
 
-                console.log("=== DEBUG LOGIN IAS PEDIDO COMPRA ===");
-                console.log("groups:", oUserProfile.aGroups);
-                console.log("customAttribute4:", oUserProfile.sAttribute4);
-                console.log("customAttribute5:", oUserProfile.sAttribute5);
-                console.log("bEsExterno:", bEsExterno);
-                console.log("bRolInterno:", bRolInterno);
-                console.log("sRolPrincipal:", oUserProfile.sRolPrincipal);
-                console.log("sNumProv/BP externo:", sNumProv);
-                console.log("sInternalBP:", oUserProfile.sInternalBP);
 
                 oModelUser.setProperty("/sNumProv", sNumProv);
                 oModelUser.setProperty("/sExtBP", sNumProv);
@@ -105,7 +96,6 @@ sap.ui.define([
                             sResolvedRuc = sNumProv;
                         }
                     } catch (e) {
-                        console.error("Error resolviendo RUC del proveedor externo:", e);
                     }
 
                     if (!sResolvedRuc) {
@@ -182,16 +172,6 @@ sap.ui.define([
             }
             var sAutorExcel = "MESTEFO";
             that.fnExportarExcel(oReporte, [], [], sAutorExcel, sIndicador)
-        },
-        _onActualizada: function () {
-            let respuesta = confirm("¿Desea grabar la informacion?");
-
-            if (respuesta) {
-
-                alert("Fecha actualizada con exito");
-            } else {
-                alert("Operacion cancelada");
-            }
         },
         _GetFiltroProv: function (sValue, sTargetPath) {
             if (!sValue || sValue.length < 2) {
@@ -373,7 +353,6 @@ sap.ui.define([
 
             function extractTokens(oControl, sControlId) {
                 if (!oControl) {
-                    console.error(`[extractTokens] ❌ No existe control '${sControlId}'`);
                     return { keys: [], texts: [], rawValue: "" };
                 }
                 let aKeys = [], aTexts = [], rawVal = "";
@@ -865,7 +844,6 @@ sap.ui.define([
                                 resolve(oResp);
                             },
                             error: function (err) {
-                                console.error("[_getData] Error backend:", err);
                                 oResp.oResults = [];
                                 resolve(oResp);
                             }
@@ -873,7 +851,6 @@ sap.ui.define([
                     });
                 });
             } catch (e) {
-                console.error("[_getData] EXCEPTION:", e);
                 that.getMessageBox("error", that.getI18nText("sErrorTry"));
             }
         },

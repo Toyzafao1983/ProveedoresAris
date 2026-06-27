@@ -155,16 +155,6 @@ sap.ui.define([
                 let oUser = values[12].Resources[0];
                 const oUserProfile = that._applyProveedorUserProfile(oUser);
 
-                console.log("=== DEBUG DETAIL LOGIN IAS ===");
-                console.log("groups:", oUserProfile.aGroups);
-                console.log("customAttribute4:", oUserProfile.sAttribute4);
-                console.log("customAttribute5:", oUserProfile.sAttribute5);
-                console.log("bIsExtAyc:", oUserProfile.bIsExtAyc);
-                console.log("bIsInterno:", oUserProfile.bIsInterno);
-                console.log("bIsIntComex:", oUserProfile.bIsIntComex);
-                console.log("sRolPrincipal:", oUserProfile.sRolPrincipal);
-                console.log("sExtBP:", oUserProfile.sExtBP);
-                console.log("sInternalBP:", oUserProfile.sInternalBP);
 
                 // Estado inicial UI
                 const sEstado = "00";
@@ -527,11 +517,6 @@ sap.ui.define([
             );
         },
         // Agarra el valor de IdSaP
-        _getContextKeyFromRoute: function (sIdSap, sAppParam) {
-            if (sIdSap) return "IDSAP:" + String(sIdSap).trim();
-            if (sAppParam) return "APP:" + String(sAppParam).trim();
-            return "";
-        },
         _onEnableCabecera: function () {
             const s = formatter._normalizeStatusCode(
                 that.oModelProyect.getProperty("/oCabecera/sEstadoCodigo")
@@ -627,7 +612,6 @@ sap.ui.define([
                     that._onCalculator();
                 }
             } catch (e) {
-                console.error(e);
             }
         },
 
@@ -743,18 +727,6 @@ sap.ui.define([
 
             items.push(obj);
             that.oModelProyect.setProperty("/jDatosCarga/oBultos", items);
-        },
-        fnPressDeleteEmbalajes: function () {
-            let cTable = that._byId("frgIdDatosCarga--tableBultos");
-            if (cTable.getSelectedIndices().length == 1) {
-                MessageBox.confirm("¿Seguro que desea eliminar? \n Se eliminaran todos los items relacionados al bulto", {
-                    actions: ["Confirmar", "Cancelar"],
-                    emphasizedAction: "Manage Products",
-                    onClose: function (sAction) { if (sAction == "Confirmar") { that.fnDeleteEmbalajes(); } }
-                });
-            } else {
-                utilUI.onMessageErrorDialogPress2("No se ha seleccionado ningun Bulto");
-            }
         },
         fnPressDeleteBultos: function () {
             let cTable = that._byId("frgIdDatosCarga--tableBultos");
@@ -941,7 +913,6 @@ sap.ui.define([
                 });
 
             } catch (e) {
-                console.error(e);
                 that.getMessageBox("error", "Error al intentar eliminar la fila.");
             }
         },
@@ -1113,11 +1084,57 @@ sap.ui.define([
         _onLiveChangeOrderQty: function (oEvent) {
             try {
                 const oInput = oEvent.getSource();
+                let sVal = String(oEvent.getParameter("value") || "");
+
+                // No actualizar el modelo aquí.
+                // Solo limpiamos caracteres inválidos para permitir escritura normal.
+                let sClean = sVal.replace(/,/g, ".");
+                sClean = sClean.replace(/[^0-9.]/g, "");
+
+                const aParts = sClean.split(".");
+                if (aParts.length > 2) {
+                    sClean = aParts[0] + "." + aParts.slice(1).join("");
+                }
+
+                const aDecimal = sClean.split(".");
+                if (aDecimal.length === 2 && aDecimal[1].length > 2) {
+                    sClean = aDecimal[0] + "." + aDecimal[1].substring(0, 2);
+                }
+
+                if (sClean !== sVal) {
+                    oInput.setValue(sClean);
+                }
+
                 const oCtx = oInput.getBindingContext("oModelProyect");
                 if (!oCtx) return;
 
                 const sPath = oCtx.getPath();
-                const sVal = oEvent.getParameter("value");
+                const nQty = formatter._toNumUI(sClean);
+
+                const vMaxRaw = that.oModelProyect.getProperty(sPath + "/OrderquantityMax");
+                const bHasMax = vMaxRaw !== null && vMaxRaw !== undefined && String(vMaxRaw).trim() !== "";
+                const nMax = bHasMax ? formatter._toNumUI(vMaxRaw) : null;
+
+                if (bHasMax && nQty > nMax) {
+                    oInput.setValueState("Warning");
+                    oInput.setValueStateText("La cantidad no puede exceder la cantidad disponible por facturar: " + nMax);
+                } else {
+                    oInput.setValueState("None");
+                    oInput.setValueStateText("");
+                }
+
+            } catch (e) {
+            }
+        },
+
+        _onChangeOrderQty: function (oEvent) {
+            try {
+                const oInput = oEvent.getSource();
+                const oCtx = oInput.getBindingContext("oModelProyect");
+                if (!oCtx) return;
+
+                const sPath = oCtx.getPath();
+                const sVal = String(oInput.getValue() || "");
 
                 let nQty = formatter._toNumUI(sVal);
                 if (nQty < 0) nQty = 0;
@@ -1126,28 +1143,41 @@ sap.ui.define([
                 const bHasMax = vMaxRaw !== null && vMaxRaw !== undefined && String(vMaxRaw).trim() !== "";
                 const nMax = bHasMax ? formatter._toNumUI(vMaxRaw) : null;
 
+                let bExceeded = false;
+
                 if (bHasMax && nQty > nMax) {
                     nQty = nMax;
-                    oInput.setValue(String(nQty));
+                    bExceeded = true;
+                }
+
+                const nUnit = formatter._toNumUI(that.oModelProyect.getProperty(sPath + "/Unitprice"));
+
+                let nBase = formatter._toNumUI(that.oModelProyect.getProperty(sPath + "/BaseQuantity"));
+                if (!nBase || nBase <= 0) {
+                    nBase = 1;
+                }
+
+                const nSub = formatter._round2((nQty / nBase) * nUnit);
+
+                that.oModelProyect.setProperty(sPath + "/Orderquantity", nQty);
+                that.oModelProyect.setProperty(sPath + "/Subtotal", nSub);
+
+                const oRow = that.oModelProyect.getProperty(sPath) || {};
+                that._syncDetalleTotalByKey(oRow.Ebeln, oRow.Ebelp, nQty, nSub, nBase);
+
+                oInput.setValue(nQty.toFixed(2));
+
+                if (bExceeded) {
                     oInput.setValueState("Error");
                     oInput.setValueStateText("La cantidad no puede exceder la cantidad disponible por facturar: " + nMax);
                 } else {
                     oInput.setValueState("None");
                     oInput.setValueStateText("");
                 }
-                that.oModelProyect.setProperty(sPath + "/Orderquantity", nQty);
-                const nUnit = formatter._toNumUI(that.oModelProyect.getProperty(sPath + "/Unitprice"));
-                let nBase = formatter._toNumUI(that.oModelProyect.getProperty(sPath + "/BaseQuantity"));
-                if (!nBase || nBase <= 0) nBase = 1;
-                const nSub = formatter._round2((nQty / nBase) * nUnit);
-                that.oModelProyect.setProperty(sPath + "/Subtotal", nSub);
-                const oRow = that.oModelProyect.getProperty(sPath) || {};
-                that._syncDetalleTotalByKey(oRow.Ebeln, oRow.Ebelp, nQty, nSub, nBase);
 
                 that._onCalculator();
 
             } catch (e) {
-                console.error(e);
             }
         },
 
@@ -1289,20 +1319,56 @@ sap.ui.define([
 
             const qCont2 = c2 ? toODataNumStr(c2.qContenido, 2) : "0.00";
             const tipCont2 = c2 ? String(c2.tipoContenido || "").trim() : "";
-            const aCarDat = aBultos.map(b => ({
-                IdSap: "",
-                Posbulto: String(b.nBulto || "").padStart(6, "0"),
-                Cantbulto: toODataNumStr(b.qBulto, 0),
-                Tipobulto: (b.tipoBulto || "").toString(),
-                Cms: (b.longitudBulto === null || b.longitudBulto === undefined) ? "" : String(b.longitudBulto),
-                Kgs: toODataNumStr(b.pesoBulto, 2),
-                Cw: toODataNumStr(b.cwBulto, 2),
 
-                Qcontenedor: qCont1,
-                Tipocontenedor: tipCont1,
-                Qcontenedor2: qCont2,
-                Tipocontenedor2: tipCont2
-            }));
+            const bHasContenedor =
+                tipCont1 ||
+                tipCont2 ||
+                toNum(qCont1) > 0 ||
+                toNum(qCont2) > 0;
+
+            const buildCarDatRow = function (b, idx) {
+                return {
+                    IdSap: "",
+                    Posbulto: String(b?.nBulto || (idx + 1)).padStart(6, "0"),
+                    Cantbulto: toODataNumStr(b?.qBulto, 0),
+                    Tipobulto: (b?.tipoBulto || "").toString(),
+                    Cms: (b?.longitudBulto === null || b?.longitudBulto === undefined) ? "" : String(b?.longitudBulto || ""),
+                    Kgs: toODataNumStr(b?.pesoBulto, 2),
+                    Cw: toODataNumStr(b?.cwBulto, 2),
+
+                    // Los contenedores se mandan en la primera fila técnica de carga.
+                    Qcontenedor: idx === 0 ? qCont1 : "0.00",
+                    Tipocontenedor: idx === 0 ? tipCont1 : "",
+                    Qcontenedor2: idx === 0 ? qCont2 : "0.00",
+                    Tipocontenedor2: idx === 0 ? tipCont2 : ""
+                };
+            };
+
+            let aCarDat = [];
+
+            if (aBultos.length > 0) {
+                aCarDat = aBultos.map(function (b, idx) {
+                    return buildCarDatRow(b, idx);
+                });
+            } else if (bHasContenedor) {
+                // Caso importante:
+                // Si el usuario llena solo Contenedor y no llena Bultos,
+                // igual se debe enviar una fila técnica a toCarDat para que SAP guarde los campos de contenedor.
+                aCarDat = [{
+                    IdSap: "",
+                    Posbulto: "000001",
+                    Cantbulto: "0",
+                    Tipobulto: "",
+                    Cms: "",
+                    Kgs: "0.00",
+                    Cw: "0.00",
+
+                    Qcontenedor: qCont1,
+                    Tipocontenedor: tipCont1,
+                    Qcontenedor2: qCont2,
+                    Tipocontenedor2: tipCont2
+                }];
+            }
 
             const oVia = {
                 IdSap: "",
@@ -1377,7 +1443,6 @@ sap.ui.define([
                 }
                 return true;
             } catch (e) {
-                console.warn("No se pudo actualizar hash con IdSap", e);
                 return false;
             }
         },
@@ -1437,7 +1502,6 @@ sap.ui.define([
 
                 //codigo Marlon Estefo
                 const oView = this.getView();
-                console.log("VIEW ID:", oView.getId());
 
                 const toNum = (v) => {
                     const s = String(v ?? "").trim().replace(/,/g, "");
@@ -1501,8 +1565,6 @@ sap.ui.define([
                 const sFromModel = (that.oModelProyect.getProperty("/oCabecera/sFormNumeroFactura") || "").trim();
                 const sFromUI = (that.byId("inpNumeroFactura")?.getValue?.() || "").trim();
 
-                console.log("NumFactura model:", sFromModel);
-                console.log("NumFactura UI:", sFromUI);
 
                 if (!oPayload?.TxtCab) {
                     that.getMessageBox("error", "Número de factura vacío.");
@@ -1541,9 +1603,6 @@ sap.ui.define([
 
                 sap.ui.core.BusyIndicator.show(0);
 
-                console.log("Fecha Base Modelo:", that.oModelProyect.getProperty("/oCabecera/sFormFechaBase"));
-                console.log("Fecha Base Payload:", oPayload.BaseDate);
-                console.log("Payload completo:", oPayload);
 
                 oModel.create("/RegFacExtSet", oPayload, {
                     success: async function (oResp, oRawResponse) {
@@ -1640,10 +1699,8 @@ sap.ui.define([
                                                         });
                                                         that.oModelProyect.setProperty("/documentos", aNew);
                                                     } else {
-                                                        console.error("Error subiendo a SharePoint:", d.fileName, resp);
                                                     }
                                                 } catch (e2) {
-                                                    console.error("Excepción subiendo a SharePoint:", d?.fileName, e2);
                                                 }
                                             }
                                             oUpResult = {
@@ -1753,7 +1810,6 @@ sap.ui.define([
                     }
                 );
             } catch (e) {
-                console.error(e);
                 this.getMessageBox("error", "Ocurrió un error al intentar iniciar la eliminación.");
             }
         },
@@ -1796,14 +1852,12 @@ sap.ui.define([
                     },
                     error: function (e) {
                         sap.ui.core.BusyIndicator.hide(0);
-                        console.error(e);
                         that.getMessageBox("error", "Error al eliminar en SAP.");
                     }
                 });
 
             } catch (e) {
                 sap.ui.core.BusyIndicator.hide(0);
-                console.error(e);
                 that.getMessageBox("error", "Error preparando eliminación (TipOpera=02).");
             }
         },
@@ -1952,10 +2006,8 @@ sap.ui.define([
                         });
                         oMP.setProperty("/documentos", aNew);
                     } else {
-                        console.error("Error subiendo a SP:", d.fileName, resp);
                     }
                 } catch (e) {
-                    console.error("Excepción subiendo a SP:", d.fileName, e);
                 }
             }
 
@@ -2124,7 +2176,6 @@ sap.ui.define([
 
                 return true;
             } catch (e) {
-                console.warn("No se pudo restaurar estado por IdSap", e);
                 return false;
             }
         },
@@ -2382,32 +2433,6 @@ sap.ui.define([
                     return [];
                 });
         },
-        _applyDefaultEmbarquePE: function () {
-            const oMP = that.getModel("oModelProyect");
-            const oMD = that.getModel("oModelData");
-            if (!oMP || !oMD) return;
-
-            const sPaisEmbCurr = String(oMP.getProperty("/jDatosViaje/sPaisEmbarque") || "").trim().toUpperCase();
-            if (!sPaisEmbCurr) {
-                oMP.setProperty("/jDatosViaje/sPaisEmbarque", "PE");
-            }
-
-            const sPaisEmb = String(oMP.getProperty("/jDatosViaje/sPaisEmbarque") || "").trim().toUpperCase();
-            const aPortsEmb = that._filterPortsByCountryPrefix(sPaisEmb, true);
-
-            const sDefaultPort = "PECALLAO";
-            const sPuertoEmbCurr = String(oMP.getProperty("/jDatosViaje/sPuertaEmbarque") || "").trim().toUpperCase();
-
-            if (!sPuertoEmbCurr || !that._portExistsInList(aPortsEmb, sPuertoEmbCurr)) {
-                if (that._portExistsInList(aPortsEmb, sDefaultPort)) {
-                    oMP.setProperty("/jDatosViaje/sPuertaEmbarque", sDefaultPort);
-                } else if (aPortsEmb.length) {
-                    oMP.setProperty("/jDatosViaje/sPuertaEmbarque", aPortsEmb[0].sKey);
-                } else {
-                    oMP.setProperty("/jDatosViaje/sPuertaEmbarque", "");
-                }
-            }
-        },
         _loadByIdSap: function (sIdSap) {
             const _esc = (v) => String(v || "").replace(/'/g, "''");
 
@@ -2648,18 +2673,34 @@ sap.ui.define([
 
                             const aCar = (h.to_DatCar && h.to_DatCar.results) ? h.to_DatCar.results : [];
 
-                            const aBultos = aCar.map((b, idx) => ({
-                                key: idx + 1,
-                                nBulto: parseInt(pick(b, "PosBultop", "Posbulto", "PosBulto"), 10) || (idx + 1),
-                                qBulto: toStr(pick(b, "CantBulto", "Cantbulto", "CantBultop")),
-                                tipoBulto: toStr(pick(b, "TipoBulto", "Tipobulto", "TipoBultop")),
-                                desctipoBulto: "",
-                                pesoBulto: toStr(pick(b, "Kgs", "KGS")),
-                                longitudBulto: toStr(pick(b, "Cms", "CMS")),
-                                anchoBulto: toStr(pick(b, "Ancho", "AnchoCm")),
-                                alturaBulto: toStr(pick(b, "Altura", "AlturaCm")),
-                                cwBulto: toStr(pick(b, "Cw", "CW"))
-                            }));
+                            const hasBultoReal = function (b) {
+                                const qBulto = toStr(pick(b, "CantBulto", "Cantbulto", "CantBultop"));
+                                const tipoBulto = toStr(pick(b, "TipoBulto", "Tipobulto", "TipoBultop"));
+                                const kgs = toStr(pick(b, "Kgs", "KGS"));
+                                const cms = toStr(pick(b, "Cms", "CMS"));
+                                const cw = toStr(pick(b, "Cw", "CW"));
+
+                                return !!tipoBulto ||
+                                    toNum(qBulto) > 0 ||
+                                    toNum(kgs) > 0 ||
+                                    toNum(cms) > 0 ||
+                                    toNum(cw) > 0;
+                            };
+
+                            const aBultos = aCar
+                                .filter(hasBultoReal)
+                                .map((b, idx) => ({
+                                    key: idx + 1,
+                                    nBulto: parseInt(pick(b, "PosBultop", "Posbulto", "PosBulto"), 10) || (idx + 1),
+                                    qBulto: toStr(pick(b, "CantBulto", "Cantbulto", "CantBultop")),
+                                    tipoBulto: toStr(pick(b, "TipoBulto", "Tipobulto", "TipoBultop")),
+                                    desctipoBulto: "",
+                                    pesoBulto: toStr(pick(b, "Kgs", "KGS")),
+                                    longitudBulto: toStr(pick(b, "Cms", "CMS")),
+                                    anchoBulto: toStr(pick(b, "Ancho", "AnchoCm")),
+                                    alturaBulto: toStr(pick(b, "Altura", "AlturaCm")),
+                                    cwBulto: toStr(pick(b, "Cw", "CW"))
+                                }));
 
                             let aContenido = [];
                             if (aCar.length) {
@@ -3173,13 +3214,6 @@ sap.ui.define([
         _onPressGuardaViaje: function (oEvent) {
             this._onPressConfirmViaje(oEvent);
             this._onPressClose(oEvent);
-        },
-        _getTodayDDMMYYYY: function () {
-            const oToday = new Date();
-            const dd = String(oToday.getDate()).padStart(2, "0");
-            const mm = String(oToday.getMonth() + 1).padStart(2, "0");
-            const yyyy = oToday.getFullYear();
-            return `${dd}/${mm}/${yyyy}`;
         },
         _toNumCondAmount: function (v) {
             let s = String(v ?? "").trim();

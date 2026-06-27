@@ -83,7 +83,6 @@ sap.ui.define([
 			};
 			//Handler en caso de error
 			var onError = function (error) {
-				jQuery.sap.log.info("--cargaTablaClasePedido error--", error);
 				reject();
 				sap.ui.core.BusyIndicator.hide()
 				Busy.close();
@@ -110,7 +109,6 @@ sap.ui.define([
 			};
 			//Handler en caso de error
 			var onError = function (error) {
-				jQuery.sap.log.info("--cargaTablaClasePedido error--", error);
 				sap.ui.core.BusyIndicator.hide()
 				Busy.close();
 			};
@@ -732,7 +730,6 @@ sap.ui.define([
 			};
 			//Handler en caso de error
 			var onError = function (error) {
-				jQuery.sap.log.info("--cargaTablaClasePedido error--", error);
 			};
 			var reqHeaders = {
 				filters: arrayFiltros,
@@ -829,7 +826,6 @@ sap.ui.define([
 			};
 			//Handler en caso de error
 			var onError = function (error) {
-				jQuery.sap.log.info("--cargaTablaClasePedido error--", error);
 			};
 			var reqHeaders = {
 				filters: arrayFiltros,
@@ -1374,7 +1370,6 @@ sap.ui.define([
 		
 		    var image = imagenes.shift();
 			var t = this;
-		    console.log('loading image ' + image);
 			var img = new Image();
 			img.src = image;
 		    img.onload = function() {
@@ -1446,8 +1441,6 @@ sap.ui.define([
 		onGenerarPDFReport: function (that,value) {
 			const { jsPDF } = window.jspdf;
 
-			console.log("-----------GENERATE PDF-----------")
-			console.log(value)
 			var self = this;
 			var doc = new jsPDF('p', 'mm', 'a4');
 			//kassiel
@@ -1659,8 +1652,6 @@ sap.ui.define([
 			var self = this;
 			try{
 				return new Promise(function (resolve, reject) {
-					console.log("-----------GENERATE PDF-----------")
-					console.log(value)
 					const { jsPDF } = window.jspdf;
 					var doc = new jsPDF('p', 'mm', 'a4');
 					//kassiel

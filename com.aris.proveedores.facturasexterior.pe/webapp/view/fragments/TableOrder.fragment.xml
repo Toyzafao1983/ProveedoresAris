@@ -202,8 +202,8 @@
                                 decimalSeparator: '.'
                             }
                         }"
-                        valueLiveUpdate="true"
-                    liveChange="_onLiveChangeOrderQty"/>
+                        liveChange="_onLiveChangeOrderQty"
+                        change="_onChangeOrderQty"/>
                     <Text text="{oModelProyect>Um}"/>
                     <Text text="{path:'oModelProyect>Unitprice', formatter:'.formatTwoDecimalsMonto'}"/>
                     <Text text="{oModelProyect>Waers}"/>

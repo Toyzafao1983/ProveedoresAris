@@ -48,17 +48,6 @@ sap.ui.define([
                 let oUser = values[0].Resources[0];
                 const oUserProfile = that._applyProveedorUserProfile(oUser);
 
-                console.log("=== DEBUG LOGIN IAS ===");
-                console.log("oUser completo:", oUser);
-                console.log("groups:", oUserProfile.aGroups);
-                console.log("customAttribute4:", oUserProfile.sAttribute4);
-                console.log("customAttribute5:", oUserProfile.sAttribute5);
-                console.log("bIsExtAyc:", oUserProfile.bIsExtAyc);
-                console.log("bIsInterno:", oUserProfile.bIsInterno);
-                console.log("bIsIntComex:", oUserProfile.bIsIntComex);
-                console.log("sRolPrincipal:", oUserProfile.sRolPrincipal);
-                console.log("sExtBP:", oUserProfile.sExtBP);
-                console.log("sInternalBP:", oUserProfile.sInternalBP);
                 let StateInit = values[1].oResults;
                 const aStatesRaw =
                     (StateInit && StateInit.d && Array.isArray(StateInit.d.results)) ? StateInit.d.results :
@@ -747,10 +736,6 @@ sap.ui.define([
                         jFilter.cbSupplier = [sExtBP];
                     }
 
-                    console.log("=== DEBUG _getData ===");
-                    console.log("bIsExtAyc:", bIsExtAyc);
-                    console.log("sExtBP:", sExtBP);
-                    console.log("jFilter antes de construir:", JSON.parse(JSON.stringify(jFilter)));
 
                     const _add = (cond) => {
                         if (!cond) return;
@@ -819,8 +804,6 @@ sap.ui.define([
                     }
                     let sPath = sPathinit + sFilter + "&$format=json&sap-language=es-ES";
 
-                    console.log("sFilter final:", sFilter);
-                    console.log("sPath final:", sPath);
 
                     Services.getoDataERPSync(that, sPath, function (result) {
                         util.response.validateAjaxGetERPNotMessage(result, {
@@ -906,18 +889,6 @@ sap.ui.define([
                 }
             }
         },
-        readFileAsync: function (file) {
-            return new Promise((resolve, reject) => {
-                let reader = new FileReader();
-                reader.onload = function (event) {
-                    resolve(event.target.result);
-                };
-                reader.onerror = function (error) {
-                    reject(error);
-                };
-                reader.readAsText(file);
-            });
-        },
 
         _getConditionsOrderMain: function (sSalesDocument) {
             const that = this;
@@ -965,13 +936,6 @@ sap.ui.define([
             return oUser?.["urn:sap:cloud:scim:schemas:extension:custom:2.0:User"] || {};
         },
 
-        _getLoggedExtBP: function (oUser) {
-            const sCustom1 = this._getScimCustomAttributeValue(oUser, "customAttribute4");
-
-            console.log("=== DEBUG _getLoggedExtBP ===");
-            console.log("customAttribute4:", sCustom1);
-            return sCustom1 || "";
-        },
 
         _applyExtSupplierFilterLock: function () {
             const oMU = this.getOwnerComponent().getModel("oModelUser");
@@ -980,12 +944,8 @@ sap.ui.define([
             const bIsExtAyc = !!oMU?.getProperty("/bIsExtAyc");
             const sExtBP = String(oMU?.getProperty("/sExtBP") || "").trim();
 
-            console.log("=== DEBUG _applyExtSupplierFilterLock ===");
-            console.log("bIsExtAyc:", bIsExtAyc);
-            console.log("sExtBP:", sExtBP);
 
             if (!bIsExtAyc || !sExtBP || !oMP) {
-                console.log("No aplica lock EXT");
                 return;
             }
 
@@ -993,8 +953,6 @@ sap.ui.define([
             oMP.setProperty("/Main/filter/cbSupplier", [sExtBP]);
             oMP.setProperty("/Main/filter/cbSupplierText", [sExtBP]);
 
-            console.log("Filtro EXT aplicado");
-            console.log("Main/filter:", oMP.getProperty("/Main/filter"));
         },
         _getPendingAvailableQtyMain: function (oItem) {
             const _toNum = function (v) {

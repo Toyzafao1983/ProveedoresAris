@@ -65,15 +65,6 @@ sap.ui.define([
                 let oUser = values[0]?.Resources?.[0] || {};
                 const oUserProfile = that._applyProveedorUserProfile(oUser);
 
-                console.log("=== DEBUG LOGIN IAS MIS COMPROBANTES ===");
-                console.log("groups:", oUserProfile.aGroups);
-                console.log("customAttribute4:", oUserProfile.sAttribute4);
-                console.log("customAttribute5:", oUserProfile.sAttribute5);
-                console.log("bEsExterno:", oUserProfile.bIsExtAyc);
-                console.log("bEsInterno:", oUserProfile.bIsInterno);
-                console.log("sRolPrincipal:", oUserProfile.sRolPrincipal);
-                console.log("sExtBP:", oUserProfile.sExtBP);
-                console.log("sInternalBP:", oUserProfile.sInternalBP);
 
                 that.oModelData.setProperty("/oFactura", values[1].oResults);
                 that.oModelProyect.setProperty("/oFacturaNroCompro", values[1].aNroCompro);
@@ -237,14 +228,6 @@ sap.ui.define([
         },
 
 
-        _onPressFilterInit: function () {
-            const tbReporte = this._byId("vbTableMain").getItems().length > 0 ? this._byId("vbTableMain").getItems()[0] : null;
-            if (!this.isEmpty(tbReporte)) { tbReporte.removeSelections(true); }
-            that.setFragment("_dialogFilterInit", this.frgIdFilterInit, "FilterInit", this);
-
-            that._onClearComponentFilter(that.getI18nText("sStateInit"), [], true);
-            that._onClearDataFilter();
-        },
         _onClearComponentFilter: function (sState, oComponent, bOtherComponent) {
             if (sState === that.getI18nText("sStateInit")) {
                 let oContent = that["_dialogFilterInit"].getContent()[0];
@@ -335,18 +318,6 @@ sap.ui.define([
         _onClearDataFilter: function () {
             that.getModel("oModelProyect").setProperty("/", models.createModelProyect());
         },
-        _onPressNavigateDetail: function (oEvent) {
-            let oSource = oEvent.getSource();
-            let oParentRow = oSource.getParent();
-            let jRow = oParentRow.getBindingContext("oModelProyect");
-            let jData = jRow.getObject();
-            that.oModelProyect.setProperty("/oCabecera", jData);
-            that.oModelProyect.setProperty("/oDetalle", [jData]);
-
-            that.oRouter.navTo("Detail", {
-                app: jData.txt1
-            });
-        },
         _onPressExecute: function () {
 
             // 1) Validar obligatorios
@@ -383,7 +354,6 @@ sap.ui.define([
                     sap.ui.core.BusyIndicator.hide(0);
                 })
                 .catch(function (oError) {
-                    console.error("❌ Error en _onPressExecute/_getData:", oError);
                     that.getMessageBox("error", that.getI18nText("errorData"));
                     sap.ui.core.BusyIndicator.hide(0);
                 });
@@ -596,9 +566,6 @@ sap.ui.define([
                         }
                     });
 
-                    console.log("🔍 fProveedor:", aProvByProveedor);
-                    console.log("🔍 fCodSap  :", aProvByCodSap);
-                    console.log("🔍 Proveedores a consultar (unión):", aProveedoresToCall);
 
                     // 🔸 3) Construcción de la URL base (local vs BTP)
                     let sUrlBase = "";
@@ -639,7 +606,6 @@ sap.ui.define([
                     const fnCallOneProveedor = function (sProveedor) {
                         return new Promise(function (resolveOne) {
                             const sUrl = buildUrlForProveedor(sProveedor);
-                            console.log("➡️ _getData MisComprobantes - URL:", sUrl);
 
                             Services.getoDataERPSync(thatLocal, sUrl, function (result) {
                                 util.response.validateAjaxGetERPNotMessage(result, {
@@ -662,12 +628,10 @@ sap.ui.define([
                                             aHeadersAll = aHeadersAll.concat(aHeaders);
                                         }
 
-                                        console.log("   ➕ Proveedor", sProveedor, "trajo", aHeaders.length, "registros. Total acumulado:", aHeadersAll.length);
 
                                         resolveOne();
                                     },
                                     error: function (message) {
-                                        console.error("❌ Error en servicio MisComprobantes (proveedor:", sProveedor, "):", message);
                                         // No rompemos toda la consulta, seguimos con el resto
                                         resolveOne();
                                     }
@@ -678,7 +642,6 @@ sap.ui.define([
 
                     // Si no hay proveedores que consultar, devolvemos vacío
                     if (!aProveedoresToCall.length) {
-                        console.warn("⚠️ _getData llamado sin proveedores ni código SAP. Devuelvo vacío.");
                         oResp.sEstado = "S";
                         oResp.oResults = [];
                         thatLocal.oModelProyect.setProperty("/oReporte", []);
@@ -690,11 +653,9 @@ sap.ui.define([
 
                     Promise.all(aCalls).then(function () {
 
-                        console.log("✅ Total headers acumulados en todas las llamadas:", aHeadersAll.length);
 
                         // 1️⃣ Aplanar + fechas + nombres proveedor/receptor
                         const aFlat = flattenMisComprobantes(aHeadersAll);
-                        console.log("✅ Registros después de aplanar (aFlat):", aFlat.length);
 
                         // 2️⃣ Filtro de facturas por MultiCombo (NRO_FACTURA)
                         let aAfterFactura = aFlat;
@@ -704,16 +665,11 @@ sap.ui.define([
                                 return aFactSel.includes(oRow.NRO_FACTURA);
                             });
                         }
-                        console.log("✅ Registros después de filtro de facturas (aAfterFactura):", aAfterFactura.length);
 
                         // 3️⃣ Filtros de front (RECEPTOR_PAGO, FECHA_EMISION, etc.)
                         const aFinal = thatLocal._applyFrontendFilters(aAfterFactura, jFilter);
-                        console.log("✅ Registros finales después de filtros front (aFinal):", aFinal.length);
 
 
-
-                        /*const aFinal = thatLocal._applyFrontendFilters(aAfterFactura, jFilter);
-                        console.log("✅ Registros finales después de filtros front (aFinal):", aFinal.length);*/
 
                         oResp.sEstado = "S";
                         oResp.oResults = aFinal;
@@ -722,7 +678,6 @@ sap.ui.define([
                         resolve(oResp);
 
                     }).catch(function (err) {
-                        console.error("❌ Excepción en llamadas múltiples MisComprobantes:", err);
                         oResp.sEstado = "E";
                         oResp.oResults = [];
                         thatLocal.oModelProyect.setProperty("/oReporte", []);
@@ -732,7 +687,6 @@ sap.ui.define([
                 });
 
             } catch (oError) {
-                console.error("❌ Excepción en _getData:", oError);
                 that.getMessageBox("error", that.getI18nText("sErrorTry"));
                 return Promise.reject(oError);
             }
@@ -747,17 +701,7 @@ sap.ui.define([
             this._setLanguageModel("ing");
         },
 
-        _onPressFacturaExt: function () {
 
-            that.setFragment("_dialogRegistrarFac", this.frgIdRegistrarFac, "RegistrarFacExt", this);
-
-        },
-
-        _onPressFactura: function () {
-
-            that.setFragment("_dialogRegistrarFac1", this.frgIdRegistrarFac1, "RegistrarFac", this);
-
-        },
         ChangeXML: function (e, callback) {
             var identificadorNDAP;
             let self = this,
@@ -778,24 +722,8 @@ sap.ui.define([
             }
 
         },
-        readFileAsync: function (file) {
-            return new Promise((resolve, reject) => {
-                let reader = new FileReader();
-                reader.onload = function (event) {
-                    resolve(event.target.result);
-                };
-                reader.onerror = function (error) {
-                    reject(error);
-                };
-                reader.readAsText(file);
-            });
-        },
 
 
-        _formatPercent: function (value) {
-            const num = parseFloat(value);
-            return isNaN(num) ? "" : `${num.toFixed(1)}%`;
-        },
         _formatDate: function (sDate) {
             if (!sDate) return "";
 
@@ -809,149 +737,7 @@ sap.ui.define([
             });
         },
 
-        pressPDF: function (oEvent) {
 
-            var oItem = oEvent.getSource().getBindingContext("oModelProyect").getObject();
-
-            if (oItem.txtPDF) {
-
-                var sPath = sap.ui.require.toUrl("arisprovmiscomprobantes/" + oItem.txtPDF);
-
-
-                if (!this._pdfViewer) {
-                    this._pdfViewer = new sap.m.PDFViewer({
-                        title: "Factura",
-                        source: sPath
-                    });
-                    this.getView().addDependent(this._pdfViewer);
-                } else {
-                    this._pdfViewer.setSource(sPath);
-                }
-
-                // Abrir visor
-                this._pdfViewer.open();
-
-            } else {
-                sap.m.MessageToast.show("No hay PDF disponible para esta factura.");
-            }
-        },
-        _onPressUploadDocument: function () {
-
-            that.setFragment("_dialogsDocumentUpload", this.frgIdDocumentUpload, "DocumentUpload", this);
-
-        },
-
-        ChangeXML2: function (oEvent) {
-            const that = this;
-
-            // Llama a tu función ChangeXML para obtener el XML ya parseado (FacXMl)
-            this.ChangeXML(oEvent, async function () {
-                try {
-                    const oView = that.getView();
-                    const oModel = oView.getModel("oModelProyect");
-                    const oOData = oView.getModel("oModelEntity"); // Modelo OData definido en el manifest
-                    const aItems = oModel.getProperty("/oReporte") || [];
-                    const oFactura = FacXMl?.Invoice;
-
-                    if (!oFactura) {
-                        sap.m.MessageToast.show("⚠️ El archivo XML no contiene una estructura válida de factura electrónica (UBL).");
-                        return;
-                    }
-
-                    // 📦 Extraer campos principales del XML (SUNAT)
-                    const sNumeroFactura = oFactura?.ID?.value || "";
-                    const sFechaEmision = that._formatDate(oFactura?.IssueDate?.value);
-                    const sFechaVencimiento = that._formatDate(oFactura?.DueDate?.value);
-                    const sMontoTotal = parseFloat(oFactura?.LegalMonetaryTotal?.PayableAmount?.value || "0");
-                    const sRucProveedor = oFactura?.AccountingSupplierParty?.Party?.PartyIdentification?.ID?.value || "";
-                    const sRazonSocialProv = oFactura?.AccountingSupplierParty?.Party?.PartyLegalEntity?.RegistrationName?.value || "";
-                    const sRucCliente = oFactura?.AccountingCustomerParty?.Party?.PartyIdentification?.ID?.value || "";
-                    const sRazonSocialCli = oFactura?.AccountingCustomerParty?.Party?.PartyLegalEntity?.RegistrationName?.value || "";
-                    const sMoneda = oFactura?.LegalMonetaryTotal?.PayableAmount?.attributes?.currencyID || "PEN";
-                    const sFormaPago = oFactura?.PaymentMeans?.PaymentMeansCode?.value === "1" ? "Contado" : "Crédito";
-
-                    if (!sNumeroFactura || !sRucProveedor) {
-                        sap.m.MessageToast.show("❗ Falta información clave en el XML (número de factura o RUC del proveedor).");
-                        return;
-                    }
-
-                    // 🔁 Evitar duplicados
-                    const bDuplicado = aItems.some(item => item.NroCompro === sNumeroFactura);
-                    if (bDuplicado) {
-                        sap.m.MessageToast.show(`⚠️ La factura ${sNumeroFactura} ya fue cargada anteriormente.`);
-                        return;
-                    }
-
-                    // 🧩 Función de utilidad para formatear fecha según tipo OData
-                    const formatFecPagoPlan = (sFecha, bDateTime = false) => {
-                        if (!sFecha) return null;
-                        const dVen = new Date(sFecha);
-                        if (isNaN(dVen.getTime())) return null;
-
-                        // Si el campo en el servicio es tipo Edm.DateTime → /Date(...)/, caso contrario → YYYY-MM-DD
-                        return bDateTime
-                            ? `/Date(${dVen.getTime()})/`             // Para Edm.DateTime
-                            : dVen.toISOString().split("T")[0];       // Para Edm.Date
-                    };
-
-                    // 🕒 Fechas en formato OData
-                    const dHoy = new Date();
-                    const sFechaCarga = `/Date(${dHoy.getTime()})/`;
-
-                    // 👉 Escoge aquí según lo que uses en el backend:
-                    // true  → si tu servicio tiene FecPagoPlan como Edm.DateTime
-                    // false → si tu servicio tiene FecPagoPlan como Edm.Date
-                    const bUsaDateTime = false; // ⚙️ CAMBIA AQUÍ según tu servicio OData
-
-                    const sFecPagoPlan = formatFecPagoPlan(sFechaVencimiento, bUsaDateTime);
-
-                    // 🧾 Construir objeto para el servicio OData
-                    const oPayload = {
-                        NroCompro: sNumeroFactura,
-                        FecPagoPlan: sFecPagoPlan,
-                        TipoCompro: "Factura",
-                        Estado: "Facturado",
-                        FechaCarga: sFechaCarga,
-                        FormaPago: sFormaPago,
-                        // CodProveedor: sRucProveedor,
-                        NomProveedor: sRazonSocialProv,
-                        // CodCliente: sRucCliente,
-                        NomCliente: sRazonSocialCli,
-                        FacturaEmision: sFechaEmision,
-                        Moneda: sMoneda,
-                        Total: sMontoTotal.toFixed(2)
-                    };
-
-                    sap.ui.core.BusyIndicator.show(0);
-
-                    // 📤 Enviar al servicio OData (POST)
-                    await new Promise((resolve, reject) => {
-                        oOData.create("/RecordInvoicesSet", oPayload, {
-                            success: function (oData, response) {
-                                resolve(oData);
-                            },
-                            error: function (oError) {
-                                reject(oError);
-                            }
-                        });
-                    });
-
-                    sap.ui.core.BusyIndicator.hide();
-
-                    // ✅ Si se creó correctamente, agregar a la tabla local
-                    aItems.push(oPayload);
-                    oModel.setProperty("/oReporte", aItems);
-                    oModel.refresh(true);
-
-                    sap.m.MessageToast.show(`✅ Factura ${sNumeroFactura} registrada exitosamente en SAP.`);
-
-                } catch (error) {
-                    sap.ui.core.BusyIndicator.hide();
-                    console.error("❌ Error al procesar/enviar factura:", error);
-                    sap.m.MessageBox.error("Ocurrió un error al enviar la factura. Revisa la consola para más detalles.");
-                }
-            });
-        },
         onChange: function (oEvent) {
             const oModel = this.getView().getModel("oModelProyect");
             const aFiles = Array.from(oEvent.getParameter("files") || []);
@@ -1105,7 +891,6 @@ sap.ui.define([
                             resolve(aUnidadNegocioFinal);
                         },
                         error: function (err) {
-                            console.error("❌ Error cargando unidades de negocio:", err);
                             that.oModelProyect.setProperty("/oUnidadNegocio", []);
                             reject(err);
                         }
@@ -1227,13 +1012,10 @@ sap.ui.define([
                             // Código BP = BP
                             that._applyExternalSupplierRestriction();
 
-                            console.log("✅ Proveedores cargados:", aProveedorFinal);
-                            console.log("✅ Supplier map por BP:", mSupplierByCode);
 
                             resolve(aProveedorFinal);
                         },
                         error: function (err) {
-                            console.error("❌ Error cargando proveedores:", err);
                             that.oModelProyect.setProperty("/oFacturaProveedor", []);
                             that.oModelProyect.setProperty("/oFacturaProveedorAll", []);
                             that.oModelProyect.setProperty("/oSupplierByCode", {});
@@ -1443,58 +1225,9 @@ sap.ui.define([
         },
 
 
-        onReceptorPagoSuggestionItemSelected: function (oEvent) {
-            const oItem = oEvent.getParameter("selectedItem");
-            if (!oItem) { return; }
-
-            const sSupplierCode = oItem.getKey();  // 👈 SupplierCode
-            const sTexto = oItem.getText(); // "RUC - Nombre"
-
-            this._addReceptorPagoToken(sSupplierCode, sTexto);
-        },
 
 
-        onReceptorPagoTokenUpdate: function (oEvent) {
-            const sType = oEvent.getParameter("type");
-            if (sType !== "removed" && sType !== "removedAll") {
-                return;
-            }
 
-            const oModel = this.getModel("oModelProyect");
-            let aSel = oModel.getProperty("/Main/filter/fReceptorPago") || [];
-
-            const aRemoved = oEvent.getParameter("removedTokens") || [];
-            aRemoved.forEach(oToken => {
-                const sKey = oToken.getKey();
-                aSel = aSel.filter(ruc => ruc !== sKey);
-            });
-
-            oModel.setProperty("/Main/filter/fReceptorPago", aSel);
-        },
-
-        onValueHelpReceptorPago: function () {
-            if (!this._oVHReceptorPago) {
-                this._oVHReceptorPago = new sap.m.SelectDialog({
-                    title: this.getI18nText("filtros.receptorPago.vh.title"),
-                    multiSelect: true,
-                    rememberSelections: true,
-                    search: this._onSearchReceptorPagoDialog.bind(this),
-                    confirm: this._onConfirmReceptorPagoDialog.bind(this),
-                    cancel: this._onConfirmReceptorPagoDialog.bind(this),
-                    items: {
-                        path: "oModelProyect>/oFacturaProveedor",   // misma CDS que proveedor
-                        template: new sap.m.StandardListItem({
-                            title: "{oModelProyect>RUC}",
-                            description: "{oModelProyect>SupplierName}"
-                        })
-                    }
-                });
-
-                this.getView().addDependent(this._oVHReceptorPago);
-            }
-
-            this._oVHReceptorPago.open();
-        },
 
         _onSearchReceptorPagoDialog: function (oEvent) {
             const sValue = oEvent.getParameter("value");
@@ -1712,31 +1445,6 @@ sap.ui.define([
             if (!sName) { return sRUC; }
             return sRUC + " - " + sName;
         },
-        _flattenMisComprobantes: function (aHeaders) {
-            const aFlat = [];
-
-            (aHeaders || []).forEach(function (oHead) {
-                const oCommon = {
-                    DESDE: oHead.DESDE,
-                    HASTA: oHead.HASTA,
-                    ESTADOCOMPROBANTE: oHead.ESTADOCOMPROBANTE,
-                    PROVEEDOR_HEADER: oHead.PROVEEDOR,
-                    SOCIEDAD: oHead.SOCIEDAD,
-                    ID_CORR_HEADER: oHead.ID_CORR
-                };
-
-                const aDetalles =
-                    (oHead.toMisComprobantes && oHead.toMisComprobantes.results) || [];
-
-                if (aDetalles.length) {
-                    aDetalles.forEach(function (oDet) {
-                        aFlat.push(Object.assign({}, oCommon, oDet));
-                    });
-                }
-            });
-
-            return aFlat;
-        },
         /**
   * Aplica filtros que no van a la CDS, sobre el arreglo ya aplanado.
   * - Receptor de pago  → RECEPTOR_PAGO
@@ -1748,13 +1456,6 @@ sap.ui.define([
 
             let aResult = (aData || []).slice();
 
-            console.log("🎯 _applyFrontendFilters IN:", {
-                lenOriginal: aResult.length,
-                fReceptorPago: jFilter.fReceptorPago,
-                fFacturaSerie: jFilter.fFacturaSerie,
-                fFacturaCorrelativo: jFilter.fFacturaCorrelativo,
-                fFechaEmision: jFilter.fFechaEmision
-            });
 
             // 🔹 1. Receptor de pago (array de códigos)
             if (Array.isArray(jFilter.fReceptorPago) && jFilter.fReceptorPago.length) {
@@ -1765,7 +1466,6 @@ sap.ui.define([
                     return oRow.RECEPTOR_PAGO && oSetReceptor.has(oRow.RECEPTOR_PAGO);
                 });
 
-                console.log("   ▶ Después de filtro ReceptorPago:", before, "→", aResult.length);
             }
 
             // 🔹 2. Factura (Serie / Correlativo) sobre NRO_FACTURA
@@ -1789,7 +1489,6 @@ sap.ui.define([
 
                     return bOk;
                 });
-                console.log("   ▶ Después de filtro Serie/Correlativo:", before, "→", aResult.length);
             }
 
             // 🔹 3. Fecha de emisión (FECHA_EMISION)
@@ -1808,11 +1507,9 @@ sap.ui.define([
                         return sFechaRow === sFiltroStr;
                     });
 
-                    console.log("   ▶ Después de filtro FechaEmision:", before, "→", aResult.length);
                 }
             }
 
-            console.log("🎯 _applyFrontendFilters OUT:", aResult.length);
             return aResult;
         },
 
@@ -1932,9 +1629,6 @@ sap.ui.define([
                 ...aCodSapFilter
             ]));
 
-            console.log("🔍 [Facturas] fProveedor:", aProvFilter);
-            console.log("🔍 [Facturas] fCodSap  :", aCodSapFilter);
-            console.log("🔍 [Facturas] Proveedores a consultar (unión):", aProveedoresToQuery);
 
             if (!aProveedoresToQuery.length) {
                 // Nada que consultar
@@ -2003,7 +1697,6 @@ sap.ui.define([
                         aParams.push("sap-language=ES");
 
                         const sUrl = sUrlBase + "?" + aParams.join("&");
-                        console.log("➡️ _loadFacturasFilter URL (prov " + sProvCode + "):", sUrl);
 
                         Services.getoDataERPSync(thatLocal, sUrl, function (result) {
                             util.response.validateAjaxGetERPNotMessage(result, {
@@ -2042,11 +1735,9 @@ sap.ui.define([
                                         }
                                     });
 
-                                    console.log("   ➕ Facturas encontradas para", sProvCode, "→ total acumulado:", aFacturas.length);
                                     resolveProv();
                                 },
                                 error: function (message) {
-                                    console.error("❌ Error en _loadFacturasFilter (prov " + sProvCode + "):", message);
                                     // aunque falle este proveedor, seguimos con los demás
                                     resolveProv();
                                 }
@@ -2056,11 +1747,9 @@ sap.ui.define([
                 });
 
                 Promise.all(aPromises).then(function () {
-                    console.log("✅ [Facturas] Total facturas únicas cargadas:", aFacturas.length);
                     oModel.setProperty("/oFacturaLista", aFacturas);
                     resolve(aFacturas);
                 }).catch(function (err) {
-                    console.error("❌ Error general en _loadFacturasFilter:", err);
                     oModel.setProperty("/oFacturaLista", []);
                     resolve([]);
                 });
@@ -2198,23 +1887,6 @@ sap.ui.define([
         },
 
 
-        _onSearchCodSapDialog: function (oEvent) {
-            const sValue = oEvent.getParameter("value");
-            const oBinding = oEvent.getSource().getBinding("items");
-            if (!oBinding) { return; }
-
-            let aFilters = [];
-            if (sValue) {
-                aFilters = [
-                    new Filter([
-                        new Filter("SupplierCode", FilterOperator.Contains, sValue),
-                        new Filter("SupplierName", FilterOperator.Contains, sValue)
-                    ], false) // OR
-                ];
-            }
-
-            oBinding.filter(aFilters);
-        },
 
         _onConfirmCodSapDialog: function (oEvent) {
             const aSelectedItems = oEvent.getParameter("selectedItems") || [];

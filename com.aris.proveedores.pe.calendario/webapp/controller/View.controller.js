@@ -180,7 +180,6 @@ sap.ui.define([
             } else if (langKey === "ing") {
                 bundleName = "com.aris.proveedores.pe.calendario.i18n.i18n_ing";
             } else {
-                console.warn("Idioma no soportado:", langKey);
                 return;
             }
 
@@ -208,11 +207,9 @@ sap.ui.define([
                     url: urlDirect,
                     method: "GET",
                     success: (data) => {
-                        console.log("✅ Site encontrado directo:", data);
                         resolve(data.id);
                     },
                     error: (err) => {
-                        console.warn("⚠️ No funcionó ruta directa, probando búsqueda:", err);
 
                         // Fallback: búsqueda
                         const urlSearch = "/SharePointAris/sites?search=UA_AF";
@@ -222,14 +219,12 @@ sap.ui.define([
                             success: (data) => {
                                 if (data.value && data.value.length > 0) {
                                     const siteId = data.value[0].id;
-                                    console.log("✅ SiteId encontrado por búsqueda:", siteId);
                                     resolve(siteId);
                                 } else {
                                     reject("❌ No se encontró el site UA_AF");
                                 }
                             },
                             error: (err2) => {
-                                console.error("❌ Error también en búsqueda:", err2);
                                 reject(err2);
                             }
                         });
@@ -248,21 +243,18 @@ sap.ui.define([
                     method: "GET",
                     success: (data) => {
                         const drives = data.value || [];
-                        console.table(drives, ["id", "name", "driveType"]);
 
                         // Buscar por nombre estándar (en ES = Documentos, en EN = Shared Documents)
                         const preferidos = ["Documentos", "Shared Documents", "Documents"];
                         const hit = drives.find(d => preferidos.includes(d.name)) || drives[0];
 
                         if (hit) {
-                            console.log("✅ Drive encontrado:", hit.name, hit.id);
                             resolve(hit.id);
                         } else {
                             reject("❌ No se encontró drive válido en el site");
                         }
                     },
                     error: (err) => {
-                        console.error("❌ Error obteniendo drives:", err);
                         reject(err);
                     }
                 });
@@ -279,17 +271,14 @@ sap.ui.define([
                 const safe = subPath.split("/").map(encodeURIComponent).join("/");
 
                 const url = `/SharePointAris/sites/${siteId}/drives/${driveId}/root:/${safe}:/children`;
-                console.log("🔎 Listando archivos con:", url);
 
                 $.ajax({
                     url,
                     method: "GET",
                     success: (data) => {
-                        console.table(data.value || [], ["name", "id", "webUrl"]);
                         resolve(data.value || []);
                     },
                     error: (err) => {
-                        console.error("❌ Error listando archivos:", err);
                         reject(err);
                     }
                 });
@@ -297,26 +286,5 @@ sap.ui.define([
         },
 
         // 4) Flujo de prueba encadenado (para llamar con un botón)
-        _onProbarSharePoint: function () {
-            let siteId, driveId;
-            console.log("🚀 Iniciando prueba SharePoint...");
-
-            this._getSiteId()
-                .then(id => {
-                    siteId = id;
-                    return this._getDriveId(siteId);
-                })
-                .then(id => {
-                    driveId = id;
-                    return this._listarArchivos(siteId, driveId);
-                })
-                .then(files => {
-                    console.log(`✅ Total archivos obtenidos: ${files.length}`);
-                })
-                .catch(err => {
-                    console.error("💥 Error en la cadena de pruebas:", err);
-                });
-        }
-
-    });
+});
 });

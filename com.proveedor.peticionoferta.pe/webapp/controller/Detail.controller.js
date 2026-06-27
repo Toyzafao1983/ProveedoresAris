@@ -31,11 +31,6 @@ sap.ui.define([
             const sSupplierQuotation = aHash[3] || "";
 
             try {
-                console.log("========== [handleRouteMatched] INICIO ==========");
-                console.log("[handleRouteMatched] sHash:", sHash);
-                console.log("[handleRouteMatched] sNumPedido:", sNumPedido);
-                console.log("[handleRouteMatched] sSupplier:", sSupplier);
-                console.log("[handleRouteMatched] sSupplierQuotation:", sSupplierQuotation);
 
                 oModel.setProperty("/bEditMode", false);
 
@@ -49,9 +44,6 @@ sap.ui.define([
                 const oRespCab = aResults[1];
                 const oRespDiscount = aResults[2];
 
-                console.log("[handleRouteMatched] oRespDetalle:", oRespDetalle);
-                console.log("[handleRouteMatched] oRespCab:", oRespCab);
-                console.log("[handleRouteMatched] oRespDiscount:", oRespDiscount);
 
                 let aCabecera = oRespCab?.oResults || [];
                 let aCabeceraFiltro = aCabecera.filter(item =>
@@ -59,7 +51,6 @@ sap.ui.define([
                     String(item.Supplier || "") === String(sSupplier || "")
                 );
 
-                console.log("[handleRouteMatched] aCabeceraFiltro:", aCabeceraFiltro);
 
                 if (aCabeceraFiltro.length > 0) {
                     const oCabeceraData = aCabeceraFiltro[0];
@@ -133,7 +124,6 @@ sap.ui.define([
                     if (bSinDetalle || bSinDescripcion) {
                         const oDraftInfo = await this._prepareInitialDraftFromRFQ(sNumPedido, sSupplier);
 
-                        console.log("[handleRouteMatched] oDraftInfo:", oDraftInfo);
 
                         if (oDraftInfo && oDraftInfo.aDetalle && oDraftInfo.aDetalle.length) {
                             const mDraftByItem = {};
@@ -209,8 +199,6 @@ sap.ui.define([
                     sNumPedido
                 );
 
-                console.log("[handleRouteMatched] aDetalleBackend:", aDetalleBackend);
-                console.log("[handleRouteMatched] aDetalleMapeado antes de setear:", aDetalleMapeado);
 
                 oModel.setProperty("/oDetalle", aDetalleMapeado || []);
 
@@ -231,10 +219,6 @@ sap.ui.define([
                     oModel.setProperty(`/oDetalle/${idx}/_notaItemEditable`, false);
                 });
 
-                console.log("[handleRouteMatched] /oClientCabecera ANTES de recargar notas:",
-                    JSON.parse(JSON.stringify(oModel.getProperty("/oClientCabecera") || {})));
-                console.log("[handleRouteMatched] /oDetalle ANTES de recargar notas:",
-                    JSON.parse(JSON.stringify(oModel.getProperty("/oDetalle") || [])));
 
                 const sOfertaParaNotas =
                     sSupplierQuotation ||
@@ -252,20 +236,12 @@ sap.ui.define([
                     sDraftUUID ||
                     "";
 
-                console.log("[handleRouteMatched] sOfertaParaNotas:", sOfertaParaNotas);
-                console.log("[handleRouteMatched] sDraftUUIDOffer:", sDraftUUIDOffer);
-                console.log("[handleRouteMatched] sLastSavedDraftUUIDOffer:", sLastSavedDraftUUIDOffer);
-                console.log("[handleRouteMatched] sDraftUUID:", sDraftUUID);
-                console.log("[handleRouteMatched] sDraftForHeader:", sDraftForHeader);
 
                 // RECARGA DE NOTAS: SI YA EXISTE SupplierQuotation, LEER COMO DOCUMENTO ACTIVO.
                 // SI NO EXISTE AÚN, LEER COMO DRAFT.
                 if (sSupplierQuotation) {
-                    console.log("[handleRouteMatched] Documento publicado. Se cargarán notas ACTIVAS.");
-                    console.log("[handleRouteMatched] sSupplierQuotation:", sSupplierQuotation);
 
                     const sNotaHeaderActiva = await this._loadPublishedHeaderNote(sSupplierQuotation);
-                    console.log("[handleRouteMatched] Nota cabecera ACTIVA:", sNotaHeaderActiva);
 
                     oModel.setProperty("/oClientCabecera/Nota", sNotaHeaderActiva || "");
                     oModel.setProperty("/oClientCabecera/NotaEdit", sNotaHeaderActiva || "");
@@ -273,14 +249,10 @@ sap.ui.define([
                     await this._loadPublishedItemNotes(sSupplierQuotation);
 
                 } else if (sDraftForHeader) {
-                    console.log("[handleRouteMatched] Documento en draft. Se cargarán notas DRAFT.");
-                    console.log("[handleRouteMatched] sDraftForHeader:", sDraftForHeader);
 
                     const sObjectIdHeader = this._guidToObjectId(sDraftForHeader);
-                    console.log("[handleRouteMatched] Header ObjectID draft:", sObjectIdHeader);
 
                     const sNotaHeader = await this._loadHeaderNote(sObjectIdHeader);
-                    console.log("[handleRouteMatched] Nota cabecera cargada desde draft:", sNotaHeader);
 
                     oModel.setProperty("/oClientCabecera/Nota", sNotaHeader || "");
                     oModel.setProperty("/oClientCabecera/NotaEdit", sNotaHeader || "");
@@ -288,17 +260,11 @@ sap.ui.define([
                     if (sOfertaParaNotas && this._loadItemNotesFromStandardApi) {
                         await this._loadItemNotesFromStandardApi(sOfertaParaNotas, sDraftForHeader);
                     } else if (sOfertaParaNotas) {
-                        console.warn("[handleRouteMatched] _loadItemNotesFromStandardApi no existe.");
                     }
 
                 } else {
-                    console.warn("[handleRouteMatched] No hay SupplierQuotation ni Draft para recargar notas.");
                 }
 
-                console.log("[handleRouteMatched] /oClientCabecera DESPUÉS de recargar notas:",
-                    JSON.parse(JSON.stringify(oModel.getProperty("/oClientCabecera") || {})));
-                console.log("[handleRouteMatched] /oDetalle DESPUÉS de recargar notas:",
-                    JSON.parse(JSON.stringify(oModel.getProperty("/oDetalle") || [])));
 
                 let sIdioma = oModel.getProperty("/sIdioma");
                 var oDatePicker = this.byId("dtFechaEntrega");
@@ -314,10 +280,8 @@ sap.ui.define([
 
                 oModel.refresh(true);
 
-                console.log("========== [handleRouteMatched] FIN OK ==========");
 
             } catch (oError) {
-                console.error("Error en handleRouteMatched:", oError);
                 this.getMessageBox("error", this.getI18nText("errorUserData"));
             } finally {
                 sap.ui.core.BusyIndicator.hide(0);
@@ -588,9 +552,6 @@ sap.ui.define([
             const sFromStd = (oCabeceraStd.SupplierQuotation || "").trim();
             const sResult = sFromClient || sFromStd || "";
 
-            console.log("[_getCurrentSupplierQuotation] oClientCabecera.SupplierQuotation:", sFromClient);
-            console.log("[_getCurrentSupplierQuotation] oCabecera.SupplierQuotation:", sFromStd);
-            console.log("[_getCurrentSupplierQuotation] resultado:", sResult);
 
             return sResult;
         },
@@ -598,7 +559,6 @@ sap.ui.define([
             const oModel = this.getView().getModel("oModelProyect");
             const aDetalle = oModel.getProperty("/oDetalle") || [];
             if (!aDetalle.length || !sPurchaseOrder) {
-                console.log("ℹ️ _loadNotasDetalleStd: sin PurchaseOrder o sin detalle, no se cargan notas.");
                 return;
             }
             sap.ui.core.BusyIndicator.show(0);
@@ -635,19 +595,10 @@ sap.ui.define([
                     oModel.setProperty(`/oDetalle/${idx}/ItemNotaEdit`, sNota);
                     oModel.setProperty(`/oDetalle/${idx}/_notaItemEditable`, false);
 
-                    console.log(
-                        `Fila ${idx} → rawItem=${rawItem}, keyUsada=${sItemKey}, nota=`,
-                        sNota
-                    );
                 });
 
                 oModel.refresh(true);
-                console.log(
-                    "📦 Detalle final con notas estándar:",
-                    JSON.stringify(oModel.getProperty("/oDetalle"), null, 2)
-                );
             } catch (e) {
-                console.error("⚠️ Error en _loadNotasDetalleStd (Z):", e);
             } finally {
                 sap.ui.core.BusyIndicator.hide(0);
             }
@@ -678,7 +629,6 @@ sap.ui.define([
                     util.response.validateAjaxGetERPNotMessage(result, {
                         success: function (oData) {
 
-                            console.log("🔍 oData notas PO:", JSON.stringify(oData, null, 2));
 
                             let aHeaders = [];
 
@@ -692,7 +642,6 @@ sap.ui.define([
                                 aHeaders = oData.d.results;
                             }
 
-                            console.log("📌 aHeaders notas:", aHeaders);
 
                             const mNotesByItem = {};
                             const mSeenLines = {};
@@ -743,7 +692,6 @@ sap.ui.define([
                                 });
                             });
 
-                            console.log("✅ mNotesByItem construido (controlando duplicados solo si hay varias cabeceras):", mNotesByItem);
                             resolve(mNotesByItem);
                         },
                         error: function () {
@@ -761,12 +709,10 @@ sap.ui.define([
                 return;
             }
 
-            console.log("🧾 _loadNotasDetalle (estándar) - SQ/PurchaseOrder:", sSupplierQuotation);
 
             try {
                 // 1) Traemos todas las notas estándar de esa oferta/pedido
                 const mNotesByItem = await this._getPurOrdNotesMap(sSupplierQuotation);
-                console.log("📚 Notas estándar por posición:", mNotesByItem);
 
                 // 2) Recorremos el detalle UI y seteamos las notas por línea
                 for (let i = 0; i < aDetalle.length; i++) {
@@ -787,15 +733,11 @@ sap.ui.define([
                     );
                     oModel.setProperty(sBasePath + "/_notaItemEditable", false);
 
-                    console.log("✅ Nota estándar seteada en", sBasePath, "=>", sNota);
                 }
 
                 oModel.refresh(true);
-                console.log("📦 Detalle final con notas estándar:",
-                    JSON.stringify(oModel.getProperty("/oDetalle"), null, 2));
 
             } catch (e) {
-                console.error("⚠️ Error en _loadNotasDetalle (estándar):", e);
             }
         },
         _splitInChunks: function (sText, nSize) {
@@ -877,7 +819,6 @@ sap.ui.define([
                             resolve();
                         },
                         error: function (oError) {
-                            console.error("❌ Error borrando nota:", oError);
                             reject(oError);
                         }
                     });
@@ -955,10 +896,8 @@ sap.ui.define([
 
                 oModel.refresh(true);
 
-                console.log("=== [onGuardar] SOLO LOCAL - no se envió nada a SAP ===");
                 sap.m.MessageToast.show("Cambios guardados localmente. Se enviarán a SAP al publicar la oferta.");
             } catch (e) {
-                console.error("❌ Error en guardado local:", e);
                 sap.m.MessageBox.error("No se pudieron guardar los cambios localmente.");
             }
         },
@@ -968,12 +907,10 @@ sap.ui.define([
             sap.ui.core.BusyIndicator.show(0);
 
             try {
-                console.log("========== [onExecutePetition] INICIO ==========");
 
                 let sSupplierQuotation = this._getCurrentSupplierQuotation();
                 let sNewHashAfterPublish = "";
 
-                console.log("[onExecutePetition] SupplierQuotation inicial:", sSupplierQuotation);
 
                 // 1) Si no existe oferta, crearla primero
                 if (!sSupplierQuotation) {
@@ -981,7 +918,6 @@ sap.ui.define([
                     sSupplierQuotation = oCreated?.SupplierQuotation || "";
                     sNewHashAfterPublish = oCreated?.NewHash || "";
 
-                    console.log("[onExecutePetition] Oferta creada:", oCreated);
 
                     if (!sSupplierQuotation) {
                         throw new Error("No se pudo generar el número de oferta.");
@@ -1000,35 +936,22 @@ sap.ui.define([
                 oModel.setProperty("/oCabecera/DraftUUIDOffer", sDraftUUID);
                 oModel.setProperty("/oCabecera/LastSavedDraftUUIDOffer", sDraftUUID);
 
-                console.log("[onExecutePetition] DraftUUID de trabajo:", sDraftUUID);
-                console.log("[onExecutePetition] LastSavedDraftUUIDOffer:", oModel.getProperty("/oCabecera/LastSavedDraftUUIDOffer"));
 
                 // 3) Persistir posiciones del detalle al MISMO draft
-                console.log("[onExecutePetition] Persistiendo posiciones del detalle...");
                 await this._persistDraftItemsFromLocalModel(sSupplierQuotation);
 
                 // 4) Guardar nota cabecera
                 const sNotaCabecera = (oModel.getProperty("/oClientCabecera/NotaEdit") || "").trim();
-                console.log("[onExecutePetition] Nota cabecera a guardar:", sNotaCabecera);
 
-                console.log("========== [DEBUG NOTAS] ANTES DE GUARDAR ==========");
-                console.log("[DEBUG NOTAS] SupplierQuotation:", sSupplierQuotation);
-                console.log("[DEBUG NOTAS] DraftUUID header:", sDraftUUID);
-                console.log("[DEBUG NOTAS] Nota cabecera model /oClientCabecera/NotaEdit:", oModel.getProperty("/oClientCabecera/NotaEdit"));
-                console.log("[DEBUG NOTAS] Nota cabecera model /oClientCabecera/Nota:", oModel.getProperty("/oClientCabecera/Nota"));
-                console.log("[DEBUG NOTAS] Detalle completo:", JSON.parse(JSON.stringify(oModel.getProperty("/oDetalle") || [])));
 
                 const oHeaderSaveResp = await this._saveHeaderNoteStandard(
                     sSupplierQuotation,
                     sDraftUUID,
                     sNotaCabecera
                 );
-                console.log("[DEBUG NOTAS] Resultado guardado cabecera:", oHeaderSaveResp);
 
                 // 5) Guardar notas de posición
-                console.log("[onExecutePetition] Iniciando guardado de notas de posición...");
                 await this._saveAllItemNotesStandard(sSupplierQuotation);
-                console.log("[DEBUG NOTAS] Fin guardado de notas de posición");
 
                 // 6) ACTIVAR draft antes del submit
                 const sActivateUrl =
@@ -1037,7 +960,6 @@ sap.ui.define([
                     `&DraftUUID=guid'${sDraftUUID}'` +
                     `&IsActiveEntity=false`;
 
-                console.log("[onExecutePetition] Activate URL:", sActivateUrl);
 
                 const activateResp = await Services.postoDataERPAsync(
                     this,
@@ -1046,14 +968,11 @@ sap.ui.define([
                     {}
                 );
 
-                console.log("[onExecutePetition] activateResp:", activateResp);
 
                 // CONSERVAR el draft real para la recarga posterior de notas
                 oModel.setProperty("/oCabecera/DraftUUIDOffer", sDraftUUID);
                 oModel.setProperty("/oCabecera/LastSavedDraftUUIDOffer", sDraftUUID);
 
-                console.log("[onExecutePetition] DraftUUIDOffer conservado para recarga:", sDraftUUID);
-                console.log("[onExecutePetition] LastSavedDraftUUIDOffer conservado:", sDraftUUID);
 
                 // 7) Submit final sobre la entidad activa
                 const submitResp = await this._submitQuotationWithRetry(
@@ -1063,7 +982,6 @@ sap.ui.define([
                     1200
                 );
 
-                console.log("[onExecutePetition] submitResp:", submitResp);
 
                 const sStatus = submitResp?.d?.QtnLifecycleStatus || "02";
                 const sStatusText = submitResp?.d?.QtnLifecycleStatus_Text || "Cotizado";
@@ -1084,9 +1002,7 @@ sap.ui.define([
                     }
                 }
 
-                console.log("========== [onExecutePetition] FIN OK ==========");
             } catch (error) {
-                console.error("❌ [onExecutePetition] ERROR:", error);
                 sap.m.MessageBox.error(error.message || "Error al publicar la oferta.");
             } finally {
                 sap.ui.core.BusyIndicator.hide(0);
@@ -1222,7 +1138,6 @@ sap.ui.define([
                 );
 
             } catch (e) {
-                console.error("❌ Error en onGenerarOferta:", e);
                 sap.m.MessageBox.error(
                     e.message || "Ocurrió un error al generar la oferta desde la petición."
                 );
@@ -1320,16 +1235,6 @@ sap.ui.define([
             // Se guarda como número. El XML se encarga de mostrarlo como 405,000.00
             oModel.setProperty(oContext.getPath() + "/SubTotal", subtotal);
         },
-        _onObjectMatched: function (oEvent) {
-            // Obtener parámetros desde la URL
-            const sRequestForQuotation = oEvent.getParameter("arguments").app;
-            const sSupplier = oEvent.getParameter("arguments").supplier;
-            // Guardarlos en el modelo
-            const oModel = this.getView().getModel("oModelProyect");
-            oModel.setProperty("/oCabecera/RequestForQuotation", sRequestForQuotation);
-            oModel.setProperty("/oCabecera/Supplier", sSupplier);
-            this._loadDetailData(sRequestForQuotation, sSupplier);
-        },
         _loadDetailData: function (sRequestForQuotation, sSupplier) {
             const that = this;
             this._getPetOffert(sRequestForQuotation, sSupplier)
@@ -1360,7 +1265,6 @@ sap.ui.define([
                 }
                 return null;
             } catch (e) {
-                console.error("❌ Error formateando fecha SAP:", e);
                 return null;
             }
         },
@@ -1388,7 +1292,6 @@ sap.ui.define([
                 return sapDate;
 
             } catch (e) {
-                console.warn("⚠️ Error parseando fecha:", sapDate, e);
                 return sapDate;
             }
         },
@@ -1446,13 +1349,8 @@ sap.ui.define([
         _ensureItemDraft: async function (sSupplierQuotation, vItem) {
             const sServiceUrl = this._getQtnServiceUrl();
 
-            console.log("========== [_ensureItemDraft] INICIO ==========");
-            console.log("[_ensureItemDraft] sSupplierQuotation:", sSupplierQuotation);
-            console.log("[_ensureItemDraft] vItem:", vItem);
-            console.log("[_ensureItemDraft] sServiceUrl:", sServiceUrl);
 
             if (!sSupplierQuotation || vItem == null) {
-                console.error("[_ensureItemDraft] ERROR: faltan datos", { sSupplierQuotation, vItem });
                 throw new Error("Faltan datos para generar borrador de posición (SQ o item).");
             }
 
@@ -1462,7 +1360,6 @@ sap.ui.define([
                 `&DraftUUID=guid'00000000-0000-0000-0000-000000000000'` +
                 `&IsActiveEntity=true`;
 
-            console.log("[_ensureItemDraft] URL edit cabecera:", sUrlEdit);
 
             const oEditResp = await Services.postoDataERPAsync(
                 this,
@@ -1471,7 +1368,6 @@ sap.ui.define([
                 {}
             );
 
-            console.log("[_ensureItemDraft] Response edit cabecera:", oEditResp);
 
             const sDraftUUIDHeader =
                 oEditResp?.d?.DraftUUID ||
@@ -1480,10 +1376,8 @@ sap.ui.define([
                 oEditResp?.DraftUUID ||
                 null;
 
-            console.log("[_ensureItemDraft] sDraftUUIDHeader:", sDraftUUIDHeader);
 
             if (!sDraftUUIDHeader) {
-                console.error("[_ensureItemDraft] ERROR: no se obtuvo DraftUUIDHeader");
                 throw new Error("No se obtuvo DraftUUID de cabecera para la oferta.");
             }
 
@@ -1500,8 +1394,6 @@ sap.ui.define([
                 `DraftUUID=guid'00000000-0000-0000-0000-000000000000',` +
                 `IsActiveEntity=true)/SiblingEntity?$format=json`;
 
-            console.log("[_ensureItemDraft] sItemPadded:", sItemPadded);
-            console.log("[_ensureItemDraft] URL item sibling:", sUrlItem);
 
             const oItemResp = await Services.oDataConsultODATAAsync(
                 "GET",
@@ -1512,22 +1404,18 @@ sap.ui.define([
                 this
             );
 
-            console.log("[_ensureItemDraft] Response item sibling:", oItemResp);
 
             const sDraftUUIDItem =
                 oItemResp?.d?.DraftUUID ||
                 oItemResp?.DraftUUID ||
                 null;
 
-            console.log("[_ensureItemDraft] sDraftUUIDItem:", sDraftUUIDItem);
 
             if (!sDraftUUIDItem) {
-                console.error("[_ensureItemDraft] ERROR: no se obtuvo DraftUUIDItem");
                 throw new Error("No se obtuvo DraftUUID de posición para la oferta.");
             }
 
             const sObjectIDItem = this._guidToObjectId(sDraftUUIDItem);
-            console.log("[_ensureItemDraft] sObjectIDItem:", sObjectIDItem);
 
             const oResult = {
                 DraftUUIDHeader: sDraftUUIDHeader,
@@ -1536,28 +1424,18 @@ sap.ui.define([
                 ItemPadded: sItemPadded
             };
 
-            console.log("[_ensureItemDraft] Resultado:", JSON.parse(JSON.stringify(oResult)));
-            console.log("========== [_ensureItemDraft] FIN OK ==========");
 
             return oResult;
         },
         _saveItemNoteStandard: async function (sSupplierQuotation, oItemDraftInfo, sNota) {
             const sNoteServiceUrl = this._getNoteServiceUrl();
 
-            console.log("========== [_saveItemNoteStandard] INICIO ==========");
-            console.log("[_saveItemNoteStandard] sSupplierQuotation:", sSupplierQuotation);
-            console.log("[_saveItemNoteStandard] oItemDraftInfo:", JSON.parse(JSON.stringify(oItemDraftInfo || {})));
-            console.log("[_saveItemNoteStandard] sNota raw:", sNota);
-            console.log("[_saveItemNoteStandard] sNota trim:", (sNota || "").trim());
-            console.log("[_saveItemNoteStandard] sNoteServiceUrl:", sNoteServiceUrl);
 
             if (!oItemDraftInfo || !oItemDraftInfo.ObjectIDItem) {
-                console.error("[_saveItemNoteStandard] ERROR: faltan datos de borrador de posición", oItemDraftInfo);
                 throw new Error("Faltan datos de borrador de posición para nota estándar.");
             }
 
             if (!sNota) {
-                console.log("[_saveItemNoteStandard] Modo: ELIMINAR nota ITEM_NOTE");
 
                 const sFilterStr =
                     `ObjectID eq '${oItemDraftInfo.ObjectIDItem}' ` +
@@ -1571,8 +1449,6 @@ sap.ui.define([
                     `&$filter=${encodeURIComponent(sFilterStr)}` +
                     `&$format=json`;
 
-                console.log("[_saveItemNoteStandard] DELETE filter:", sFilterStr);
-                console.log("[_saveItemNoteStandard] DELETE select URL:", sUrlSelect);
 
                 const oResp = await Services.oDataConsultODATAAsync(
                     "GET",
@@ -1583,10 +1459,8 @@ sap.ui.define([
                     this
                 );
 
-                console.log("[_saveItemNoteStandard] DELETE select response:", oResp);
 
                 const aResults = oResp?.d?.results || [];
-                console.log("[_saveItemNoteStandard] DELETE aResults:", aResults);
 
                 if (aResults.length) {
                     const aDelPromises = aResults.map(oNote => {
@@ -1595,7 +1469,6 @@ sap.ui.define([
                             `NoteID=guid'${oNote.NoteID}',` +
                             `IsActiveEntity=false)`;
 
-                        console.log("[_saveItemNoteStandard] DELETE entity URL:", sEntityUrl);
 
                         return Services.postoDataERPWithHeadersAsync(
                             this,
@@ -1607,12 +1480,9 @@ sap.ui.define([
                     });
 
                     const aDeleteResp = await Promise.all(aDelPromises);
-                    console.log("[_saveItemNoteStandard] DELETE responses:", aDeleteResp);
                 } else {
-                    console.warn("[_saveItemNoteStandard] No se encontraron notas para eliminar.");
                 }
             } else {
-                console.log("[_saveItemNoteStandard] Modo: CREAR / ACTUALIZAR nota ITEM_NOTE");
 
                 const sCollectionPath = `${sNoteServiceUrl}C_Sgbt_Nte_Cds_Apitp`;
 
@@ -1634,14 +1504,6 @@ sap.ui.define([
                     "gbtnte-objectNodeType": "SupplierQuotationItem"
                 };
 
-                console.log("[_saveItemNoteStandard] POST collection path:", sCollectionPath);
-                console.log("[_saveItemNoteStandard] POST body:", JSON.parse(JSON.stringify(oBody)));
-                console.log("[_saveItemNoteStandard] POST headers:", JSON.parse(JSON.stringify(oHeaders)));
-                console.log("[_saveItemNoteStandard] ObjectIDItem:", oItemDraftInfo.ObjectIDItem);
-                console.log("[_saveItemNoteStandard] ItemPadded:", oItemDraftInfo.ItemPadded);
-                console.log("[_saveItemNoteStandard] Header gbtnte-objectId:", sSupplierQuotation + oItemDraftInfo.ItemPadded);
-                console.log("[_saveItemNoteStandard] DraftUUIDHeader:", oItemDraftInfo.DraftUUIDHeader);
-                console.log("[_saveItemNoteStandard] DraftUUIDItem:", oItemDraftInfo.DraftUUIDItem);
 
                 const oPostResp = await Services.postoDataERPWithHeadersAsync(
                     this,
@@ -1651,7 +1513,6 @@ sap.ui.define([
                     oHeaders
                 );
 
-                console.log("[_saveItemNoteStandard] POST response:", oPostResp);
             }
 
             // Activar borrador de cabecera
@@ -1662,8 +1523,6 @@ sap.ui.define([
                 `&DraftUUID=guid'${oItemDraftInfo.DraftUUIDHeader}'` +
                 `&IsActiveEntity=false`;
 
-            console.log("[_saveItemNoteStandard] Activate service URL:", sQtnServiceUrl);
-            console.log("[_saveItemNoteStandard] Activate URL:", sActivateUrl);
 
             const oActivateResp = await Services.postNoBodyERPAsync(
                 this,
@@ -1671,32 +1530,22 @@ sap.ui.define([
                 sActivateUrl
             );
 
-            console.log("[_saveItemNoteStandard] Activate response:", oActivateResp);
-            console.log("========== [_saveItemNoteStandard] FIN OK ==========");
         },
         _saveAllItemNotesStandard: async function (sSupplierQuotation) {
             const oModel = this.getView().getModel("oModelProyect");
             const aDetalle = oModel.getProperty("/oDetalle") || [];
             const sServiceUrl = this._getQtnServiceUrl();
 
-            console.log("========== [_saveAllItemNotesStandard] INICIO ==========");
-            console.log("[_saveAllItemNotesStandard] SupplierQuotation:", sSupplierQuotation);
-            console.log("[_saveAllItemNotesStandard] aDetalle inicial:", JSON.parse(JSON.stringify(aDetalle)));
 
             if (!sSupplierQuotation || !aDetalle.length) {
-                console.log("[_saveAllItemNotesStandard] No hay SupplierQuotation o no hay detalle. Se omite.");
-                console.log("========== [_saveAllItemNotesStandard] FIN SIN PROCESAR ==========");
                 return;
             }
 
             let sDraftUUIDHeader = oModel.getProperty("/oCabecera/DraftUUIDOffer") || "";
-            console.log("[_saveAllItemNotesStandard] DraftUUIDHeader inicial modelo:", sDraftUUIDHeader);
 
             sDraftUUIDHeader = await this._ensureOfferDraftForSave(sSupplierQuotation, sDraftUUIDHeader);
             oModel.setProperty("/oCabecera/DraftUUIDOffer", sDraftUUIDHeader);
 
-            console.log("[_saveAllItemNotesStandard] DraftUUIDHeader final:", sDraftUUIDHeader);
-            console.log("[_saveAllItemNotesStandard] ObjectID header:", this._guidToObjectId(sDraftUUIDHeader));
 
             const sItemsUrl =
                 `${sServiceUrl}C_SuplrQuotationEnhWD(` +
@@ -1704,7 +1553,6 @@ sap.ui.define([
                 `DraftUUID=guid'${sDraftUUIDHeader}',` +
                 `IsActiveEntity=false)/to_SuplrQuotationItemEnhWD?$format=json`;
 
-            console.log("[_saveAllItemNotesStandard] URL lectura items draft:", sItemsUrl);
 
             const oItemsResp = await Services.oDataConsultODATAAsync(
                 "GET",
@@ -1716,7 +1564,6 @@ sap.ui.define([
             );
 
             const aItemsDraft = oItemsResp?.d?.results || [];
-            console.log("[_saveAllItemNotesStandard] aItemsDraft leídos:", JSON.parse(JSON.stringify(aItemsDraft)));
 
             const mItemsByReqItem = {};
             aItemsDraft.forEach(item => {
@@ -1729,7 +1576,6 @@ sap.ui.define([
                 mItemsByReqItem[sReqItem] = item;
             });
 
-            console.log("[_saveAllItemNotesStandard] mItemsByReqItem:", JSON.parse(JSON.stringify(mItemsByReqItem)));
 
             for (let i = 0; i < aDetalle.length; i++) {
                 const oItem = aDetalle[i];
@@ -1741,22 +1587,13 @@ sap.ui.define([
                     ""
                 ).padStart(5, "0");
 
-                console.log("--------------------------------------------------");
-                console.log(`[_saveAllItemNotesStandard] Procesando índice ${i}`);
-                console.log("[_saveAllItemNotesStandard] oItem modelo:", JSON.parse(JSON.stringify(oItem)));
-                console.log("[_saveAllItemNotesStandard] sReqItem:", sReqItem);
-                console.log("[_saveAllItemNotesStandard] ItemNota:", oItem.ItemNota);
-                console.log("[_saveAllItemNotesStandard] ItemNotaEdit:", oItem.ItemNotaEdit);
-                console.log("[_saveAllItemNotesStandard] sNota(trim):", sNota);
 
                 const oItemDraft = mItemsByReqItem[sReqItem];
 
                 if (!oItemDraft) {
-                    console.warn("[_saveAllItemNotesStandard] No se encontró item draft para nota:", sReqItem);
                     continue;
                 }
 
-                console.log("[_saveAllItemNotesStandard] oItemDraft encontrado:", JSON.parse(JSON.stringify(oItemDraft)));
 
                 const sSupplierQuotationItem = String(
                     oItemDraft.SupplierQuotationItem || sReqItem
@@ -1764,12 +1601,8 @@ sap.ui.define([
 
                 const sDraftUUIDItem = oItemDraft?.DraftUUID || sDraftUUIDHeader || "";
 
-                console.log("[_saveAllItemNotesStandard] sSupplierQuotationItem:", sSupplierQuotationItem);
-                console.log("[_saveAllItemNotesStandard] sDraftUUIDItem:", sDraftUUIDItem);
-                console.log("[_saveAllItemNotesStandard] ObjectIDItem:", this._guidToObjectId(sDraftUUIDItem));
 
                 if (!sDraftUUIDItem) {
-                    console.warn("[_saveAllItemNotesStandard] No se obtuvo DraftUUIDItem para nota:", sReqItem);
                     continue;
                 }
 
@@ -1780,7 +1613,6 @@ sap.ui.define([
                     ItemPadded: sSupplierQuotationItem
                 };
 
-                console.log("[_saveAllItemNotesStandard] oItemDraftInfo a enviar:", JSON.parse(JSON.stringify(oItemDraftInfo)));
 
                 try {
                     const oRespItem = await this._saveItemNoteStandardNoActivate(
@@ -1789,16 +1621,7 @@ sap.ui.define([
                         sNota
                     );
 
-                    console.log("[_saveAllItemNotesStandard] Resultado _saveItemNoteStandardNoActivate:", oRespItem);
                 } catch (eItem) {
-                    console.error("[_saveAllItemNotesStandard] Error guardando nota de item:", {
-                        index: i,
-                        sReqItem,
-                        sSupplierQuotationItem,
-                        sDraftUUIDItem,
-                        ObjectIDItem: oItemDraftInfo.ObjectIDItem,
-                        error: eItem
-                    });
                     throw eItem;
                 }
 
@@ -1814,29 +1637,15 @@ sap.ui.define([
                     sNota ? sNota.split(/\r?\n/).length : 0
                 );
 
-                console.log("[_saveAllItemNotesStandard] Modelo actualizado para índice:", i, {
-                    ItemNota: oModel.getProperty(`/oDetalle/${i}/ItemNota`),
-                    ItemNotaEdit: oModel.getProperty(`/oDetalle/${i}/ItemNotaEdit`),
-                    _notaItemEditable: oModel.getProperty(`/oDetalle/${i}/_notaItemEditable`),
-                    ItemNotaOfepos: oModel.getProperty(`/oDetalle/${i}/ItemNotaOfepos`),
-                    ItemNotaLineCount: oModel.getProperty(`/oDetalle/${i}/ItemNotaLineCount`)
-                });
             }
 
             oModel.refresh(true);
 
-            console.log("[_saveAllItemNotesStandard] /oDetalle final modelo:", JSON.parse(JSON.stringify(oModel.getProperty("/oDetalle") || [])));
-            console.log("========== [_saveAllItemNotesStandard] FIN OK ==========");
         },
         _saveHeaderNoteStandard: async function (sSupplierQuotation, sDraftUUID, sNota) {
             const sObjectId = this._guidToObjectId(sDraftUUID);
             const sNoteServiceUrl = this._getNoteServiceUrl();
 
-            console.log("========== [_saveHeaderNoteStandard] INICIO ==========");
-            console.log("[_saveHeaderNoteStandard] SupplierQuotation:", sSupplierQuotation);
-            console.log("[_saveHeaderNoteStandard] DraftUUID:", sDraftUUID);
-            console.log("[_saveHeaderNoteStandard] ObjectID convertido:", sObjectId);
-            console.log("[_saveHeaderNoteStandard] Nota recibida:", sNota);
 
             const sFilterStr =
                 `ObjectID eq '${sObjectId}' ` +
@@ -1850,7 +1659,6 @@ sap.ui.define([
                 `&$filter=${encodeURIComponent(sFilterStr)}` +
                 `&$format=json`;
 
-            console.log("[_saveHeaderNoteStandard] URL búsqueda previa:", sUrlSelect);
 
             const oPrev = await Services.oDataConsultODATAAsync(
                 "GET",
@@ -1861,7 +1669,6 @@ sap.ui.define([
                 this
             );
 
-            console.log("[_saveHeaderNoteStandard] Notas existentes antes de guardar:", oPrev?.d?.results || []);
 
             if (!String(sNota || "").trim()) {
                 const aResults = oPrev?.d?.results || [];
@@ -1872,7 +1679,6 @@ sap.ui.define([
                         `NoteID=guid'${oNote.NoteID}',` +
                         `IsActiveEntity=false)`;
 
-                    console.log("[_saveHeaderNoteStandard] DELETE nota cabecera URL:", sEntityUrl);
 
                     await Services.postoDataERPWithHeadersAsync(
                         this,
@@ -1892,8 +1698,6 @@ sap.ui.define([
                     this
                 );
 
-                console.log("[_saveHeaderNoteStandard] Notas después de DELETE:", oAfterDelete?.d?.results || []);
-                console.log("========== [_saveHeaderNoteStandard] FIN DELETE ==========");
                 return oAfterDelete?.d?.results || [];
             }
 
@@ -1917,8 +1721,6 @@ sap.ui.define([
                 "gbtnte-objectNodeType": "SupplierQuotation"
             };
 
-            console.log("[_saveHeaderNoteStandard] POST body:", oBody);
-            console.log("[_saveHeaderNoteStandard] POST headers:", oHeaders);
 
             const oPostResp = await Services.postoDataERPWithHeadersAsync(
                 this,
@@ -1928,7 +1730,6 @@ sap.ui.define([
                 oHeaders
             );
 
-            console.log("[_saveHeaderNoteStandard] Respuesta POST:", oPostResp);
 
             const oAfter = await Services.oDataConsultODATAAsync(
                 "GET",
@@ -1939,50 +1740,8 @@ sap.ui.define([
                 this
             );
 
-            console.log("[_saveHeaderNoteStandard] Notas después de guardar:", oAfter?.d?.results || []);
-            console.log("========== [_saveHeaderNoteStandard] FIN OK ==========");
 
             return oAfter?.d?.results || [];
-        },
-        onNotaItemEditPress: function () {
-            const oView = this.getView();
-            const oModel = oView.getModel("oModelProyect");
-            const oTable = oView.byId("TableDetail");
-
-            if (!oTable) {
-                sap.m.MessageBox.error("No se encontró la tabla de detalle.");
-                return;
-            }
-
-            const aSelected = oTable.getSelectedItems() || [];
-
-            if (!aSelected.length) {
-                sap.m.MessageBox.warning("Seleccione una línea para editar la nota.");
-                return;
-            }
-
-            if (aSelected.length > 1) {
-                sap.m.MessageBox.warning("Solo puede editar la nota de una línea a la vez.");
-                return;
-            }
-
-            const oCtx = aSelected[0].getBindingContext("oModelProyect");
-            if (!oCtx) {
-                sap.m.MessageBox.error("No se pudo obtener la información de la línea seleccionada.");
-                return;
-            }
-
-            const sRowPath = oCtx.getPath();
-            const aDetalle = oModel.getProperty("/oDetalle") || [];
-
-            aDetalle.forEach((r, idx) => {
-                oModel.setProperty(`/oDetalle/${idx}/_notaItemEditable`, false);
-            });
-
-            oModel.setProperty(sRowPath + "/_notaItemEditable", true);
-            oModel.refresh(true);
-
-            sap.m.MessageToast.show("La línea se ha activado para editar la nota localmente.");
         },
         onNotaItemSavePress: function () {
             const oView = this.getView();
@@ -2034,7 +1793,6 @@ sap.ui.define([
 
             oModel.refresh(true);
 
-            console.log("=== [onNotaItemSavePress] SOLO LOCAL - sin envío a SAP ===");
             sap.m.MessageToast.show("Nota guardada localmente. Se enviará a SAP al publicar la oferta.");
         },
         // oData que sirve para las posiciones 
@@ -2116,7 +1874,6 @@ sap.ui.define([
         },
         _getPedidoDetalle: function (sNumPedido, sSupplier, sSupplierQuotation) {
             that = this;
-            console.log("=== ENTRO A _getPedidoDetalle ===");
             try {
                 var oResp = { sEstado: "E", oResults: [] };
 
@@ -2223,9 +1980,6 @@ sap.ui.define([
             const sServiceUrl = this._getQtnServiceUrl();
             const oModel = this.getView().getModel("oModelProyect");
 
-            console.log("========== [_ensureOfferDraftForSave] INICIO ==========");
-            console.log("[_ensureOfferDraftForSave] SupplierQuotation:", sSupplierQuotation);
-            console.log("[_ensureOfferDraftForSave] DraftUUIDOffer recibido:", sDraftUUIDOffer);
 
             if (!sSupplierQuotation) {
                 throw new Error("No existe SupplierQuotation para preparar el draft de oferta.");
@@ -2240,7 +1994,6 @@ sap.ui.define([
                         `DraftUUID=guid'${sDraftUUIDOffer}',` +
                         `IsActiveEntity=false)?$format=json`;
 
-                    console.log("[_ensureOfferDraftForSave] Validando draft existente:", sCheckUrl);
 
                     const oCheck = await Services.oDataConsultODATAAsync(
                         "GET",
@@ -2253,7 +2006,6 @@ sap.ui.define([
 
                     const oData = oCheck?.d || oCheck?.data || oCheck;
                     if (oData) {
-                        console.log("[_ensureOfferDraftForSave] Draft existente válido, se reutiliza.");
 
                         oModel.setProperty("/oCabecera/DraftUUIDOffer", sDraftUUIDOffer);
                         oModel.setProperty("/oCabecera/SupplierQuotation", sSupplierQuotation);
@@ -2262,7 +2014,6 @@ sap.ui.define([
                         return sDraftUUIDOffer;
                     }
                 } catch (e) {
-                    console.warn("[_ensureOfferDraftForSave] Draft inválido o ya activado. Se recreará.", e);
 
                     // limpiar draft muerto
                     oModel.setProperty("/oCabecera/DraftUUIDOffer", "");
@@ -2278,7 +2029,6 @@ sap.ui.define([
                 `&IsActiveEntity=true` +
                 `&PreserveChanges=false`;
 
-            console.log("[_ensureOfferDraftForSave] Recreando draft con URL:", sEditUrl);
 
             const oResp = await Services.postoDataERPAsync(
                 this,
@@ -2295,7 +2045,6 @@ sap.ui.define([
                 oResp?.d?.results?.[0]?.DraftUUID ||
                 "";
 
-            console.log("[_ensureOfferDraftForSave] Nuevo DraftUUID:", sNewDraftUUID);
 
             if (!sNewDraftUUID) {
                 throw new Error("No se pudo recrear el borrador editable de la oferta.");
@@ -2306,55 +2055,11 @@ sap.ui.define([
             oModel.setProperty("/oClientCabecera/SupplierQuotation", sSupplierQuotation);
             oModel.refresh(true);
 
-            console.log("========== [_ensureOfferDraftForSave] FIN OK ==========");
 
             return sNewDraftUUID;
         },
 
 
-        onEliminarPosiciones: function () {
-            const oTable = this.byId("TableDetail");
-            const oModel = this.getView().getModel("oModelProyect");
-            const aSelected = oTable.getSelectedItems() || [];
-
-            if (!aSelected.length) {
-                sap.m.MessageBox.warning("Seleccione al menos una posición para eliminar.");
-                return;
-            }
-
-            const bEditMode = !!oModel.getProperty("/bEditMode");
-            if (!bEditMode) {
-                sap.m.MessageBox.warning("Primero active el modo edición.");
-                return;
-            }
-
-            let aDetalle = oModel.getProperty("/oDetalle") || [];
-            let aDeleted = oModel.getProperty("/aDeletedPositions") || [];
-
-            const aIndexData = aSelected.map(oItem => {
-                const oCtx = oItem.getBindingContext("oModelProyect");
-                const oRow = oCtx.getObject();
-                const iIndex = parseInt(oCtx.getPath().split("/").pop(), 10);
-
-                return {
-                    index: iIndex,
-                    row: JSON.parse(JSON.stringify(oRow))
-                };
-            }).sort((a, b) => b.index - a.index);
-
-            aIndexData.forEach(entry => {
-                aDeleted.push(entry.row);
-                aDetalle.splice(entry.index, 1);
-            });
-
-            oModel.setProperty("/aDeletedPositions", aDeleted);
-            oModel.setProperty("/oDetalle", aDetalle);
-
-            oTable.removeSelections(true);
-            oModel.refresh(true);
-
-            sap.m.MessageToast.show("Posiciones eliminadas de la edición actual.");
-        },
         onNotaCabeceraEditPress: function () {
             const oModel = this.getView().getModel("oModelProyect");
             oModel.setProperty("/oClientCabecera/_notaEditable", true);
@@ -2370,7 +2075,6 @@ sap.ui.define([
             oModel.setProperty("/oClientCabecera/_notaEditable", false);
             oModel.refresh(true);
 
-            console.log("=== [onNotaCabeceraSavePress] SOLO LOCAL - sin envío a SAP ===");
             sap.m.MessageToast.show("Observación guardada localmente. Se enviará a SAP al publicar la oferta.");
         },
         _prepareInitialDraftFromRFQ: async function (sNumPedido, sSupplier) {
@@ -2474,7 +2178,6 @@ sap.ui.define([
                         }
                     });
                 } catch (eCond) {
-                    console.warn("No se pudieron leer condiciones del item draft:", sSupplierQuotationItem, eCond);
                 }
 
                 const fCantidad = parseFloat(pos.ScheduleLineOrderQuantity || "0");
@@ -2612,17 +2315,12 @@ sap.ui.define([
                     };
                 });
             } catch (e) {
-                console.warn("No se pudo completar MaterialDescription antes de publicar:", e);
                 return aRows;
             }
         },
         _saveItemNoteStandardNoActivate: async function (sSupplierQuotation, oItemDraftInfo, sNota) {
             const sNoteServiceUrl = this._getNoteServiceUrl();
 
-            console.log("========== [_saveItemNoteStandardNoActivate] INICIO ==========");
-            console.log("[_saveItemNoteStandardNoActivate] SupplierQuotation:", sSupplierQuotation);
-            console.log("[_saveItemNoteStandardNoActivate] oItemDraftInfo:", oItemDraftInfo);
-            console.log("[_saveItemNoteStandardNoActivate] sNota:", sNota);
 
             if (!oItemDraftInfo || !oItemDraftInfo.ObjectIDItem) {
                 throw new Error("Faltan datos de borrador de posición para nota estándar.");
@@ -2639,8 +2337,6 @@ sap.ui.define([
                 sLanguage: "ES"
             });
 
-            console.log("[_saveItemNoteStandardNoActivate] Resultado:", oResult);
-            console.log("========== [_saveItemNoteStandardNoActivate] FIN OK ==========");
 
             return oResult;
         },
@@ -2648,20 +2344,12 @@ sap.ui.define([
             const oModel = this.getView().getModel("oModelProyect");
             const aDetalle = oModel.getProperty("/oDetalle") || [];
 
-            console.log("========== [_loadItemNotesFromStandardApi] INICIO ==========");
-            console.log("[_loadItemNotesFromStandardApi] sSupplierQuotation:", sSupplierQuotation);
-            console.log("[_loadItemNotesFromStandardApi] sDraftUUIDHeader PARAM:", sDraftUUIDHeader);
-            console.log("[_loadItemNotesFromStandardApi] /oDetalle inicial:", JSON.parse(JSON.stringify(aDetalle)));
 
             if (!sSupplierQuotation || !aDetalle.length) {
-                console.log("[_loadItemNotesFromStandardApi] Sin oferta o sin detalle. Se omite.");
-                console.log("========== [_loadItemNotesFromStandardApi] FIN SIN PROCESAR ==========");
                 return;
             }
 
             if (!sDraftUUIDHeader) {
-                console.warn("[_loadItemNotesFromStandardApi] No se recibió sDraftUUIDHeader.");
-                console.log("========== [_loadItemNotesFromStandardApi] FIN SIN DRAFT ==========");
                 return;
             }
 
@@ -2678,7 +2366,6 @@ sap.ui.define([
                 `DraftUUID=guid'${sDraftUUIDHeader}',` +
                 `IsActiveEntity=false)/to_SuplrQuotationItemEnhWD?$format=json`;
 
-            console.log("[_loadItemNotesFromStandardApi] URL items draft:", sItemsUrl);
 
             const oItemsResp = await Services.oDataConsultODATAAsync(
                 "GET",
@@ -2690,7 +2377,6 @@ sap.ui.define([
             );
 
             const aItemsDraft = oItemsResp?.d?.results || [];
-            console.log("[_loadItemNotesFromStandardApi] aItemsDraft:", JSON.parse(JSON.stringify(aItemsDraft)));
 
             const mItemDraftByReqItem = {};
 
@@ -2704,7 +2390,6 @@ sap.ui.define([
                 mItemDraftByReqItem[sReqItem] = item;
             });
 
-            console.log("[_loadItemNotesFromStandardApi] mItemDraftByReqItem:", JSON.parse(JSON.stringify(mItemDraftByReqItem)));
 
             // 2. Por cada fila UI, buscar su nota estándar
             for (let i = 0; i < aDetalle.length; i++) {
@@ -2715,15 +2400,10 @@ sap.ui.define([
                     ""
                 ).padStart(5, "0");
 
-                console.log("--------------------------------------------------");
-                console.log(`[_loadItemNotesFromStandardApi] Procesando índice ${i}`);
-                console.log("[_loadItemNotesFromStandardApi] oRow:", JSON.parse(JSON.stringify(oRow)));
-                console.log("[_loadItemNotesFromStandardApi] sReqItem:", sReqItem);
 
                 const oItemDraft = mItemDraftByReqItem[sReqItem];
 
                 if (!oItemDraft) {
-                    console.warn("[_loadItemNotesFromStandardApi] No se encontró oItemDraft para:", sReqItem);
                     oModel.setProperty(`/oDetalle/${i}/ItemNota`, "");
                     oModel.setProperty(`/oDetalle/${i}/ItemNotaEdit`, "");
                     oModel.setProperty(`/oDetalle/${i}/ItemNotaLineCount`, 0);
@@ -2731,7 +2411,6 @@ sap.ui.define([
                     continue;
                 }
 
-                console.log("[_loadItemNotesFromStandardApi] oItemDraft:", JSON.parse(JSON.stringify(oItemDraft)));
 
                 const sSupplierQuotationItem = String(
                     oItemDraft.SupplierQuotationItem || ""
@@ -2740,11 +2419,8 @@ sap.ui.define([
                 // USAR EL DRAFT DEL ITEM LEÍDO DESDE EL DRAFT CORRECTO
                 const sDraftUUIDItem = oItemDraft?.DraftUUID || "";
 
-                console.log("[_loadItemNotesFromStandardApi] sSupplierQuotationItem:", sSupplierQuotationItem);
-                console.log("[_loadItemNotesFromStandardApi] sDraftUUIDItem:", sDraftUUIDItem);
 
                 if (!sDraftUUIDItem) {
-                    console.warn("[_loadItemNotesFromStandardApi] No se obtuvo sDraftUUIDItem para:", sReqItem);
                     oModel.setProperty(`/oDetalle/${i}/ItemNota`, "");
                     oModel.setProperty(`/oDetalle/${i}/ItemNotaEdit`, "");
                     oModel.setProperty(`/oDetalle/${i}/ItemNotaLineCount`, 0);
@@ -2766,8 +2442,6 @@ sap.ui.define([
                     `&$filter=${encodeURIComponent(sFilterStr)}` +
                     `&$format=json`;
 
-                console.log("[_loadItemNotesFromStandardApi] sObjectIDItem:", sObjectIDItem);
-                console.log("[_loadItemNotesFromStandardApi] URL nota item:", sUrlNote);
 
                 const oNoteResp = await Services.oDataConsultODATAAsync(
                     "GET",
@@ -2781,8 +2455,6 @@ sap.ui.define([
                 const aNotes = oNoteResp?.d?.results || [];
                 const sNota = aNotes.length ? (aNotes[0].Content || "") : "";
 
-                console.log("[_loadItemNotesFromStandardApi] aNotes encontradas:", aNotes);
-                console.log("[_loadItemNotesFromStandardApi] sNota final:", sNota);
 
                 oModel.setProperty(`/oDetalle/${i}/ItemNota`, sNota);
                 oModel.setProperty(`/oDetalle/${i}/ItemNotaEdit`, sNota);
@@ -2793,15 +2465,11 @@ sap.ui.define([
 
             oModel.refresh(true);
 
-            console.log("[_loadItemNotesFromStandardApi] /oDetalle final:", JSON.parse(JSON.stringify(oModel.getProperty("/oDetalle") || [])));
-            console.log("========== [_loadItemNotesFromStandardApi] FIN OK ==========");
         },
         _persistDraftItemsFromLocalModel: async function (sSupplierQuotation) {
             const oModel = this.getView().getModel("oModelProyect");
             const sServiceUrl = this._getQtnServiceUrl();
 
-            console.log("========== [_persistDraftItemsFromLocalModel] INICIO ==========");
-            console.log("[_persistDraftItemsFromLocalModel] SupplierQuotation:", sSupplierQuotation);
 
             if (!sSupplierQuotation) {
                 throw new Error("No existe SupplierQuotation para persistir posiciones.");
@@ -2811,7 +2479,6 @@ sap.ui.define([
             sDraftUUID = await this._ensureOfferDraftForSave(sSupplierQuotation, sDraftUUID);
             oModel.setProperty("/oCabecera/DraftUUIDOffer", sDraftUUID);
 
-            console.log("[_persistDraftItemsFromLocalModel] DraftUUID:", sDraftUUID);
 
             const aDeletedPositions = oModel.getProperty("/aDeletedPositions") || [];
 
@@ -2822,7 +2489,6 @@ sap.ui.define([
                 `DraftUUID=guid'${sDraftUUID}',` +
                 `IsActiveEntity=false)/to_SuplrQuotationItemEnhWD?$format=json`;
 
-            console.log("[_persistDraftItemsFromLocalModel] Leyendo draft items:", sDraftItemsUrl);
 
             const oDraftItemsResp = await Services.oDataConsultODATAAsync(
                 "GET",
@@ -2834,7 +2500,6 @@ sap.ui.define([
             );
 
             let aPosicionesDraft = oDraftItemsResp?.d?.results || [];
-            console.log("[_persistDraftItemsFromLocalModel] aPosicionesDraft:", aPosicionesDraft);
 
             if (!aPosicionesDraft.length) {
                 throw new Error("El borrador no tiene posiciones para guardar.");
@@ -2856,7 +2521,6 @@ sap.ui.define([
                         `DraftUUID=guid'${oMatchDelete.DraftUUID || sDraftUUID}',` +
                         `IsActiveEntity=false)`;
 
-                    console.log("[_persistDraftItemsFromLocalModel] Eliminando item draft:", sDeleteUrl);
 
                     await Services.postNoBodyERPAsync(
                         this,
@@ -2878,10 +2542,8 @@ sap.ui.define([
             );
 
             aPosicionesDraft = oDraftItemsResp2?.d?.results || [];
-            console.log("[_persistDraftItemsFromLocalModel] aPosicionesDraft final:", aPosicionesDraft);
 
             const aTableDataUI = this.collectTableData();
-            console.log("[_persistDraftItemsFromLocalModel] aTableDataUI:", aTableDataUI);
 
             const aTableData = await Promise.all(aTableDataUI.map(async (itemUI) => {
                 const sReqItemUI = String(itemUI.RequestForQuotationItem || "").padStart(5, "0");
@@ -2891,7 +2553,6 @@ sap.ui.define([
                 );
 
                 if (!oMatch) {
-                    console.warn("[_persistDraftItemsFromLocalModel] No se encontró match draft para item:", sReqItemUI);
                     return null;
                 }
 
@@ -2902,7 +2563,6 @@ sap.ui.define([
                     `DraftUUID=guid'${oMatch.DraftUUID || sDraftUUID}',` +
                     `IsActiveEntity=false)/to_QTNPricingElementWD?$format=json`;
 
-                console.log("[_persistDraftItemsFromLocalModel] Leyendo pricing para item:", condUrl);
 
                 const condResp = await Services.oDataConsultODATAAsync(
                     "GET",
@@ -2921,14 +2581,6 @@ sap.ui.define([
                 const sQty = String(itemUI.ScheduleLineOrderQuantity || "0").trim();
                 const sDiscount = String(itemUI.ConditionRateValue || "0").trim();
 
-                console.log("[_persistDraftItemsFromLocalModel] Item preparado:", {
-                    reqItem: sReqItemUI,
-                    supplierQuotationItem: oMatch.SupplierQuotationItem,
-                    sNetPrice,
-                    sQty,
-                    sDiscount,
-                    fecha: itemUI.ScheduleLineDeliveryDate
-                });
 
                 return {
                     SupplierQuotation: oMatch.SupplierQuotation || sSupplierQuotation,
@@ -2965,14 +2617,12 @@ sap.ui.define([
 
             const aCleanTableData = aTableData.filter(Boolean);
 
-            console.log("[_persistDraftItemsFromLocalModel] aCleanTableData:", aCleanTableData);
 
             if (!aCleanTableData.length) {
                 throw new Error("No se encontraron posiciones válidas para persistir.");
             }
 
             let sBatchBody = utilUI.buildBatchBody(aCleanTableData, "MERGE");
-            console.log("[_persistDraftItemsFromLocalModel] Batch MERGE construido");
 
             try {
                 await Services.postoDataBatchAsync(
@@ -2981,9 +2631,7 @@ sap.ui.define([
                     sServiceUrl + "$batch",
                     sBatchBody
                 );
-                console.log("[_persistDraftItemsFromLocalModel] Batch MERGE OK");
             } catch (eBatch1) {
-                console.warn("[_persistDraftItemsFromLocalModel] MERGE falló, probando PATCH", eBatch1);
 
                 sBatchBody = utilUI.buildBatchBody(aCleanTableData, "PATCH");
 
@@ -2994,10 +2642,8 @@ sap.ui.define([
                     sBatchBody
                 );
 
-                console.log("[_persistDraftItemsFromLocalModel] Batch PATCH OK");
             }
 
-            console.log("========== [_persistDraftItemsFromLocalModel] FIN OK ==========");
         },
         _submitQuotationWithRetry: async function (sServiceUrl, sSupplierQuotation, iRetries = 3, iDelayMs = 1200) {
             const sUrlSubmit =
@@ -3006,13 +2652,11 @@ sap.ui.define([
                 `&DraftUUID=guid'00000000-0000-0000-0000-000000000000'` +
                 `&IsActiveEntity=true`;
 
-            console.log("[_submitQuotationWithRetry] Submit URL:", sUrlSubmit);
 
             let oLastError = null;
 
             for (let i = 0; i < iRetries; i++) {
                 try {
-                    console.log(`[_submitQuotationWithRetry] Intento ${i + 1} de ${iRetries}`);
 
                     const oResp = await Services.postoDataERPAsync(
                         this,
@@ -3033,7 +2677,6 @@ sap.ui.define([
                         sMsg.includes("locked") ||
                         sMsg.includes("lock");
 
-                    console.warn(`[_submitQuotationWithRetry] Error intento ${i + 1}:`, e);
 
                     if (!bLocked || i === iRetries - 1) {
                         throw e;
@@ -3181,8 +2824,6 @@ sap.ui.define([
         _loadPublishedHeaderNote: async function (sObjectId) {
             const sServiceUrl = this._getNoteServiceUrl();
 
-            console.log("========== [_loadPublishedHeaderNote] INICIO ==========");
-            console.log("[_loadPublishedHeaderNote] sObjectId:", sObjectId);
 
             const sFilterStr =
                 `ObjectID eq '${sObjectId}' ` +
@@ -3196,7 +2837,6 @@ sap.ui.define([
                 `&$filter=${encodeURIComponent(sFilterStr)}` +
                 `&$format=json`;
 
-            console.log("[_loadPublishedHeaderNote] URL:", sUrl);
 
             const oResp = await Services.oDataConsultODATAAsync(
                 "GET",
@@ -3208,11 +2848,8 @@ sap.ui.define([
             );
 
             const aResults = oResp?.d?.results || [];
-            console.log("[_loadPublishedHeaderNote] aResults:", aResults);
 
             const sNota = aResults.length ? (aResults[0].Content || "") : "";
-            console.log("[_loadPublishedHeaderNote] sNota:", sNota);
-            console.log("========== [_loadPublishedHeaderNote] FIN ==========");
 
             return sNota;
         },
@@ -3222,13 +2859,8 @@ sap.ui.define([
             const aDetalle = oModel.getProperty("/oDetalle") || [];
             const sNoteServiceUrl = this._getNoteServiceUrl();
 
-            console.log("========== [_loadPublishedItemNotes] INICIO ==========");
-            console.log("[_loadPublishedItemNotes] sSupplierQuotation:", sSupplierQuotation);
-            console.log("[_loadPublishedItemNotes] /oDetalle inicial:", JSON.parse(JSON.stringify(aDetalle)));
 
             if (!sSupplierQuotation || !aDetalle.length) {
-                console.log("[_loadPublishedItemNotes] Sin oferta o sin detalle. Se omite.");
-                console.log("========== [_loadPublishedItemNotes] FIN SIN PROCESAR ==========");
                 return;
             }
 
@@ -3254,9 +2886,6 @@ sap.ui.define([
                     `&$filter=${encodeURIComponent(sFilterStr)}` +
                     `&$format=json`;
 
-                console.log("[_loadPublishedItemNotes] Item:", sItem);
-                console.log("[_loadPublishedItemNotes] ObjectID:", sObjectId);
-                console.log("[_loadPublishedItemNotes] URL:", sUrl);
 
                 const oResp = await Services.oDataConsultODATAAsync(
                     "GET",
@@ -3270,8 +2899,6 @@ sap.ui.define([
                 const aResults = oResp?.d?.results || [];
                 const sNota = aResults.length ? (aResults[0].Content || "") : "";
 
-                console.log("[_loadPublishedItemNotes] aResults:", aResults);
-                console.log("[_loadPublishedItemNotes] sNota:", sNota);
 
                 oModel.setProperty(`/oDetalle/${i}/ItemNota`, sNota);
                 oModel.setProperty(`/oDetalle/${i}/ItemNotaEdit`, sNota);
@@ -3282,8 +2909,6 @@ sap.ui.define([
 
             oModel.refresh(true);
 
-            console.log("[_loadPublishedItemNotes] /oDetalle final:", JSON.parse(JSON.stringify(oModel.getProperty("/oDetalle") || [])));
-            console.log("========== [_loadPublishedItemNotes] FIN OK ==========");
         },
 
     });

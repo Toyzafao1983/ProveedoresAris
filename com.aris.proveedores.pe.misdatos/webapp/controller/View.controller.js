@@ -67,15 +67,6 @@ sap.ui.define([
                 // Este valor sale de customAttribute4.
                 sNumPedido = oUserProfile.sExtBP;
 
-                console.log("=== DEBUG LOGIN IAS MIS DATOS ===");
-                console.log("groups:", oUserProfile.aGroups);
-                console.log("customAttribute4:", oUserProfile.sAttribute4);
-                console.log("customAttribute5:", oUserProfile.sAttribute5);
-                console.log("bIsExtAyc:", oUserProfile.bIsExtAyc);
-                console.log("bIsInterno:", oUserProfile.bIsInterno);
-                console.log("sRolPrincipal:", oUserProfile.sRolPrincipal);
-                console.log("sExtBP:", oUserProfile.sExtBP);
-                console.log("sInternalBP:", oUserProfile.sInternalBP);
                 const sIdioma = that.oModelProyect.getProperty("/sIdioma") || "esp";
                 that._setLanguageModel(sIdioma);
                 //Tabla del Main
@@ -116,24 +107,6 @@ sap.ui.define([
                 that.getMessageBox("error", that.getI18nText("errorUserData"));
                 sap.ui.core.BusyIndicator.hide(0);
             });
-        },
-        _onPressFilterInit: function () {
-            const tbReporte = this._byId("vbTableMain").getItems().length > 0 ? this._byId("vbTableMain").getItems()[0] : null;
-            // if( !this.isEmpty(tbReporte) ){ tbReporte.removeSelections(true); }
-            that.setFragment("_dialogFilterInit", this.frgIdFilterInit, "FilterInit", this);
-
-            that._onClearComponentGlobal(that.getI18nText("sStateInit"), that._byId(this.frgIdFilterInit + "--IdFilterInit").getContent()[0], false);
-            that._onClearDataFilter();
-
-            Promise.all([this._getFiltro(this)]).then((values) => {
-                let oPrueba = values[0];
-                that.oModelData.setProperty("/oFiltros", oPrueba.oResults);
-
-            }).catch(function (oError) {
-                that.getMessageBox("error", that.getI18nText("errorUserData"));
-            });
-            sap.ui.core.BusyIndicator.hide(0);
-
         },
         _onClearDataFilter: function () {
             that.getModel("oModelProyect").setProperty("/Main", models.createModelProyect().Main);
@@ -207,7 +180,6 @@ sap.ui.define([
             } else if (langKey === "ing") {
                 bundleName = "com.aris.proveedores.pe.misdatos.i18n.i18n_ing";
             } else {
-                console.warn("Idioma no soportado:", langKey);
                 return;
             }
 
@@ -217,11 +189,6 @@ sap.ui.define([
             this.getView().setModel(i18nModel, "i18n");
             this.getModel("oModelProyect").setProperty("/sIdioma", langKey);
 
-        },
-        _applyTokensToMultiInput: function (sId, aSel) {
-            const oMI = sap.ui.core.Fragment.byId(this.frgIdFilterInit, sId);
-            oMI.removeAllTokens();
-            (aSel || []).forEach(x => oMI.addToken(new sap.m.Token({ key: x.key, text: x.text })));
         },
         _getDataDetalle: function (sNumPedido) {
             that = this;
@@ -439,7 +406,6 @@ sap.ui.define([
 
                             if (count > 0) {
                                 if (count === 20) {
-                                    console.warn("⚠️ Se alcanzó el límite de 20 registros, puede que existan más.");
                                 }
 
                                 let aResults = (oData.data || []).map(item => ({
@@ -467,7 +433,6 @@ sap.ui.define([
                             }
                         }.bind(this),
                         error: function () {
-                            console.error("🚨 Error en la consulta a SupplierCode.");
                             if (fallbackFn) {
                                 fallbackFn();
                             } else {
@@ -506,35 +471,6 @@ sap.ui.define([
         onChangeSupplierCode: function (oEvent) {
             const sValue = oEvent.getParameter("suggestValue");
             this._doSuggestSupplierCode(sValue, "/suggestedSupplierCodes");
-        },
-        _loadMore: function () {
-            if (!this._bMoreData) {
-                return;
-            }
-
-            let jFilter = this.getView().getModel("oModelProyect").getProperty("/Main/filter");
-
-            this._getData(jFilter, this._iSkip, this._iTop).then(oResp => {
-                if (oResp.sEstado === "S") {
-                    let oModel = this.getView().getModel("oModelProyect");
-                    let aCurrent = oModel.getProperty("/oReporte") || [];
-                    let aNew = oResp.oResults;
-
-
-                    oModel.setProperty("/oReporte", aCurrent.concat(aNew));
-
-
-                    this._iSkip += this._iTop;
-
-
-                    if (aNew.length < this._iTop) {
-                        this._bMoreData = false;
-                    }
-                }
-                sap.ui.core.BusyIndicator.hide();
-            }).catch(() => {
-                sap.ui.core.BusyIndicator.hide();
-            });
         },
 
 

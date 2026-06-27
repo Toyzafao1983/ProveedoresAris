@@ -480,7 +480,6 @@ sap.ui.define([
 		// 					oControl.setValueState("None");
 		// 				}
 		// 			} catch (e) {
-		// 				jQuery.sap.log.info("------");
 		// 			}
 		// 		});
 		// 		bValidatedSelect = aControlSelect.every(function(oControl) {
@@ -588,7 +587,6 @@ sap.ui.define([
 							oControl.setValueState("None");
 						}
 					} catch (e) {
-						jQuery.sap.log.info(e.message);
 					}
 				});
 				bValidatedSelect = aControlSelect.every(function (oControl) {
@@ -614,7 +612,6 @@ sap.ui.define([
 							}
 						}
 					} catch (e) {
-						jQuery.sap.log.info(e.message);
 					}
 				});
 				try {
@@ -622,7 +619,6 @@ sap.ui.define([
 						return oControl.getValueState() === "None";
 					});
 				} catch (e) {
-					jQuery.sap.log.info(e.message);
 				}
 			}
 			var validaCampos = (bValidatedSelect === true && bValidatedInput === true) ? true : false;
@@ -636,7 +632,6 @@ sap.ui.define([
 					try {
 						oControl.setValueState("None");
 					} catch (e) {
-						jQuery.sap.log.info("------");
 					}
 				});
 			}
@@ -646,7 +641,6 @@ sap.ui.define([
 					try {
 						oControl.setValueState("None");
 					} catch (e) {
-						jQuery.sap.log.info("------");
 					}
 				});
 			}

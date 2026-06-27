@@ -62,7 +62,6 @@ sap.ui.define([
 							var oDataTemp = model.getData();
 							resolve(oDataTemp);
 						}).catch(err => {
-							console.log("Error:" + err.message);
 							reject(err);
 						});
 					}
@@ -186,9 +185,6 @@ sap.ui.define([
 			oModel.loadData("/services/userapi/attributes");
 			return new Promise(function (resolve, reject) {
 				oModel.attachRequestCompleted(function onCompleted(oEvent) {
-					console.log("--------------------------:---------------------------");
-					console.log(oEvent);
-					console.log(oModel);
 					if (oEvent.getParameter("success")) {
 						resolve(oModel.getData());
 					} else {
@@ -334,24 +330,20 @@ sap.ui.define([
 			writeFile(fileToSave);
 
 			function writeFile() {
-				console.log("request file system");
 				window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onFileSystemRetrieved, onFileSystemFail);
 			}
 
 			function onFileSystemRetrieved(fileSystem) {
-				console.log("file system retrieved");
 				fileSystem.root.getFile(fileName, {
 					create: true
 				}, onFileEntryRetrieved, onFileSystemFail);
 			}
 
 			function onFileEntryRetrieved(fileEntry) {
-				console.log("file entry retrieved");
 				fileEntry.createWriter(gotFileWriter, onFileSystemFail);
 			}
 
 			function gotFileWriter(writer) {
-				console.log("write to file");
 
 				writer.onwrite = function (evt) {
 					alert('done');
@@ -362,7 +354,6 @@ sap.ui.define([
 			}
 
 			function onFileSystemFail(error) {
-				console.log(error.code);
 				alert(error.code)
 			}
 		},
@@ -2600,7 +2591,6 @@ sap.ui.define([
 
 				return Promise.resolve(oResp);
 			} catch (e) {
-				console.error(e);
 				return Promise.resolve({ sEstado: "E", oResults: [] });
 			}
 		},
@@ -2614,7 +2604,6 @@ sap.ui.define([
 
 				return Promise.resolve(oResp);
 			} catch (e) {
-				console.error(e);
 				return Promise.resolve({ sEstado: "E", oResults: [] });
 			}
 		},
@@ -2639,7 +2628,6 @@ sap.ui.define([
 
 				return Promise.resolve(oResp);
 			} catch (e) {
-				console.error(e);
 				return Promise.resolve({ sEstado: "E", oResults: [] });
 			}
 		},
@@ -2662,7 +2650,6 @@ sap.ui.define([
 
 				return Promise.resolve(oResp);
 			} catch (e) {
-				console.error(e);
 				return Promise.resolve({ sEstado: "E", oResults: [] });
 			}
 		},
@@ -2682,7 +2669,6 @@ sap.ui.define([
 
 				return Promise.resolve(oResp);
 			} catch (e) {
-				console.error(e);
 				return Promise.resolve({ sEstado: "E", oResults: [] });
 			}
 		},
@@ -2700,7 +2686,6 @@ sap.ui.define([
 
 				return Promise.resolve(oResp);
 			} catch (e) {
-				console.error(e);
 				return Promise.resolve({ sEstado: "E", oResults: [] });
 			}
 		},
@@ -2735,7 +2720,6 @@ sap.ui.define([
 
 				return Promise.resolve(oResp);
 			} catch (e) {
-				console.error(e);
 				return Promise.resolve({ sEstado: "E", oResults: [] });
 			}
 		},

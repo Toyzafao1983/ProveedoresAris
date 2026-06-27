@@ -62,7 +62,6 @@ sap.ui.define([
 						modDatos.sMatricula = "";
 					}
 
-					console.log(modDatos);
 					arrayDatos.push(modDatos);
 				}
 				return {

@@ -63,7 +63,6 @@ sap.ui.define([
 
                 sap.ui.core.BusyIndicator.hide(0);
             }).catch((oError) => {
-                console.error("Error en handleRouteMatched:", oError);
                 this.getMessageBox("error", this.getI18nText("errorUserData"));
                 sap.ui.core.BusyIndicator.hide(0);
             });
@@ -86,10 +85,6 @@ sap.ui.define([
             this.oRouter.navTo("View");
         },
 
-        _onPressFilterDetail: function () {
-            that.setFragment("_dialogFilterDetail", this.frgIdFilterDetail, "FilterDetail", this);
-            that._onClearComponentFilter(that.getI18nText("sStateInit"), [], true);
-        },
 
         _getData: function (sNumPedido) {
             const that = this;
@@ -169,21 +164,6 @@ sap.ui.define([
 
         // --- SUGERENCIAS ---
 
-        _prepareSuggestions: function () {
-            const oModel = this.getView().getModel("oModelProyect");
-            const aDetalle = oModel.getProperty("/oDetalle") || [];
-
-            // Únicos para BANFN
-            let setBanfn = new Set(aDetalle.map(d => d.Banfn).filter(Boolean));
-            let aBanfn = Array.from(setBanfn).map(v => ({ key: v, text: v }));
-
-            // Únicos para Material
-            let setMaterial = new Set(aDetalle.map(d => d.Material).filter(Boolean));
-            let aMaterial = Array.from(setMaterial).map(v => ({ key: v, text: v }));
-
-            oModel.setProperty("/suggestionsBanfn", aBanfn);
-            oModel.setProperty("/suggestionsMaterial", aMaterial);
-        },
 
         onSuggestBanfn: function (oEvent) {
             const sValue = oEvent.getParameter("suggestValue") || "";
@@ -212,7 +192,6 @@ sap.ui.define([
             const aTexts = aTokens.map(t => t.getText());
             oModel.setProperty("/Main/filter/cbBanfn", aKeys);
             oModel.setProperty("/Main/filter/cbBanfnText", aTexts);
-            console.log("[onTokenUpdateBanfn] Guardado tokens:", aKeys, aTexts);
         },
 
         onTokenUpdateMaterial: function (oEvent) {
@@ -222,7 +201,6 @@ sap.ui.define([
             const aTexts = aTokens.map(t => t.getText());
             oModel.setProperty("/Main/filter/cbMaterial", aKeys);
             oModel.setProperty("/Main/filter/cbMaterialText", aTexts);
-            console.log("[onTokenUpdateMaterial] Guardado tokens:", aKeys, aTexts);
         },
 
         // --- RESET ---
@@ -252,7 +230,6 @@ sap.ui.define([
             const oModel = this.getView().getModel("oModelProyect");
 
             const aDetalle = Array.isArray(oModel.getProperty("/oDetalle")) ? oModel.getProperty("/oDetalle") : [];
-            console.log("[_onGoDetail] aDetalle (base):", aDetalle.length);
 
             const miBanfn = this.byId("miBanfn");
             const miMaterial = this.byId("miMaterial");
@@ -269,10 +246,8 @@ sap.ui.define([
             if (freeB) { reqBanfn.push(freeB); }
             if (freeM) { reqMaterial.push(freeM); }
 
-            console.log("[_onGoDetail] Filtros solicitados → BANFN:", reqBanfn, "Material:", reqMaterial);
 
             if (reqBanfn.length === 0 && reqMaterial.length === 0) {
-                console.log("[_onGoDetail] Sin filtros → dataset completo");
                 oModel.setProperty("/oDetalleFiltrado", aDetalle);
                 sap.m.MessageToast.show("No se indicó ningún filtro. Se muestran todos los registros.");
                 return;
@@ -286,7 +261,6 @@ sap.ui.define([
                 (setM.size && setM.has(String(it.Material)))
             );
 
-            console.log("[_onGoDetail] Resultado filtrado:", aFiltrado.length);
             oModel.setProperty("/oDetalleFiltrado", aFiltrado);
 
             if (aFiltrado.length === 0) {
