@@ -832,14 +832,13 @@ sap.ui.define([
             }
         },
         _onPressExportRespaldo: function () {
-            var sIndicador = "Mis Comprobantes";
             var oReporte = this.getModel("oModelProyect").getProperty("/oReporte");
             if (this.isEmpty(oReporte)) {
                 this.getMessageBox("error", this.getI18nText("errorNoDataExport"));
                 return;
             }
             var sAutorExcel = "HSOLER";
-            that.fnExportarExcel(oReporte, [], [], sAutorExcel, sIndicador)
+            this.fnExportarExcel(oReporte, [], [], sAutorExcel);
         },
         _getUnidadesNegocio: function () {
             const that = this;

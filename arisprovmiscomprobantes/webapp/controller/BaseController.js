@@ -1262,80 +1262,88 @@ sap.ui.define([
 		createColumnConfig: function () {
 			return [
 				{
-					label: this.getI18nText("txtTbVaucherMain"),
-					property: 'NroCompro',
+					label: this.getI18nText("txtTbProv"),
+					property: 'PROVEEDOR_NOMBRE',
 					width: '20',
 					type: 'String'
 				},
 				{
-					label: this.getI18nText("txtTbTypeMain"),
-					property: 'TipoCompro',
-					width: '15'
+					label: this.getI18nText("txtTbRecepctor"),
+					property: 'RECEPTOR_PAGO_NOMBRE',
+					width: '20',
+					type: 'String'
 				},
 				{
-					label: this.getI18nText("txtTbEstateMain"),
-					property: 'Estado',
-					width: '15'
+					label: this.getI18nText("txtTbNroFactura"),
+					property: 'NRO_FACTURA',
+					width: '15',
+					type: 'String'
 				},
 				{
-					label: this.getI18nText("txtTbMethodPaymentMain"),
-					property: 'FormaPago',
-					width: '15'
+					label: this.getI18nText("txtTbNroSAP"),
+					property: 'NRO_DOC_SAP',
+					width: '15',
+					type: 'String'
 				},
 				{
-					label: this.getI18nText("txtTbSunatMain"),
-					property: 'cantidad',
-					width: '15'
+					label: this.getI18nText("txtTbClasDoc"),
+					property: 'CLASE_DOC',
+					width: '15',
+					type: 'String'
 				},
 				{
-					label: this.getI18nText("txtTbAccordanceMain"),
-					property: 'cantidad',
-					width: '15'
+					label: this.getI18nText("txtTbFechEmi"),
+					property: 'FECHA_EMISION',
+					width: '15',
+					type: 'String'
 				},
 				{
-					label: this.getI18nText("txtTbPdfMain"),
-					property: 'cantidad',
-					width: '15'
+					label: this.getI18nText("txtTbFechRec"),
+					property: 'FECHA_RECEP',
+					width: '15',
+					type: 'String'
 				},
 				{
-					label: this.getI18nText("txtTbSupplierMain"),
-					property: 'NomProveedor',
-					width: '15'
+					label: this.getI18nText("txtTbFechConta"),
+					property: 'FECHA_CONTAB',
+					width: '15',
+					type: 'String'
 				},
 				{
-					label: this.getI18nText("txtTbClientMain"),
-					property: 'cantidad',
-					width: '15'
+					label: this.getI18nText("txtTbFechVenc"),
+					property: 'FECHA_VENC',
+					width: '15',
+					type: 'String'
 				},
 				{
-					label: this.getI18nText("txtTbInvoiceIssuanceMain"),
-					property: 'NomCliente',
-					width: '15'
+					label: this.getI18nText("txtTbFechEsti"),
+					property: 'FECHA_EST_PAGO',
+					width: '15',
+					type: 'String'
 				},
 				{
-					label: this.getI18nText("txtTbMoneyMain"),
-					property: 'Moneda',
-					width: '15'
+					label: this.getI18nText("txtTbFechPag"),
+					property: 'FECHA_PAGO',
+					width: '15',
+					type: 'String'
 				},
 				{
-					label: this.getI18nText("txtTbTotalMain"),
-					property: 'Total',
-					width: '15'
+					label: this.getI18nText("txtTbMoney"),
+					property: 'MONEDA_DOC',
+					width: '15',
+					type: 'String'
 				},
 				{
-					label: this.getI18nText("txtTbAcceptedPortalMain"),
-					property: 'cantidad',
-					width: '15'
+					label: this.getI18nText("txtTbImportDoc"),
+					property: 'IMPORTE_DOC',
+					width: '15',
+					type: 'String'
 				},
 				{
-					label: this.getI18nText("txtPaymentDatePlanTB"),
-					property: 'FecPagoPlan',
-					width: '15'
-				},
-				{
-					label: this.getI18nText("txtLoadedTB"),
-					property: 'FechaCarga',
-					width: '15'
+					label: this.getI18nText("txtTbNroFO"),
+					property: 'NRO_FREIGHT_ORDER',
+					width: '15',
+					type: 'String'
 				},
 			];
 		},
