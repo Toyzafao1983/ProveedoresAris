@@ -32,7 +32,7 @@ sap.ui.define([
 		userSet: "kestefo@ravaconsulting.com.pe",
 		route: "com.aris.proveedores.facturaexterior.pe",
 		routeSharepoint: "arisindustrial.sharepoint.com,e5faea81-7554-4754-ab0a-7a1615a9006f,f96740cf-8f3f-4805-b1fc-1a0a87bf4ae3",
-		driveId: "b!ger65VR1VEerCnoWFakAb9nmGbJ284hOpTWdHF4jSOLjVnYNoEj0QrJVZ7_OziEd",
+		driveId: "b!ger65VR1VEerCnoWFakAb9nmGbJ284hOpTWdHF4jSOIq-iKPjCYQRr6ew-GrzZyr",
 		_getUsers: function () {
 			that = this;
 			try {
@@ -2048,14 +2048,14 @@ sap.ui.define([
 			const that = this;
 			return new Promise(function (resolve) {
 
-				const baseFolderPath = "Repositorio Apps/SAP Hana/Pruebas BTP/Proveedores/EXTERIOR";
+				const baseFolderPath = "Pruebas BTP/Proveedores/EXTERIOR";
 				let folderPath = baseFolderPath;
 
 				if (Array.isArray(aFolderChain) && aFolderChain.length) {
 					folderPath += "/" + aFolderChain.join("/");
 				}
 
-				const encodedFolderPath = encodeURIComponent(folderPath);
+				const encodedFolderPath = folderPath.split("/").map(encodeURIComponent).join("/");
 
 				let sUrl = "";
 				const sQuery = "?$top=999" + "&$select=id,name,size,webUrl,file,folder,lastModifiedDateTime";
@@ -2063,7 +2063,7 @@ sap.ui.define([
 				if (that.local) {
 					sUrl = that.getOwnerComponent()
 						.getManifestObject()
-						.resolveUri(`/sites/${that.routeSharepoint}/drives/${that.driveId}/root:/${encodedFolderPath}:/children${sQuery}`);
+						.resolveUri(`/drives/${that.driveId}/root:/${encodedFolderPath}:/children${sQuery}`);
 				} else {
 					sUrl = jQuery.sap.getModulePath(that.route) +
 						`/SharePointAris/drives/${that.driveId}/root:/${encodedFolderPath}:/children${sQuery}`;
@@ -2090,7 +2090,7 @@ sap.ui.define([
 
 			const sPathDocs = "/documentos";
 
-			const aFolderChain = [`AF${id}`];
+			const aFolderChain = [id];
 
 			let resp;
 			try {
@@ -2132,18 +2132,18 @@ sap.ui.define([
 		_uploadSharepoint: function (file, onProgress, aFolderChain) {
 			const that = this;
 			return new Promise((resolve) => {
-				const baseFolderPath = "Repositorio Apps/SAP Hana/Pruebas BTP/Proveedores/EXTERIOR";
+				const baseFolderPath = "Pruebas BTP/Proveedores/EXTERIOR";
 				let folderPath = baseFolderPath;
 				if (Array.isArray(aFolderChain) && aFolderChain.length) {
 					folderPath += "/" + aFolderChain.join("/");
 				}
-				const encodedPath = encodeURIComponent(`${folderPath}/${file.name}`);
+				const encodedPath = `${folderPath}/${file.name}`.split("/").map(encodeURIComponent).join("/");
 				let sUrl = "";
 				if (that.local) {
 					sUrl = that.getOwnerComponent()
 						.getManifestObject()
 						.resolveUri(
-							`/sites/${that.routeSharepoint}/drives/${that.driveId}/root:/${encodedPath}:/content`
+							`/drives/${that.driveId}/root:/${encodedPath}:/content`
 						);
 				} else {
 					sUrl =
@@ -2171,7 +2171,7 @@ sap.ui.define([
 					resolve({ sEstado: "S" });
 					return;
 				}
-				const baseFolder = "Repositorio Apps/SAP Hana/Pruebas BTP/Proveedores/EXTERIOR";
+				const baseFolder = "Pruebas BTP/Proveedores/EXTERIOR";
 				let currentPath = baseFolder;
 				let iIndex = 0;
 				const fnNext = function () {
@@ -2180,13 +2180,13 @@ sap.ui.define([
 						return;
 					}
 					const sFolderName = aFolderChain[iIndex];
-					const encodedParentPath = encodeURIComponent(currentPath);
+					const encodedParentPath = currentPath.split("/").map(encodeURIComponent).join("/");
 					let sUrl = "";
 					if (that.local) {
 						sUrl = that.getOwnerComponent()
 							.getManifestObject()
 							.resolveUri(
-								`/sites/${that.routeSharepoint}/drives/${that.driveId}/root:/${encodedParentPath}:/children`
+								`/drives/${that.driveId}/root:/${encodedParentPath}:/children`
 							);
 					} else {
 						sUrl =

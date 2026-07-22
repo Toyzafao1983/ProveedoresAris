@@ -544,8 +544,8 @@ sap.ui.define([
                 return;
             }
             const aFolderChain = [
-                `RFQ_${sCodigoPeticion}`,
-                `Q_${sCodigoOferta}`
+                `#PETICION DE OFERTA ${sCodigoPeticion}`,
+                `#OFERTA ${sCodigoOferta}`
             ];
             try {
                 const oFolderResp = await this._ensureSharePointFolderChain(aFolderChain);

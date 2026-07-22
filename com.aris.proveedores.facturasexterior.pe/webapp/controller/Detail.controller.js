@@ -1675,7 +1675,7 @@ sap.ui.define([
                                     if (!that.routeSharepoint || !that.driveId) {
                                         oUpResult = { sEstado: "E", msg: "Falta configuración SharePoint (routeSharepoint/driveId)" };
                                     } else {
-                                        const aFolderChain = [`AF${String(sFinalIdSap).trim()}`];
+                                        const aFolderChain = [String(sFinalIdSap).trim()];
                                         const oFolderResp = await that._ensureSharePointFolderChain(aFolderChain);
 
                                         if (!oFolderResp || oFolderResp.sEstado !== "S") {
@@ -1979,7 +1979,7 @@ sap.ui.define([
             const aPend = aDocs.filter(d => d && d.fileObject && !d.uploaded);
 
             if (!aPend.length) return { sEstado: "S", subidos: 0 };
-            const aFolderChain = [`AF${String(sIdSap).trim()}`];
+            const aFolderChain = [String(sIdSap).trim()];
             const oFolderResp = await this._ensureSharePointFolderChain(aFolderChain);
             if (!oFolderResp || oFolderResp.sEstado !== "S") {
                 return { sEstado: "E", msg: "No se pudo crear/validar carpeta en SharePoint", detail: oFolderResp };

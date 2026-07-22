@@ -31,7 +31,7 @@ sap.ui.define([
 		userSet: "kestefo@ravaconsulting.com.pe",
 		route: "com.proveedor.peticionoferta.pe",
 		routeSharepoint: "arisindustrial.sharepoint.com,e5faea81-7554-4754-ab0a-7a1615a9006f,f96740cf-8f3f-4805-b1fc-1a0a87bf4ae3",
-		driveId: "b!ger65VR1VEerCnoWFakAb9nmGbJ284hOpTWdHF4jSOLjVnYNoEj0QrJVZ7_OziEd",
+		driveId: "b!ger65VR1VEerCnoWFakAb9nmGbJ284hOpTWdHF4jSOIq-iKPjCYQRr6ew-GrzZyr",
 		_getUsers: function () {
 			that = this;
 			try {
@@ -1692,23 +1692,23 @@ sap.ui.define([
 		_uploadSharepoint: function (file, onProgress, aFolderChain) {
 			const that = this;
 			return new Promise((resolve) => {
-				const baseFolderPath = "Repositorio Apps/SAP Hana/Pruebas BTP/Proveedores/PETICIONES DE OFERTA Y OFERTAS";
+				const baseFolderPath = "Pruebas BTP/Proveedores/PETICIONES DE OFERTA Y OFERTAS";
 				let folderPath = baseFolderPath;
 				if (Array.isArray(aFolderChain) && aFolderChain.length) {
 					folderPath += "/" + aFolderChain.join("/");
 				}
-				const encodedPath = encodeURIComponent(`${folderPath}/${file.name}`);
+				const encodedPath = `${folderPath}/${file.name}`.split("/").map(encodeURIComponent).join("/");
 				let sUrl = "";
 				if (that.local) {
 					sUrl = that.getOwnerComponent()
 						.getManifestObject()
 						.resolveUri(
-							`/sites/${that.routeSharepoint}/drives/${that.driveId}/root:/${encodedPath}:/content`
+							`/drives/${that.driveId}/root:/${encodedPath}:/content`
 						);
 				} else {
 					sUrl =
 						jQuery.sap.getModulePath(that.route) +
-						`/SharePointAris/sites/${that.routeSharepoint}/drives/${that.driveId}/root:/${encodedPath}:/content`;
+						`/SharePointAris/drives/${that.driveId}/root:/${encodedPath}:/content`;
 				}
 				Services.sharePointUploadProgressSync(
 					sUrl,
@@ -1731,7 +1731,7 @@ sap.ui.define([
 					resolve({ sEstado: "S" });
 					return;
 				}
-				const baseFolder = "Repositorio Apps/SAP Hana/Pruebas BTP/Proveedores/PETICIONES DE OFERTA Y OFERTAS";
+				const baseFolder = "Pruebas BTP/Proveedores/PETICIONES DE OFERTA Y OFERTAS";
 				let currentPath = baseFolder;
 				let iIndex = 0;
 				const fnNext = function () {
@@ -1740,18 +1740,18 @@ sap.ui.define([
 						return;
 					}
 					const sFolderName = aFolderChain[iIndex];
-					const encodedParentPath = encodeURIComponent(currentPath);
+					const encodedParentPath = currentPath.split("/").map(encodeURIComponent).join("/");
 					let sUrl = "";
 					if (that.local) {
 						sUrl = that.getOwnerComponent()
 							.getManifestObject()
 							.resolveUri(
-								`/sites/${that.routeSharepoint}/drives/${that.driveId}/root:/${encodedParentPath}:/children`
+								`/drives/${that.driveId}/root:/${encodedParentPath}:/children`
 							);
 					} else {
 						sUrl =
 							jQuery.sap.getModulePath(that.route) +
-							`/SharePointAris/sites/${that.routeSharepoint}/drives/${that.driveId}/root:/${encodedParentPath}:/children`;
+							`/SharePointAris/drives/${that.driveId}/root:/${encodedParentPath}:/children`;
 					}
 					const oBody = {
 						name: sFolderName,

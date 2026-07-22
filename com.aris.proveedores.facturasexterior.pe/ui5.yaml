@@ -23,6 +23,8 @@ server:
             destination: S4H_DEV_110_PROVEEDOR 
           - path: /sites
             destination: SharePointAris 
+          - path: /drives
+            destination: SharePointAris
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:

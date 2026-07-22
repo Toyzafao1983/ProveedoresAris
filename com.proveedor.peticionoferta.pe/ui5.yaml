@@ -21,6 +21,8 @@ server:
             destination: IdentityProviderDestination
           - path: /sap
             destination: S4H_DEV_110_PROVEEDOR
+          - path: /drives
+            destination: SharePointAris
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
