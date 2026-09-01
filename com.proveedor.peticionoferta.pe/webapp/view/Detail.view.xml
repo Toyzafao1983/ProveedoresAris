@@ -229,7 +229,9 @@
 												formatOptions: {
 													minFractionDigits: 2,
 													maxFractionDigits: 2,
-													groupingEnabled: true
+													groupingEnabled: true,
+													groupingSeparator: ',',
+													decimalSeparator: '.'
 												}
 											}"
 											editable="false"
@@ -241,7 +243,9 @@
 												formatOptions: {
 													minFractionDigits: 2,
 													maxFractionDigits: 2,
-													groupingEnabled: true
+													groupingEnabled: true,
+													groupingSeparator: ',',
+													decimalSeparator: '.'
 												}
 											}"
 											editable="{= ${oModelProyect>/bEditMode} 
@@ -251,7 +255,8 @@
 															? true 
 															: false )
 													: false }"
-											liveChange=".onLiveCalculate"
+											valueLiveUpdate="false"
+											change=".onLiveCalculate"
 											textAlign="End"/>
 										<Input value="{oModelProyect>OrderQuantityUnit}" editable="false" textAlign="Center"/>
 										<Input
@@ -261,7 +266,9 @@
 												formatOptions: {
 													minFractionDigits: 2,
 													maxFractionDigits: 2,
-													groupingEnabled: true
+													groupingEnabled: true,
+													groupingSeparator: ',',
+													decimalSeparator: '.'
 												}
 											}"
 											editable="{= ${oModelProyect>/bEditMode} 
@@ -271,7 +278,8 @@
 															? true 
 															: false )
 													: false }"
-											liveChange=".onLiveCalculate"
+											valueLiveUpdate="false"
+											change=".onLiveCalculate"
 											textAlign="End"/>
 										<Input value="{oModelProyect>DocumentCurrency}" editable="false" textAlign="Center"/>
 										<Input value="{
@@ -285,7 +293,8 @@
 															? true 
 															: false )
 													: false }"
-											liveChange=".onLiveCalculateInteger" textAlign="End"/>
+											valueLiveUpdate="false"
+											change=".onLiveCalculateInteger" textAlign="End"/>
 										<Input
 											value="{
 												path: 'oModelProyect>SubTotal',
@@ -293,11 +302,12 @@
 												formatOptions: {
 													minFractionDigits: 2,
 													maxFractionDigits: 2,
-													groupingEnabled: true
+													groupingEnabled: true,
+													groupingSeparator: ',',
+													decimalSeparator: '.'
 												}
 											}"
 											editable="false"
-											liveChange=".onLiveCalculate"
 											textAlign="End"/>
 										 <DatePicker id="dtFechaEntrega"
 											value="{oModelProyect>FechaEntrega}"
