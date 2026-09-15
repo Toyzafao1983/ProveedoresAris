@@ -2090,7 +2090,7 @@ sap.ui.define([
 
 			const sPathDocs = "/documentos";
 
-			const aFolderChain = [id];
+			const aFolderChain = [`AF${id}`];
 
 			let resp;
 			try {
