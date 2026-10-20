@@ -36,7 +36,7 @@
              growingScrollToLoad="true"
              items="{
                path: '{oModelProyect>/oFiltros}',             
-               parameters: { $select: 'TaxID,SupplierName', $top: 100 }
+               parameters: { $select: 'TaxID,SupplierName', $top: 800000 }
              }">
 
         <columns>

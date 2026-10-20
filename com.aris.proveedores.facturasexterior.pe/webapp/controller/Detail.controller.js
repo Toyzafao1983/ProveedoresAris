@@ -2455,7 +2455,7 @@ sap.ui.define([
             const sPath = jQuery.sap.getModulePath("com.aris.proveedores.facturaexterior.pe") +
                 "/S4HANA/sap/opu/odata/sap/ZMMB_PORTALPROVEEDORES/DatFacExt" +
                 "?$expand=to_RegFacExtDet,to_DatCar,to_DatVia" +
-                "&$top=100&$skip=0&$format=json" +
+                "&$top=800000&$skip=0&$format=json" +
                 "&$filter=IDSAP eq '" + _esc(sIdSap) + "'";
 
             sap.ui.core.BusyIndicator.show(0);

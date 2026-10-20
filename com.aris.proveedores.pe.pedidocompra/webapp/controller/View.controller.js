@@ -181,7 +181,7 @@ sap.ui.define([
 
             const buildUrl = (filterExp) => {
                 const sSelect = "$select=Bpname";
-                const sTop = "$top=3000";
+                const sTop = "$top=800000";
                 const sExpand = "$expand=toPurOrdItems";
                 let sPath;
 
@@ -237,7 +237,7 @@ sap.ui.define([
 
             const buildUrl = (filterExp) => {
                 const sSelect = "$select=Ruc";
-                const sTop = "$top=3000";
+                const sTop = "$top=800000";
                 const sExpand = "$expand=toPurOrdItems";
                 let sPath;
 
@@ -294,7 +294,7 @@ sap.ui.define([
 
             const buildUrl = (filterExp) => {
                 const sSelect = "$select=Ebeln";
-                const sTop = "$top=3000";
+                const sTop = "$top=800000";
                 const sExpand = "$expand=toPurOrdItems";
                 let sPath;
 
@@ -512,11 +512,11 @@ sap.ui.define([
                 return new Promise(function (resolve) {
                     let sUrl = "";
                     if (that.local) {
-                        const sPath = "/sap/opu/odata/sap/ZSD_PORTAL_PROVEEDORES_SRV/PurOrdHeaderSet?$top=3000&$expand=toPurOrdItems&$format=json&sap-language=ES";
+                        const sPath = "/sap/opu/odata/sap/ZSD_PORTAL_PROVEEDORES_SRV/PurOrdHeaderSet?$top=800000&$expand=toPurOrdItems&$format=json&sap-language=ES";
                         sUrl = that.getOwnerComponent().getManifestObject().resolveUri(sPath);
                     } else {
                         const sPath = jQuery.sap.getModulePath(that.route) +
-                            "/S4HANA/sap/opu/odata/sap/ZSD_PORTAL_PROVEEDORES_SRV/PurOrdHeaderSet?$top=3000&$expand=toPurOrdItems&$format=json&sap-language=ES";
+                            "/S4HANA/sap/opu/odata/sap/ZSD_PORTAL_PROVEEDORES_SRV/PurOrdHeaderSet?$top=800000&$expand=toPurOrdItems&$format=json&sap-language=ES";
                         sUrl = sPath;
                     }
 

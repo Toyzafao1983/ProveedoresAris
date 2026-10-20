@@ -15,8 +15,9 @@ No sustituyen las pruebas funcionales contra SAP.
 ## Alcance
 
 - Calendario está excluido.
-- Se mantienen los `$top` existentes. Las listas sin `$top` usan `2147483647`,
-  como el helper de Clientes, para no introducir un nuevo límite pequeño.
+- Las consultas SAP de las aplicaciones usan `$top=800000`. Las listas sin
+  `$top` explícito también usan `800000`; el helper respeta límites explícitos
+  y la continuación enviada por SAP. SharePoint conserva su límite propio.
 - Se sigue la continuación enviada por SAP; no se inventan páginas por `$skip`.
   Si SAP alcanza un `$top` explícito sin devolver continuación, se conserva ese
   contrato y no se intenta superar el límite.

@@ -5,8 +5,8 @@ sap.ui.define([], function () {
     return {
         read: function (url, asynchronous, raw, callback) {
             const initial = new URL(url, document.baseURI);
-            // Match Clientes for formerly unbounded lists; existing explicit limits stay intact.
-            const pageSize = initial.searchParams.get("$top") || "2147483647";
+            // Default SAP reads to 800000 records; preserve explicit limits and continuations.
+            const pageSize = initial.searchParams.get("$top") || "800000";
             if (!raw && !initial.searchParams.has("$top")) initial.searchParams.set("$top", pageSize);
             const serviceMatch = initial.pathname.match(/^(.*\/sap\/opu\/odata\/sap\/[^/]+\/)/);
             const serviceRoot = serviceMatch && serviceMatch[1];

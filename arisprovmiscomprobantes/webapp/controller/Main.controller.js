@@ -846,12 +846,12 @@ sap.ui.define([
 
             if (that.local) {
                 const sPath = `/sap/opu/odata/sap/ZSD_PORTAL_PROVEEDORES_SRV/DatosEmpresasSet` +
-                    `?$select=EMPRESA,DESCRIPCION&$top=8000&$format=json&sap-language=ES`;
+                    `?$select=EMPRESA,DESCRIPCION&$top=800000&$format=json&sap-language=ES`;
                 sUrl = that.getOwnerComponent().getManifestObject().resolveUri(sPath);
             } else {
                 const sPath = jQuery.sap.getModulePath(that.route) +
                     `/S4HANA/sap/opu/odata/sap/ZSD_PORTAL_PROVEEDORES_SRV/DatosEmpresasSet` +
-                    `?$select=EMPRESA,DESCRIPCION&$top=8000&$format=json&sap-language=ES`;
+                    `?$select=EMPRESA,DESCRIPCION&$top=800000&$format=json&sap-language=ES`;
                 sUrl = sPath;
             }
 
@@ -928,12 +928,12 @@ sap.ui.define([
 
             if (that.local) {
                 const sPath = `/sap/opu/odata/sap/ZMMB_PORTALPROVEEDORES/Supplier` +
-                    `?$select=TaxID1,TaxID2,SupplierName,SupplierCode&$top=8000&$format=json&sap-language=ES`;
+                    `?$select=TaxID1,TaxID2,SupplierName,SupplierCode&$top=800000&$format=json&sap-language=ES`;
                 sUrl = that.getOwnerComponent().getManifestObject().resolveUri(sPath);
             } else {
                 const sPath = jQuery.sap.getModulePath(that.route) +
                     `/S4HANA/sap/opu/odata/sap/ZMMB_PORTALPROVEEDORES/Supplier` +
-                    `?$select=TaxID1,TaxID2,SupplierName,SupplierCode&$top=8000&$format=json&sap-language=ES`;
+                    `?$select=TaxID1,TaxID2,SupplierName,SupplierCode&$top=800000&$format=json&sap-language=ES`;
                 sUrl = sPath;
             }
 

@@ -1832,13 +1832,13 @@ sap.ui.define([
                     if (that.local) {
                         const sPath =
                             "/sap/opu/odata/sap/ZMMB_PORTALPROVEEDORES/ZC_PROVPEOFERTA" +
-                            "?$top=10000&$format=json&sap-language=es-ES&$filter=" + sFilterEncoded;
+                            "?$top=800000&$format=json&sap-language=es-ES&$filter=" + sFilterEncoded;
                         sUrl = that.getOwnerComponent().getManifestObject().resolveUri(sPath);
                     } else {
                         const sPath =
                             jQuery.sap.getModulePath(that.route) +
                             "/S4HANA/sap/opu/odata/sap/ZMMB_PORTALPROVEEDORES/ZC_PROVPEOFERTA" +
-                            "?$top=10000&$format=json&sap-language=es-ES&$filter=" + sFilterEncoded;
+                            "?$top=800000&$format=json&sap-language=es-ES&$filter=" + sFilterEncoded;
                         sUrl = sPath;
                     }
 
@@ -1908,13 +1908,13 @@ sap.ui.define([
                     if (that.local) {
                         const sPath =
                             "/sap/opu/odata/sap/ZMMB_PORTALPROVEEDORES/ZC_PROVDAPOSICION" +
-                            "?$top=10000&$format=json&sap-language=es-ES&$filter=" + sFilterEncoded;
+                            "?$top=800000&$format=json&sap-language=es-ES&$filter=" + sFilterEncoded;
                         sUrl = that.getOwnerComponent().getManifestObject().resolveUri(sPath);
                     } else {
                         const sPath =
                             jQuery.sap.getModulePath(that.route) +
                             "/S4HANA/sap/opu/odata/sap/ZMMB_PORTALPROVEEDORES/ZC_PROVDAPOSICION" +
-                            "?$top=10000&$format=json&sap-language=es-ES&$filter=" + sFilterEncoded;
+                            "?$top=800000&$format=json&sap-language=es-ES&$filter=" + sFilterEncoded;
                         sUrl = sPath;
                     }
 
@@ -1946,10 +1946,10 @@ sap.ui.define([
                 return new Promise(function (resolve, reject) {
                     let sUrl = "";
                     if (that.local) {
-                        const sPath = "/sap/opu/odata/sap/ZMMB_PORTALPROVEEDORES/ConDes?$top=10000&$format=json&sap-language=es-ES&$filter=SupplierQuotation  eq '" + sSupplierQuotation + "'";
+                        const sPath = "/sap/opu/odata/sap/ZMMB_PORTALPROVEEDORES/ConDes?$top=800000&$format=json&sap-language=es-ES&$filter=SupplierQuotation  eq '" + sSupplierQuotation + "'";
                         sUrl = that.getOwnerComponent().getManifestObject().resolveUri(sPath);
                     } else {
-                        const sPath = jQuery.sap.getModulePath(that.route) + "/S4HANA/sap/opu/odata/sap/ZMMB_PORTALPROVEEDORES/ConDes?$top=10000&$format=json&sap-language=es-ES&$filter=SupplierQuotation  eq '" + sSupplierQuotation + "'";
+                        const sPath = jQuery.sap.getModulePath(that.route) + "/S4HANA/sap/opu/odata/sap/ZMMB_PORTALPROVEEDORES/ConDes?$top=800000&$format=json&sap-language=es-ES&$filter=SupplierQuotation  eq '" + sSupplierQuotation + "'";
                         sUrl = sPath;
                     }
                     Services.getoDataERPSync(that, sUrl, function (result) {
@@ -2255,13 +2255,13 @@ sap.ui.define([
                     if (that.local) {
                         const sPath =
                             "/sap/opu/odata/sap/ZMMB_PORTALPROVEEDORES/ZC_PROVDAPOSICION" +
-                            "?$top=10000&$format=json&sap-language=es-ES&$filter=" + sFilter;
+                            "?$top=800000&$format=json&sap-language=es-ES&$filter=" + sFilter;
                         sUrl = that.getOwnerComponent().getManifestObject().resolveUri(sPath);
                     } else {
                         const sPath =
                             jQuery.sap.getModulePath(that.route) +
                             "/S4HANA/sap/opu/odata/sap/ZMMB_PORTALPROVEEDORES/ZC_PROVDAPOSICION" +
-                            "?$top=10000&$format=json&sap-language=es-ES&$filter=" + sFilter;
+                            "?$top=800000&$format=json&sap-language=es-ES&$filter=" + sFilter;
                         sUrl = sPath;
                     }
 

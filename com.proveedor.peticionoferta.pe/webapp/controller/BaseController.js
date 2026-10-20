@@ -2145,7 +2145,7 @@ sap.ui.define([
 					if (that.local) {
 						const sPath =
 							"/sap/opu/odata/sap/ZMMB_PORTALPROVEEDORES/ZC_PROVPEOFERTA" +
-							"?$top=10000&$format=json&sap-language=es-ES" +
+							"?$top=800000&$format=json&sap-language=es-ES" +
 							sFilterParam;
 
 						sUrl = that.getOwnerComponent().getManifestObject().resolveUri(sPath);
@@ -2153,7 +2153,7 @@ sap.ui.define([
 						const sPath =
 							jQuery.sap.getModulePath(that.route) +
 							"/S4HANA/sap/opu/odata/sap/ZMMB_PORTALPROVEEDORES/ZC_PROVPEOFERTA" +
-							"?$top=10000&$format=json&sap-language=es-ES" +
+							"?$top=800000&$format=json&sap-language=es-ES" +
 							sFilterParam;
 
 						sUrl = sPath;
@@ -2228,7 +2228,7 @@ sap.ui.define([
 					if (that.local) {
 						const sPath =
 							"/sap/opu/odata/sap/ZMMB_PORTALPROVEEDORES/ZC_PROVPEOFERTA" +
-							"?$top=10000&$format=json&sap-language=es-ES" +
+							"?$top=800000&$format=json&sap-language=es-ES" +
 							sFilterParam;
 
 						sUrl = that.getOwnerComponent().getManifestObject().resolveUri(sPath);
@@ -2236,7 +2236,7 @@ sap.ui.define([
 						const sPath =
 							jQuery.sap.getModulePath(that.route) +
 							"/S4HANA/sap/opu/odata/sap/ZMMB_PORTALPROVEEDORES/ZC_PROVPEOFERTA" +
-							"?$top=10000&$format=json&sap-language=es-ES" +
+							"?$top=800000&$format=json&sap-language=es-ES" +
 							sFilterParam;
 
 						sUrl = sPath;

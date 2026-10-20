@@ -250,12 +250,12 @@ sap.ui.define([
                 if (that.local) {
                     sUrl = this.getOwnerComponent().getManifestObject().resolveUri(
                         "/sap/opu/odata/sap/ZMMB_PORTALPROVEEDORES/Supplier" +
-                        "?$top=8000&$select=TaxID1,TaxID2&$format=json&sap-ui-language=ES"
+                        "?$top=800000&$select=TaxID1,TaxID2&$format=json&sap-ui-language=ES"
                     );
                 } else {
                     sUrl = jQuery.sap.getModulePath(that.route) +
                         "/S4HANA/sap/opu/odata/sap/ZMMB_PORTALPROVEEDORES/Supplier" +
-                        "?$top=8000&$select=TaxID1,TaxID2&$format=json&sap-ui-language=ES";
+                        "?$top=800000&$select=TaxID1,TaxID2&$format=json&sap-ui-language=ES";
                 }
 
                 Services.getoDataERPAsync(this, sUrl, function (result) {
@@ -301,7 +301,7 @@ sap.ui.define([
 
             const buildUrl = (filterExp) => {
                 const sSelect = "$select=SupplierName";
-                const sTop = "$top=8000";
+                const sTop = "$top=800000";
                 let sPath;
 
                 if (that.local) {
@@ -379,7 +379,7 @@ sap.ui.define([
 
             const buildUrl = (filterExp) => {
                 const sSelect = "$select=SupplierCode";
-                const sTop = "$top=8000";
+                const sTop = "$top=800000";
                 let sPath;
 
                 if (that.local) {
@@ -663,7 +663,7 @@ sap.ui.define([
                     }
 
                     let aParams = [];
-                    const top = iTop || 8000;
+                    const top = iTop || 800000;
                     const skip = iSkip || 0;
 
                     aParams.push(`$top=${top}`);
@@ -772,13 +772,5 @@ sap.ui.define([
                 that.getMessageBox("error", that.getI18nText("sErrorTry"));
             }
         },
-
-
-
-
-
-
-
-
     });
 });

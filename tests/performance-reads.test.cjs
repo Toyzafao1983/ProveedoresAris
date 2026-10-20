@@ -100,7 +100,7 @@ for (const app of apps) {
     test(`${app}: default large top, explicit small top, empty lists and single entity`, () => {
         for (const top of ['', '?$top=100']) {
             const run = runRead(app, root + 'Supplier' + top, requested => {
-                assert.equal(new URL(requested).searchParams.get('$top'), top ? '100' : '2147483647');
+                assert.equal(new URL(requested).searchParams.get('$top'), top ? '100' : '800000');
                 return { d: { results: [] } };
             });
             assert.equal(run.result.iCode, 1);

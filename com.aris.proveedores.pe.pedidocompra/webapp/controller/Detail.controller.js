@@ -91,7 +91,7 @@ sap.ui.define([
             try {
                 return new Promise(function (resolve) {
                     let sUrl = "";
-                    const sTop = "$top=3000";
+                    const sTop = "$top=800000";
                     const sExpand = "$expand=toPurOrdItems";
                     const filterExp = `Ebeln eq '${sNumPedido}'`;
 
