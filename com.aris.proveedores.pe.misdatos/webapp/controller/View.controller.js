@@ -694,6 +694,11 @@ sap.ui.define([
                             success: function (oData) {
                                 oResp.sEstado = "S";
 
+                                // A completed continuation can exceed the original binding limit.
+                                const rowCount = (oData.data || []).length;
+                                [that.getModel("oModelProyect"), that.getModel("oModelData")].forEach(model => {
+                                    if (model) model.setSizeLimit(Math.max(8000, rowCount));
+                                });
                                 (oData.data || []).forEach(item => {
                                     item.TaxID = that.maskTaxId(item.TaxID1, item.TaxID2);
                                     const aEmails = item.to_Emails && item.to_Emails.results

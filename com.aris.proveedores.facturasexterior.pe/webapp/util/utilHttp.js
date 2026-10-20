@@ -4,8 +4,9 @@ sap.ui.define([
 	"./utilResponse",
 	"../constantes",
 	"./util",
-	"./utilPopUps"
-], function (Controller, JSONModel, utilResponse, constantes, util, utilPopUps) {
+	"./utilPopUps",
+	"./ODataRead"
+], function (Controller, JSONModel, utilResponse, constantes, util, utilPopUps, ODataRead) {
 	"use strict";
 	return {
 		getToken: function (callback) {
@@ -406,94 +407,13 @@ sap.ui.define([
 			});
 		},
 		ERPGetAsync: function (url, callback) {
-			$.ajax({
-				url: url,
-				method: "GET",
-				async: true,
-				contentType: 'application/json',
-				dataType: 'json',
-				success: function (result) {
-					if( !Array.isArray(result.d.results) ){delete result.d.results.__metadata}
-					var respuestaService = {
-						iCode:1,
-						c: "suc",
-						u: url,
-						m: "Exito HTTP - GET",
-						data: Array.isArray(result.d.results) ? result.d.results.map(({ __metadata, ...rest }) => rest) : result.d.results     
-					};
-					return callback(respuestaService);
-				},
-				error: function (xhr, status, error) {
-					var respuestaService = {
-						iCode:-1,
-						c: "ex",
-						u: url,
-						m: "Error HTTP - GET",
-						data: error
-					};
-					return callback(respuestaService);
-				}
-			});
+			return ODataRead.read(url, true, false, callback);
 		},
 		ERPGetSync: function (url, callback) {
-			$.ajax({
-				url: url,
-				method: "GET",
-				async: false,
-				contentType: 'application/json',
-				dataType: 'json',
-				success: function (result) {
-					if( !Array.isArray(result.d.results) ){delete result.d.results.__metadata}
-					var respuestaService = {
-						iCode:1,
-						c: "suc",
-						u: url,
-						m: "Exito HTTP - GET",
-						data: Array.isArray(result.d.results) ? result.d.results.map(({ __metadata, ...rest }) => rest) : result.d.results
-					};
-					return callback(respuestaService);
-				},
-				error: function (xhr, status, error) {
-					var respuestaService = {
-						iCode:-1,
-						c: "ex",
-						u: url,
-						m: "Error HTTP - GET",
-						data: error
-					};
-					return callback(respuestaService);
-				}
-			});
+			return ODataRead.read(url, false, false, callback);
 		},
 		ERPGetSyncNotResult: function (url, callback) {
-			$.ajax({
-				url: url,
-				method: "GET",
-				async: false,
-				contentType: 'application/json',
-				dataType: 'json',
-				success: function (result) {
-					if( !Array.isArray(result.d) ){delete result.d.__metadata}
-					var respuestaService = {
-						iCode:1,
-						c: "suc",
-						u: url,
-						m: "Exito HTTP - GET",
-						data: Array.isArray(result.d) ? result.d.map(({ __metadata, ...rest }) => rest) : result.d
-					};
-					return callback(respuestaService);
-				},
-				error: function (xhr, status, error) {
-					var respuestaService = {
-						iCode:-1,
-						c: "ex",
-						u: url,
-						m: "Error HTTP - GET",
-						data: error
-					};
-					return callback(respuestaService);
-				}
-			});
+			return ODataRead.read(url, false, true, callback);
 		},
 		ERPPostTokenSync: function (urlget, urlpost, data, callback) {
 			$.ajax({

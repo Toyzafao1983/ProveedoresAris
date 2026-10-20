@@ -33,6 +33,29 @@ sap.ui.define([
 		routeSharepoint: "arisindustrial.sharepoint.com,e5faea81-7554-4754-ab0a-7a1615a9006f,f96740cf-8f3f-4805-b1fc-1a0a87bf4ae3",
 		driveId: "b!ger65VR1VEerCnoWFakAb9nmGbJ284hOpTWdHF4jSOIq-iKPjCYQRr6ew-GrzZyr",
 		_getUsers: function () {
+            // Legacy startup helpers read this context immediately, including on cache hits.
+            that = this;
+            const component = this.getOwnerComponent();
+            const key = JSON.stringify([this.getUserLoged(), this.local, this.AdminUser]);
+            if (!component._supplierIdentity || component._supplierIdentity.key !== key) {
+                const entry = { key: key };
+                component._supplierCatalogReads = new Map();
+                entry.promise = new Promise(resolve => resolve(this._loadUsers())).then(result => {
+                    if (!result || !Array.isArray(result.Resources) || !result.Resources.length) {
+                        if (component._supplierIdentity === entry) component._supplierIdentity = null;
+                    }
+                    return result;
+                }, error => {
+                    if (component._supplierIdentity === entry) component._supplierIdentity = null;
+                    throw error;
+                });
+                component._supplierIdentity = entry;
+            }
+            // Each screen can enrich its user data without mutating another screen.
+            return component._supplierIdentity.promise.then(result =>
+                result === undefined ? result : JSON.parse(JSON.stringify(result)));
+        },
+        _loadUsers: function () {
 			that = this;
 			try {
 				var model = new sap.ui.model.json.JSONModel();
