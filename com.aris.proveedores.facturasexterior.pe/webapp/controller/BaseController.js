@@ -16,15 +16,42 @@ sap.ui.define([
 	"com/aris/proveedores/facturaexterior/pe/model/formatter",
 	"com/aris/proveedores/facturaexterior/pe/services/Services",
 	"com/aris/proveedores/facturaexterior/pe/util/util",
-	"sap/ui/model/resource/ResourceModel"
+	"sap/ui/model/resource/ResourceModel",
+	"sap/base/i18n/ResourceBundle"
 ], function (Controller, History, UIComponent, MessageBox, MessageToast, Fragment, BusyIndicator, JSONModel,
-	Filter, FilterOperator, Spreadsheet, Token, ServiceOdata, models, Formatter, Services, util, ResourceModel) {
+	Filter, FilterOperator, Spreadsheet, Token, ServiceOdata, models, Formatter, Services, util, ResourceModel, ResourceBundle) {
 	"use strict";
+	let pSharePointConfig = null;
 	var that;
 	var sMessage = "";
 	var that;
 
 	return Controller.extend("com.aris.proveedores.facturaexterior.pe.controller.BaseController", {
+		_getSharePointFolder: function (sKey) {
+			if (!pSharePointConfig) {
+				pSharePointConfig = ResourceBundle.create({
+					url: sap.ui.require.toUrl(this.route.replace(/\./g, "/") + "/config/sharepoint.properties"),
+					async: true,
+					locale: "",
+					supportedLocales: [""],
+					fallbackLocale: ""
+				}).then(function (bundle) {
+					return bundle;
+				}).catch(function (error) {
+					pSharePointConfig = null;
+					throw error;
+				});
+			}
+			return pSharePointConfig.then(function (bundle) {
+				const sPath = bundle.hasText(sKey) ? bundle.getText(sKey).trim() : "";
+				if (!sPath || sPath.split("/").some(segment => !segment || segment === "." || segment === "..")) {
+					pSharePointConfig = null;
+					throw new Error("Configuración SharePoint inválida: " + sKey + " en config/sharepoint.properties");
+				}
+				return sPath;
+			});
+		},
+
 		formatter: Formatter,
 		local: window.location.href.indexOf('launchpad') == -1 ? true : false,
 		localModel: true,
@@ -2067,11 +2094,12 @@ sap.ui.define([
 				});
 			});
 		},
-		_getSharePointChildrenByFolderChain: function (aFolderChain) {
+		_getSharePointChildrenByFolderChain: async function (aFolderChain) {
+			const configuredFolder = await this._getSharePointFolder("documentsFolder");
 			const that = this;
 			return new Promise(function (resolve) {
 
-				const baseFolderPath = "Pruebas BTP/Proveedores/EXTERIOR";
+				const baseFolderPath = configuredFolder;
 				let folderPath = baseFolderPath;
 
 				if (Array.isArray(aFolderChain) && aFolderChain.length) {
@@ -2152,10 +2180,11 @@ sap.ui.define([
 
 			return { sEstado: "S", oResults: aFinal };
 		},
-		_uploadSharepoint: function (file, onProgress, aFolderChain) {
+		_uploadSharepoint: async function (file, onProgress, aFolderChain) {
+			const configuredFolder = await this._getSharePointFolder("documentsFolder");
 			const that = this;
 			return new Promise((resolve) => {
-				const baseFolderPath = "Pruebas BTP/Proveedores/EXTERIOR";
+				const baseFolderPath = configuredFolder;
 				let folderPath = baseFolderPath;
 				if (Array.isArray(aFolderChain) && aFolderChain.length) {
 					folderPath += "/" + aFolderChain.join("/");
@@ -2187,14 +2216,15 @@ sap.ui.define([
 				);
 			});
 		},
-		_ensureSharePointFolderChain: function (aFolderChain) {
+		_ensureSharePointFolderChain: async function (aFolderChain) {
+			const configuredFolder = await this._getSharePointFolder("documentsFolder");
 			const that = this;
 			return new Promise(function (resolve) {
 				if (!Array.isArray(aFolderChain) || !aFolderChain.length) {
 					resolve({ sEstado: "S" });
 					return;
 				}
-				const baseFolder = "Pruebas BTP/Proveedores/EXTERIOR";
+				const baseFolder = configuredFolder;
 				let currentPath = baseFolder;
 				let iIndex = 0;
 				const fnNext = function () {

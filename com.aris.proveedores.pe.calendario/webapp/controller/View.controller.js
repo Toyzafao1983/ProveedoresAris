@@ -6,12 +6,39 @@ sap.ui.define([
     "com/aris/proveedores/pe/calendario/model/formatter",
     "com/aris/proveedores/pe/calendario/services/Services",
     "com/aris/proveedores/pe/calendario/util/util",
-    "com/aris/proveedores/pe/calendario/util/utilUI"
-], (BaseController, Controller, ResourceModel, models, formatter, Services, util, utilUI) => {
+    "com/aris/proveedores/pe/calendario/util/utilUI",
+    "sap/base/i18n/ResourceBundle"
+], (BaseController, Controller, ResourceModel, models, formatter, Services, util, utilUI, ResourceBundle) => {
     "use strict";
+    let pSharePointConfig = null;
     var that;
     var tPortal = "", tRol = "";
     return BaseController.extend("com.aris.proveedores.pe.calendario.controller.View", {
+		_getSharePointFolder: function (sKey) {
+			if (!pSharePointConfig) {
+				pSharePointConfig = ResourceBundle.create({
+					url: sap.ui.require.toUrl("com/aris/proveedores/pe/calendario" + "/config/sharepoint.properties"),
+					async: true,
+					locale: "",
+					supportedLocales: [""],
+					fallbackLocale: ""
+				}).then(function (bundle) {
+					return bundle;
+				}).catch(function (error) {
+					pSharePointConfig = null;
+					throw error;
+				});
+			}
+			return pSharePointConfig.then(function (bundle) {
+				const sPath = bundle.hasText(sKey) ? bundle.getText(sKey).trim() : "";
+				if (!sPath || sPath.split("/").some(segment => !segment || segment === "." || segment === "..")) {
+					pSharePointConfig = null;
+					throw new Error("Configuración SharePoint inválida: " + sKey + " en config/sharepoint.properties");
+				}
+				return sPath;
+			});
+		},
+
         onInit() {
             that = this;
             this.oRouter = sap.ui.core.UIComponent.getRouterFor(this);
@@ -262,10 +289,11 @@ sap.ui.define([
         },
 
         // 3) Listar archivos de una carpeta dentro del drive
-        _listarArchivos: function (siteId, driveId) {
+        _listarArchivos: async function (siteId, driveId) {
+            const subPath = await this._getSharePointFolder("materialsFolder");
             return new Promise((resolve, reject) => {
                 // 📂 Ruta relativa dentro del drive
-                const subPath = "AF_Sistemas/Documentos/Repositorio Apps/SAP Hana/Portal BTP/clientes/materiales";
+
 
                 // Codificar espacios y caracteres especiales
                 const safe = subPath.split("/").map(encodeURIComponent).join("/");
