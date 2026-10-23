@@ -24,13 +24,13 @@ sap.ui.define([
                     }else if(typeof(value) === 'number'){
                         var iNumber = parseFloat(value);
                     }
-                    return iNumber.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+                    return iNumber.toFixed(3).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
                 } else {
-                    return "0.00";
+                    return "0.000";
                 }
             }
             catch (ex) {
-                return "0.00";
+                return "0.000";
             }
 		},
         currencyFormatTreeDig: function (value) {
@@ -60,13 +60,13 @@ sap.ui.define([
                     }else if(typeof(value) === 'number'){
                         var iNumber = parseFloat(value) * this.igv;
                     }
-                    return iNumber.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+                    return iNumber.toFixed(3).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
                 } else {
-                    return "0.00";
+                    return "0.000";
                 }
             }
             catch (ex) {
-                return "0.00";
+                return "0.000";
             }
 		},
         currencyFormatIGVTreeDig: function (value) {

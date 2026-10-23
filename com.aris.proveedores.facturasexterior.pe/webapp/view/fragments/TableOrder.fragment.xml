@@ -96,8 +96,8 @@
                                     path: 'oModelProyect>/sDetalleGastoOrigen',
                                     type: 'sap.ui.model.type.Float',
                                     formatOptions: {
-                                        minFractionDigits: 2,
-                                        maxFractionDigits: 2,
+                                        minFractionDigits: 3,
+                                        maxFractionDigits: 3,
                                         groupingEnabled: true,
                                         groupingSeparator: ',',
                                         decimalSeparator: '.'
@@ -122,8 +122,8 @@
                                     path: 'oModelProyect>/sDetalleFleteInternacional',
                                     type: 'sap.ui.model.type.Float',
                                     formatOptions: {
-                                        minFractionDigits: 2,
-                                        maxFractionDigits: 2,
+                                        minFractionDigits: 3,
+                                        maxFractionDigits: 3,
                                         groupingEnabled: true,
                                         groupingSeparator: ',',
                                         decimalSeparator: '.'
@@ -148,8 +148,8 @@
                                         path: 'oModelProyect>/sDetalleSeguro',
                                         type: 'sap.ui.model.type.Float',
                                         formatOptions: {
-                                            minFractionDigits: 2,
-                                            maxFractionDigits: 2,
+                                            minFractionDigits: 3,
+                                            maxFractionDigits: 3,
                                             groupingEnabled: true,
                                             groupingSeparator: ',',
                                             decimalSeparator: '.'
@@ -195,8 +195,8 @@
                             path: 'oModelProyect>Orderquantity',
                             type: 'sap.ui.model.type.Float',
                             formatOptions: {
-                                minFractionDigits: 2,
-                                maxFractionDigits: 2,
+                                minFractionDigits: 3,
+                                maxFractionDigits: 3,
                                 groupingEnabled: true,
                                 groupingSeparator: ',',
                                 decimalSeparator: '.'

@@ -1947,15 +1947,15 @@ sap.ui.define([
 			const num = Number(value);
 			if (!isNaN(num)) {
 				return num.toLocaleString('es-PE', {
-					minimumFractionDigits: 2,
-					maximumFractionDigits: 2
+					minimumFractionDigits: 3,
+					maximumFractionDigits: 3
 				});
 			} else if (typeof value === 'string') {
 				return parseFloat(value).toLocaleString('es-PE', {
-					minimumFractionDigits: 2,
-					maximumFractionDigits: 2
+					minimumFractionDigits: 3,
+					maximumFractionDigits: 3
 				});
-			} else { return '0.00'; }
+			} else { return '0.000'; }
 		},
 		formatInteger: function (value) {
 			const num = Number(value);
@@ -2007,7 +2007,7 @@ sap.ui.define([
 				val = val_parts.join('.');
 			}
 
-			Objeto.setValue(val);
+			Objeto.setValue(val === "0.00" ? "0.000" : val + "0");
 		},
 		_getSharepoint: function (sNumPedido) {
 			that = this;

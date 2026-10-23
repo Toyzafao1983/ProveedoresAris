@@ -227,8 +227,8 @@
 												path: 'oModelProyect>ScheduleLineOrderQuantity',
 												type: 'sap.ui.model.type.Float',
 												formatOptions: {
-													minFractionDigits: 2,
-													maxFractionDigits: 2,
+													minFractionDigits: 3,
+													maxFractionDigits: 3,
 													groupingEnabled: true,
 													groupingSeparator: ',',
 													decimalSeparator: '.'
@@ -241,8 +241,8 @@
 												path: 'oModelProyect>cantCotizada',
 												type: 'sap.ui.model.type.Float',
 												formatOptions: {
-													minFractionDigits: 2,
-													maxFractionDigits: 2,
+													minFractionDigits: 3,
+													maxFractionDigits: 3,
 													groupingEnabled: true,
 													groupingSeparator: ',',
 													decimalSeparator: '.'
@@ -264,8 +264,8 @@
 												path: 'oModelProyect>priceUnit',
 												type: 'sap.ui.model.type.Float',
 												formatOptions: {
-													minFractionDigits: 2,
-													maxFractionDigits: 2,
+													minFractionDigits: 3,
+													maxFractionDigits: 3,
 													groupingEnabled: true,
 													groupingSeparator: ',',
 													decimalSeparator: '.'
@@ -300,8 +300,8 @@
 												path: 'oModelProyect>SubTotal',
 												type: 'sap.ui.model.type.Float',
 												formatOptions: {
-													minFractionDigits: 2,
-													maxFractionDigits: 2,
+													minFractionDigits: 3,
+													maxFractionDigits: 3,
 													groupingEnabled: true,
 													groupingSeparator: ',',
 													decimalSeparator: '.'

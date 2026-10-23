@@ -1165,7 +1165,7 @@ sap.ui.define([
                 const oRow = that.oModelProyect.getProperty(sPath) || {};
                 that._syncDetalleTotalByKey(oRow.Ebeln, oRow.Ebelp, nQty, nSub, nBase);
 
-                oInput.setValue(nQty.toFixed(2));
+                oInput.setValue(nQty.toFixed(3));
 
                 if (bExceeded) {
                     oInput.setValueState("Error");

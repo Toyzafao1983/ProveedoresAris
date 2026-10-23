@@ -75,7 +75,7 @@ xmlns:tnt="sap.tnt">
                         <Text text="{oModelProyect>ORDENCOMPRA}" />
                         <Text text="{oModelProyect>DscCondpago}" />
                         <Text text="{oModelProyect>FACTURAASOCIADA}" />
-                        <Text text="{path:'oModelProyect>MONTOTOTAL', formatter:'.formatTwoDecimalsMonto'}" />
+                        <Text text="{path:'oModelProyect>MONTOTOTAL', type:'sap.ui.model.type.Float', formatOptions:{minFractionDigits:3, maxFractionDigits:3, groupingEnabled:true, groupingSeparator:',', decimalSeparator:'.'}}" />
                         <!-- ObjectNumber dinámico -->
                         <ObjectNumber number="{oModelProyect>MONEDA}"  state="Success" />
                         <Text text="{oModelProyect>ESTADO_SISTEM}" />

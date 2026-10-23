@@ -2325,8 +2325,8 @@ sap.ui.define([
 
 			// Usa NumberFormat de SAPUI5
 			const oNumberFormat = NumberFormat.getFloatInstance({
-				maxFractionDigits: 2,
-				minFractionDigits: 2,
+				maxFractionDigits: 3,
+				minFractionDigits: 3,
 				groupingEnabled: true,
 				groupingSeparator: ",",
 				decimalSeparator: "."

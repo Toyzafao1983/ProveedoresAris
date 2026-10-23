@@ -1194,11 +1194,11 @@ sap.ui.define([
 
                 if (cantidad > maximo) {
                     oInput.setValueState("Error");
-                    oInput.setValueStateText("Cantidad excedida. Máximo permitido: " + maximo.toFixed(2));
+                    oInput.setValueStateText("Cantidad excedida. Máximo permitido: " + maximo.toFixed(3));
 
                     sap.m.MessageBox.error(
-                        "La cantidad ingresada (" + cantidad.toFixed(2) +
-                        ") excede la cantidad solicitada (" + maximo.toFixed(2) + ").",
+                        "La cantidad ingresada (" + cantidad.toFixed(3) +
+                        ") excede la cantidad solicitada (" + maximo.toFixed(3) + ").",
                         { title: "Error en cantidad" }
                     );
 
