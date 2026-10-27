@@ -518,30 +518,9 @@ sap.ui.define([
         },
         // Agarra el valor de IdSaP
         _onEnableCabecera: function () {
-            const s = formatter._normalizeStatusCode(
-                that.oModelProyect.getProperty("/oCabecera/sEstadoCodigo")
-            );
-            const oMU = that.getOwnerComponent().getModel("oModelUser");
-            const bIsComex = !!oMU?.getProperty("/bIsIntComex");
-
-            // 04: nadie
-            if (s === "04") {
-                that.getMessageBox("error", "No se puede modificar: la orden ya está en estado Contabilizado.");
-                that.oModelProyect.setProperty("/oCabecera/bFormEditable", false);
-                return;
-            }
-
-            // 03: nadie
-            if (s === "03") {
-                that.getMessageBox("error", "No se puede modificar: la orden está en estado Aprobado.");
-                that.oModelProyect.setProperty("/oCabecera/bFormEditable", false);
-                return;
-            }
-
-            // 02: solo Aris/Comex
-            if (s === "02" && !bIsComex) {
-                that.getMessageBox("error", "No se puede modificar: la orden está en estado Facturado.");
-                that.oModelProyect.setProperty("/oCabecera/bFormEditable", false);
+            if (!this._canModifyFacturaExterior()) {
+                this.getMessageBox("error", "No tiene permisos para modificar la factura en su estado actual.");
+                this.oModelProyect.setProperty("/oCabecera/bFormEditable", false);
                 return;
             }
 
@@ -1468,31 +1447,10 @@ sap.ui.define([
                 const oMU = that.getOwnerComponent().getModel("oModelUser");
                 const bIsComex = !!oMU?.getProperty("/bIsIntComex");
 
-                if (sCurr === "04") {
-                    that.getMessageBox(
-                        "warning",
-                        "No se puede guardar porque el documento está en estado 04 (Contabilizado)."
-                    );
+                if (!that._canModifyFacturaExterior(sCurr)) {
+                    that.getMessageBox("warning", "No tiene permisos para guardar la factura en su estado actual.");
                     return;
                 }
-
-                if (sCurr === "03") {
-                    that.getMessageBox(
-                        "warning",
-                        "No se puede guardar porque el documento está en estado 03 (Aprobado)."
-                    );
-                    return;
-                }
-
-                if (sCurr === "02" && !bIsComex) {
-                    that.getMessageBox(
-                        "warning",
-                        "No se puede guardar porque el documento está en estado 02 (" +
-                        (that.oModelProyect.getProperty("/oCabecera/sFormEstadoRegistro") || "Facturado") + ")."
-                    );
-                    return;
-                }
-
 
                 const bEdit = !!that.oModelProyect.getProperty("/oCabecera/bFormEditable");
                 if (!bEdit) {
@@ -1755,34 +1713,9 @@ sap.ui.define([
             try {
                 const oMP = that.getModel("oModelProyect");
 
-                // Bloqueo por estado: 04 = Contabilizado
-                const sEstado = formatter._normalizeStatusCode(
-                    oMP.getProperty("/oCabecera/sEstadoCodigo")
-                );
-                switch (sEstado) {
-                    case "02":
-                        that.getMessageBox(
-                            "error",
-                            "No se puede eliminar la solicitud: la orden ya se encuentra en estado Facturado ."
-                        );
-                        return;
-
-                    case "03":
-                        that.getMessageBox(
-                            "error",
-                            "No se puede eliminar la solicitud: la orden ya se encuentra en estado Aprobado ."
-                        );
-                        return;
-
-                    case "04":
-                        that.getMessageBox(
-                            "error",
-                            "No se puede eliminar la solicitud: la orden ya se encuentra en estado Contabilizado ."
-                        );
-                        return;
-
-                    default:
-                        break;
+                if (!that._canModifyFacturaExterior()) {
+                    that.getMessageBox("error", "No tiene permisos para eliminar la factura en su estado actual.");
+                    return;
                 }
                 const sIdSap = String(
                     oMP.getProperty("/appContext/sIdSap") ||
@@ -1818,6 +1751,10 @@ sap.ui.define([
             const that = this;
 
             try {
+                if (!that._canModifyFacturaExterior()) {
+                    that.getMessageBox("error", "No tiene permisos para eliminar la factura en su estado actual.");
+                    return;
+                }
                 const oModel = that.getOwnerComponent().getModel("oModelEntity");
                 if (!oModel || !oModel.create) {
                     that.getMessageBox("error", "No existe el modelo 'oModelEntity' o no es un ODataModel.");
@@ -2023,30 +1960,27 @@ sap.ui.define([
             oModel.setProperty("/documentos", aDocs);
         },
 
-        // Controla el primer ingreso para que todos los campos sean editables
-        _applyEditabilityByEstado: function (sCode) {
-            const code = formatter._normalizeStatusCode(sCode) || "00";
+        // Modificación y eliminación comparten la misma matriz de estado y rol.
+        _canModifyFacturaExterior: function (sCode) {
+            const code = formatter._normalizeStatusCode(
+                sCode === undefined
+                    ? this.oModelProyect.getProperty("/oCabecera/sEstadoCodigo")
+                    : sCode
+            ) || "00";
             const oMU = this.getOwnerComponent().getModel("oModelUser");
             const bIsComex = !!oMU?.getProperty("/bIsIntComex");
-            const bIsProveedorExt = !!oMU?.getProperty("/bIsExtAyc");
+            const bIsProveedor = !!oMU?.getProperty("/bIsExtAyc");
 
-            // APROBADO o CONTABILIZADO: nadie edita
-            if (code === "03" || code === "04") {
-                this.oModelProyect.setProperty("/oCabecera/bLockedByStatus", true);
-                this.oModelProyect.setProperty("/oCabecera/bFormEditable", false);
-                return;
-            }
-
-            // FACTURADO: proveedor exterior NO edita (comex puede)
-            if (code === "02" && bIsProveedorExt && !bIsComex) {
-                this.oModelProyect.setProperty("/oCabecera/bLockedByStatus", true);
-                this.oModelProyect.setProperty("/oCabecera/bFormEditable", false);
-                return;
-            }
-
-            // default: editable
-            this.oModelProyect.setProperty("/oCabecera/bLockedByStatus", false);
-            this.oModelProyect.setProperty("/oCabecera/bFormEditable", true);
+            // Conserva el flujo de creación (Pendiente Facturación).
+            if (code === "00") return true;
+            if (code === "01") return bIsProveedor || bIsComex;
+            if (code === "02") return bIsComex;
+            return false;
+        },
+        _applyEditabilityByEstado: function (sCode) {
+            const bCanModify = this._canModifyFacturaExterior(sCode);
+            this.oModelProyect.setProperty("/oCabecera/bLockedByStatus", !bCanModify);
+            this.oModelProyect.setProperty("/oCabecera/bFormEditable", bCanModify);
         },
         _setEstadoUI: function (sCode, sDesc) {
             const code = formatter._normalizeStatusCode(sCode) || "00";
