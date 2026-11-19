@@ -1617,60 +1617,26 @@ sap.ui.define([
                                 that.oModelProyect.setProperty("/oCabecera/bFormEditable", true);
                                 return;
                             }
+                            // Conservar el IdSap aunque SharePoint falle: el reintento actualiza el mismo registro.
+                            that._switchToIdSapMode(sFinalIdSap);
+                            let oUpResult;
+                            try {
+                                oUpResult = await that._uploadPendientesSharePointByIdSap(sFinalIdSap);
+                            } catch (eUp) {
+                                oUpResult = { sEstado: "E" };
+                            }
+                            if (!oUpResult || oUpResult.sEstado !== "S") {
+                                that.oModelProyect.setProperty("/oCabecera/bFormEditable", true);
+                                sap.ui.core.BusyIndicator.hide(0);
+                                that.getMessageBox("error",
+                                    "El registro " + sFinalIdSap + " se guardó en SAP, pero quedó pendiente de completar en SharePoint. " +
+                                    "No se pudo confirmar la carpeta AF" + sFinalIdSap + " o subir todos los adjuntos. " +
+                                    "Vuelva a guardar para reintentar con el mismo número de registro. No podrá facturar hasta validar la carpeta y la Factura Comercial 1 en SharePoint.");
+                                return;
+                            }
                             that.oModelProyect.setProperty("/oCabecera/bFormEditable", false);
-
                             if (typeof that._loadByIdSap === "function") {
                                 that._loadByIdSap(sFinalIdSap);
-                            }
-
-                            let oUpResult = null;
-
-                            try {
-                                const aDocs = that.oModelProyect.getProperty("/documentos") || [];
-                                const aPend = aDocs.filter(d => d && d.fileObject && !d.uploaded);
-
-                                if (sFinalIdSap && aPend.length) {
-                                    if (!that.routeSharepoint || !that.driveId) {
-                                        oUpResult = { sEstado: "E", msg: "Falta configuración SharePoint (routeSharepoint/driveId)" };
-                                    } else {
-                                        const aFolderChain = [`AF${String(sFinalIdSap).trim()}`];
-                                        const oFolderResp = await that._ensureSharePointFolderChain(aFolderChain);
-
-                                        if (!oFolderResp || oFolderResp.sEstado !== "S") {
-                                            oUpResult = { sEstado: "E", msg: "No se pudo preparar carpeta en SharePoint", detail: oFolderResp };
-                                        } else {
-                                            let iOk = 0;
-
-                                            for (let i = 0; i < aPend.length; i++) {
-                                                const d = aPend[i];
-                                                try {
-                                                    const resp = await that._uploadSharepoint(d.fileObject, function () { }, aFolderChain);
-                                                    if (resp?.sEstado === "S") {
-                                                        iOk++;
-                                                        const sWebUrl = resp?.oResults?.webUrl || "";
-                                                        const aNew = (that.oModelProyect.getProperty("/documentos") || []).map(x => {
-                                                            if (x.fileName === d.fileName) {
-                                                                x.uploaded = true;
-                                                                if (sWebUrl) x.url = sWebUrl;
-                                                            }
-                                                            return x;
-                                                        });
-                                                        that.oModelProyect.setProperty("/documentos", aNew);
-                                                    } else {
-                                                    }
-                                                } catch (e2) {
-                                                }
-                                            }
-                                            oUpResult = {
-                                                sEstado: (iOk === aPend.length ? "S" : "E"),
-                                                subidos: iOk,
-                                                total: aPend.length
-                                            };
-                                        }
-                                    }
-                                }
-                            } catch (eUp) {
-                                oUpResult = { sEstado: "E", msg: "Excepción subiendo adjuntos a SharePoint" };
                             }
 
                             const sInfoId = "\nnúmero de registro: " + sFinalIdSap;
@@ -1907,17 +1873,27 @@ sap.ui.define([
             oModel.setProperty("/documentos", aDocs);
         },
 
+        _ensureFacturaExteriorFolder: async function (sIdSap) {
+            const sId = String(sIdSap || "").trim();
+            if (!sId || !this.routeSharepoint || !this.driveId) {
+                return { sEstado: "E", msg: "Falta IdSap o configuración SharePoint" };
+            }
+            const aFolderChain = [`AF${sId}`];
+            const oCreated = await this._ensureSharePointFolderChain(aFolderChain);
+            if (!oCreated || oCreated.sEstado !== "S") return oCreated;
+            // También confirma existencia cuando el POST responde conflicto (409).
+            return this._getSharePointChildrenByFolderChain(aFolderChain);
+        },
+
         // Para Guardar datos en el sharepotin 
         _uploadPendientesSharePointByIdSap: async function (sIdSap) {
             const oMP = this.getModel("oModelProyect");
             const aDocs = oMP.getProperty("/documentos") || [];
 
-            if (!aDocs.length) return { sEstado: "S", subidos: 0 };
             const aPend = aDocs.filter(d => d && d.fileObject && !d.uploaded);
-
-            if (!aPend.length) return { sEstado: "S", subidos: 0 };
             const aFolderChain = [`AF${String(sIdSap).trim()}`];
-            const oFolderResp = await this._ensureSharePointFolderChain(aFolderChain);
+            // La carpeta es obligatoria incluso cuando todavía no se adjuntan archivos.
+            const oFolderResp = await this._ensureFacturaExteriorFolder(sIdSap);
             if (!oFolderResp || oFolderResp.sEstado !== "S") {
                 return { sEstado: "E", msg: "No se pudo crear/validar carpeta en SharePoint", detail: oFolderResp };
             }
@@ -3116,20 +3092,22 @@ sap.ui.define([
                 sap.m.MessageBox.error("Primero debe guardar/enviar para generar el IDSAP antes de facturar.");
                 return false;
             }
+            let aRemoteDocs;
             try {
-                await this._loadSharePointDocsByIdSap(sIdSap);
-            } catch (e) {
-                const sCode = e?.responseJSON?.error?.code || e?.error?.code || e?.code || "";
-                if (String(sCode).toLowerCase() === "itemnotfound") {
-                    oMP.setProperty("/documentos", []);
-                } else {
-                    sap.m.MessageBox.error("No se pudo validar documentos en SharePoint. Intente nuevamente.");
+                const oFolder = await this._ensureFacturaExteriorFolder(sIdSap);
+                if (!oFolder || oFolder.sEstado !== "S") {
+                    sap.m.MessageBox.error("No se pudo crear o confirmar la carpeta AF" + sIdSap + " en SharePoint. No se puede facturar. Vuelva a guardar para reintentar.");
                     return false;
                 }
+                aRemoteDocs = (oFolder.oResults || [])
+                    .filter(item => item && item.file)
+                    .map(item => this._mapGraphItemToDocumento(item));
+            } catch (e) {
+                sap.m.MessageBox.error("No se pudo validar la carpeta y los documentos en SharePoint. Intente nuevamente.");
+                return false;
             }
-            const aDocs = oMP.getProperty("/documentos") || [];
-
-            const bOk = this._hasFacturaComercial1(aDocs);
+            // Solo cuentan archivos confirmados por SharePoint, nunca documentos en memoria.
+            const bOk = this._hasFacturaComercial1(aRemoteDocs);
             if (!bOk) {
                 sap.m.MessageBox.error(
                     "Falta adjuntar el documento obligatorio:\n\n1 - Factura Comercial 1\n\nAdjúntelo en 'Adjuntar Documentos' para poder facturar."
